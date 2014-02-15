@@ -1,0 +1,88 @@
+applications {
+    .panel-title {
+        text-transform: uppercase;
+        font-weight: 200;
+        i {
+            margin-right: 6px;
+        }
+    }
+    .app-list {
+        display: block;
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+        li {
+            position: relative;
+            margin: 4px;
+            height: 78px;
+            width: 78px;
+            float: left;
+            padding: 10px;
+            border-radius: 2px;
+            background-color: @gray-light;
+            text-align: center;
+            -webkit-transition: all 0.25s ease-in-out;
+               -moz-transition: all 0.25s ease-in-out;
+                 -o-transition: all 0.25s ease-in-out;
+                    transition: all 0.25s ease-in-out;
+            &:hover {
+                background-color: @brand-info;
+                a {
+                    color: @gray-light;
+                    .icon-background {
+                        background-color: @gray-light;
+                        i {
+                            color: @brand-info;
+                        }
+                    }
+                }
+            }
+            a {
+                text-decoration: inherit;
+                -webkit-transition: all 0.25s ease-in-out;
+                   -moz-transition: all 0.25s ease-in-out;
+                     -o-transition: all 0.25s ease-in-out;
+                        transition: all 0.25s ease-in-out;
+                &:hover, :focus {
+                    text-decoration: inherit;
+                }
+                img {
+                    max-width: 100%;
+                    max-height: 70%;
+                    display: block;
+                    margin: auto;
+                    margin-bottom: 4px;
+                }
+                .icon-background {
+                    display: table;
+                    background-color: @brand-info;
+                    margin: 0 auto;
+                    width: 3em;
+                    height: 3em;
+                    border-radius: 50%;
+                    -webkit-transition: all 0.1s ease-out;
+                       -moz-transition: all 0.1s ease-out;
+                         -o-transition: all 0.1s ease-out;
+                            transition: all 0.1s ease-out;
+                    &:hover {
+                        width: 3.25em;
+                        height: 3.25em;
+                    };
+                    i {
+                        color: @gray-light;
+                        display: table-cell;
+                        vertical-align: middle;
+                        font-size:2em;
+                    }
+                }
+            }
+            .name {
+                position: relative;
+                bottom: 0px;
+                line-height: 14px;
+                font-size: 14px;
+                text-align: center;
+            }
+        }
+    }
+}

@@ -12,7 +12,7 @@
  * The dependencies block here is also where component dependencies should be
  * specified, as shown below.
  */
-angular.module( 'apicatus.home', [])
+angular.module( 'apicatus.login', [])
 
 /**
  * Each section or module of the site can also have its own routes. AngularJS
@@ -20,22 +20,37 @@ angular.module( 'apicatus.home', [])
  * this way makes each module more "self-contained".
  */
 .config(function config( $stateProvider ) {
-    $stateProvider.state( 'main.home', {
-        url: '/home',
+    $stateProvider.state( 'login', {
+        url: '/login',
             views: {
                 "main": {
-                    controller: 'HomeCtrl',
-                    templateUrl: 'home/home.tpl.html'
+                    controller: 'LoginCtrl',
+                    templateUrl: 'login/login.tpl.html'
                 }
             },
-        data: { pageTitle: 'Home' },
-        authenticate: false
+        data:{ pageTitle: 'Login' }
     });
 })
 
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'HomeCtrl', function HomeController( $scope, $location ) {
+.controller( 'LoginCtrl', function LoginController( $scope, $state, AuthService ) {
+    $scope.submit = function () {
+        AuthService.authenticate($scope.user, $scope.pass).then(function(result) {
+            $scope.isAuthenticated = result;
+            if($scope.isAuthenticated) {
+                // Get previous state (page that requested authentication)
+                var toState = AuthService.getState();
+                if(toState.name) {
+                    $state.transitionTo(toState.name);
+                } else {
+                    $state.transitionTo("main.home"); // Redirect to home
+                }
+            } else {
+                alert("wrong password and or username");
+            }
+        });
+    };
 });
 

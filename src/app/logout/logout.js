@@ -12,7 +12,7 @@
  * The dependencies block here is also where component dependencies should be
  * specified, as shown below.
  */
-angular.module( 'apicatus.home', [])
+angular.module( 'apicatus.logout', [])
 
 /**
  * Each section or module of the site can also have its own routes. AngularJS
@@ -20,22 +20,27 @@ angular.module( 'apicatus.home', [])
  * this way makes each module more "self-contained".
  */
 .config(function config( $stateProvider ) {
-    $stateProvider.state( 'main.home', {
-        url: '/home',
+    $stateProvider.state( 'main.logout', {
+        url: '/logout',
             views: {
                 "main": {
-                    controller: 'HomeCtrl',
-                    templateUrl: 'home/home.tpl.html'
+                    controller: 'LogoutCtrl',
+                    templateUrl: 'logout/logout.tpl.html'
                 }
             },
-        data: { pageTitle: 'Home' },
-        authenticate: false
+        data:{ pageTitle: 'Logout' }
     });
 })
 
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'HomeCtrl', function HomeController( $scope, $location ) {
+.controller( 'LogoutCtrl', function LogoutController( $scope, $state, AuthService ) {
+
+    AuthService.logout().then(function() {
+        $scope.isAuthenticated = false;
+        $state.transitionTo("main.logout");
+    });
+
 });
 

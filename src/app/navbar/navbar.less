@@ -1,0 +1,144 @@
+/* NAVBAR STYLES */
+nav {
+    border-radius: 0;
+    border: none !important;
+    background-color: #29343e !important;
+    .avatar {
+        padding: 6px 10px !important;
+        img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+        }
+    }
+    .navbar-logo {
+        padding: 13px 15px;
+        img {
+            max-height: 24px;
+        }
+    }
+    .navbar-product {
+        font-weight: 100;
+    }
+    .navbar-range {
+        float: none;
+        text-align: center;
+        font-size: 18px;
+        line-height: 20px;
+        margin: 0 auto;
+        color: #f1f1f1;
+        .reportrange {
+            padding: 15px 15px;
+            display: inline-block;
+            color: #627c94;
+            cursor: pointer;
+            &:hover {
+                background-color: #080808 !important;
+                color: #fff;
+            }
+        }
+    }
+    .navbar-menu {
+        padding: 15px 15px;
+        line-height: 0px;
+        border: none;
+        outline:none;
+        background-color: transparent !important;
+        -webkit-transition: -webkit-transform 0.35s ease-in-out; /* Safari and Chrome */
+           -moz-transition:     -ms-transform 0.35s ease-in-out;
+             -o-transition:      -o-transform 0.35s ease-in-out;
+                transition:         transform 0.35s ease-in-out;
+
+        img {
+            max-width: 20px;
+            max-height: 20px;
+        }
+    }
+    .navbar-menu:not(.closed) {
+        -webkit-transform:rotate(90deg); /* Safari and Chrome */
+           -moz-transform:rotate(90deg); /* Firefox */
+            -ms-transform:rotate(90deg); /* IE 9 */
+                transform:rotate(90deg);
+        background-color: #111;
+    }
+    .navbar-menu:hover {
+        background-color: #d73d32 !important;
+    }
+
+    /* Edit Below to Customize Widths > 768px */
+    @media (min-width:768px) {
+
+        /* Side Nav */
+        .side-nav {
+            margin-left: -@side-nav-width;
+            left: @side-nav-width;
+            width: @side-nav-width;
+            position: fixed;
+            top: 50px; /* match navbar height */
+            height: 100%;
+            border-radius: 0;
+            border: none;
+            background-color: #29343e;
+            overflow-y: auto;
+            text-transform: uppercase;
+            font-weight: 200;
+            white-space: nowrap;
+            -webkit-transition: left 0.2s ease-in-out;
+               -moz-transition: left 0.2s ease-in-out;
+                 -o-transition: left 0.2s ease-in-out;
+                    transition: left 0.2s ease-in-out;
+
+            &.closed {
+                left: 0px;
+            }
+            &>li>a {
+                width: @side-nav-width;
+            }
+            &>a {
+                &:hover,active,focus {
+                    color: #fff !important;
+                    background-color: #080808 !important;
+                }
+            }
+            /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
+
+            &>li.dropdown>ul.dropdown-menu {
+                position: relative;
+                min-width: @side-nav-width;
+                margin: 0;
+                padding: 0;
+                border: none;
+                border-radius: 0;
+                background-color: transparent;
+                box-shadow: none;
+                box-shadow: none;
+            }
+            &>li.dropdown>ul.dropdown-menu>li>a {
+                color: #627c94;
+                padding: 15px 15px 15px 25px;
+                &:hover,active,focus {
+                    color: #fff;
+                    background-color: #080808;
+                }
+            }
+        }
+
+        &.navbar-inverse .navbar-nav>li>a {
+            &:hover, focus {
+                background-color: #080808 !important;
+            }
+        }
+        .navbar-collapse {
+            max-height: 100% !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+            float: none;
+            display: inline-block;
+        }
+    }
+    @media (max-width:768px) {
+        .navbar-logo {
+            display: none;
+        }
+    }
+}

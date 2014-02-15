@@ -1,0 +1,49 @@
+<!-- Brand and toggle get grouped for better mobile display -->
+<div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    </button>
+    <button id="menu-toggle" ng-class="sideBarOpened ? 'open' : 'closed'" ng-click="sideBarOpened = !sideBarOpened" toggle class="navbar-brand navbar-menu"><img src="assxets/images/logo.png" /></button>
+    <a class="navbar-brand navbar-product" href="#/main/home"><strong>APICATUS</strong> WORKBENCH</a>
+</div>
+<ul class="collapse navbar-collapse navbar-ex1-collapse nav navbar-nav navbar-right navbar-user">
+    <li class="dropdown user-dropdown">
+        <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown" ng-model="account"><img ng-src="{{account.avatar}}"/> {{account.username}} <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a ui-sref="main.profile"><i class="fa fa-user"></i> Profile</a></li>
+            <li><a ui-sref="main.inbox"><i class="fa fa-inbox"></i> Inbox <span class="badge">7</span></a></li>
+            <li><a ui-sref="main.settings"><i class="fa fa-cogs"></i> Settings</a></li>
+            <li class="divider"></li>
+            <li><a ui-sref="main.logout"><i class="fa fa-off"></i> Log Out</a></li>
+        </ul>
+    </li>
+    <!-- a class="navbar-brand navbar-logo visible-lg" href="#"><img class="logo" src="assets/images/logo.png" /></a -->
+</ul>
+<div class="container">
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav side-nav closed" ng-model="menu">
+            <!-- li ng-repeat="item in menu" ui-sref-active="active"><a ng-href="{{item.href}}"><i class="fa fa-users fg-yellow-dark"></i> {{item.caption}}</li -->
+            <li><a ui-sref="main.applications.list"><i class="fa fa-tachometer fg-red"></i> Applications </a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-chevron-right fg-green"></i> More <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#"><i class="fa fa-question-circle fg-blue"></i> Help</a></li>
+                    <li><a ui-sref="main.settings"><i class="fa fa-cogs fg-blue"></i> Settins</a></li>
+                    <li><a href="#"><i class="fa fa-exclamation-circle fg-blue"></i> About</a></li>
+                </ul>
+            </li>
+            <li><a ui-sref="main.editor"><i class="fa fa-plus fg-yellow-dark"></i> Editor</a></li>
+        </ul>
+
+        <div class="navbar-range">
+            <date-range id="reportrange" class="reportrange" type="daterange" ng-model="dateRange" format="D/M/YYYY">
+                <i class="fa fa-calendar"></i>
+                <span>00/00/0000 - 00/00/0000</span> <b class="caret"></b>
+            </date-range>
+        </div>
+    </div>
+</div>
