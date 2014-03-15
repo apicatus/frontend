@@ -1,0 +1,85 @@
+// Variables
+// --------------------------------------------------
+@footer-height: 80px; 
+footer {
+    width: 100%;
+    height: @footer-height;
+    position: fixed;
+    bottom: 0;
+    background-color: @gray-dark;
+    &.hidden {
+        display: none;
+    }
+    .logo {
+        max-height: @footer-height;
+        padding: 8px 8px;
+        -webkit-filter: brightness(50%);
+           -moz-filter: brightness(50%);
+             -o-filter: brightness(50%);
+                filter: brightness(50%);
+    }
+    .box {
+        padding: 10px;
+    }
+    .follow_us {
+        a {
+            height: 18px;
+            display: block;
+            text-align: left;
+            color: #444444 !important;
+            -webkit-transition: all 0.1s ease-in-out;
+               -moz-transition: all 0.1s ease-in-out;
+                 -o-transition: all 0.1s ease-in-out;
+                    transition: all 0.1s ease-in-out;
+            &:hover, a.current {
+                color:#f1f1f1 !important;
+                text-decoration: none;
+            }
+        }
+        ul li {
+            padding:0 !important;
+            margin:0 0 0 10px !important;
+            display:inline-block;
+            line-height:18px;
+            border:0 !important;
+        }
+    }
+    input[type="text"] {
+        margin:0 0 5px 0 !important;
+        padding: 3px 6px !important;
+        font-size: 12px;
+        color: #313131;
+        font-style:italic;
+        border-radius: 3px;   
+        background: #515151;
+        border: 1px #393939 solid !important;
+        box-shadow: none;
+        :focus {
+            outline: 0;
+        }
+    }
+    .foot_menu {
+        text-align:right;
+        li {
+            display:inline-block;
+            padding:0 16px 0  0!important;
+            border:0 !important;
+            margin:0 !important;
+            &:last-child {
+                padding:0 !important;
+            }
+            a {
+                text-transform:uppercase;
+                color:#444444 !important;
+                font-size:14px;
+                font-family: 'Open Sans', sans-serif;
+                font-weight:800;
+                font-style:normal !important;
+                &:hover, a.current {
+                    color:#5f5f5f !important;
+                    text-decoration:none;
+                }
+            }
+        }
+    }
+}
