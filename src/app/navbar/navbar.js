@@ -18,22 +18,17 @@ angular.module( 'apicatus.navbar', [
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'NavBarCtrl', function NavBarController( $scope) {
+.controller( 'NavBarCtrl', function NavBarController($scope) {
     $scope.sideBarOpened = false;
-})/*
-.directive("toggle", function () {
+})
+.directive("menuToggle", function () {
     return function (scope, element) {
         element.bind("click", function () {
-            if (scope.sideBarOpened) {
-                $("#wrapper").addClass("closed");
-                $(".side-nav").addClass("closed");
-            } else {
-                $("#wrapper").removeClass("closed");
-                $(".side-nav").removeClass("closed");
-            }
+            console.log("click", element);
+            scope.sideBarOpened = !scope.sideBarOpened;
+            document.body.classList.toggle('open');
             $(window).trigger('resize');
         });
     };
 })
-*/
 ;

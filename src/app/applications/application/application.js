@@ -1,30 +1,28 @@
-/**
 
- */
- /*
-angular.module( 'apicatus.application', [])
+angular.module( 'apicatus.application', [
+    'D3Service',
+    'budgetDonut',
+    'barChart',
+    'lineChart'
+])
 
 
 .config(function config( $stateProvider ) {
-    $stateProvider.state( 'main.applications.application', {
-        url: '/:id',
-            views: {
-                "main": {
-                    controller: 'ApplicationCtrl',
-                    templateUrl: 'applications/application/application.tpl.html'
-                }
-            },
-        data: { pageTitle: 'Application' },
+    $stateProvider.state('main.application', {
+        url: '/application',
+        template: '<ui-view/>',
+        views: {
+            "main": {
+                controller: 'ApplicationCtrlX',
+                templateUrl: 'applications/application/application.tpl.html'
+            }
+        },
+        data: { pageTitle: 'Resource editor' },
         authenticate: false
     });
+
 })
 
-.controller( 'ApplicationCtrl', function ApplicationController( $scope, $location, $stateParams, Restangular ) {
-    console.log($scope.applications);
-    $scope.persons = [
-        {
-            person: "pepe"
-        }
-    ];
+.controller( 'ApplicationCtrlX', function ApplicationController( $scope, $location, $stateParams, Restangular ) {
+    console.log("application controler SINGLE");
 });
-*/

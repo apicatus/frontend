@@ -1,5 +1,5 @@
 .home {
-    margin: 0 auto;
+  margin: 0 auto;
   .jumbotron {
     margin: 0 0 80px 0;
     text-align: center;
@@ -11,13 +11,16 @@
     line-height: 2.1428571435;
     color: #f1f1f1;
     background-color: #eeeeee;
-    background-image: url('images/jumbo.jpg');
+    background-image: url('https://farm4.staticflickr.com/3806/9538307478_c86a37f389_c_d.jpg');
     background-size: cover;
 
     h1 {
       margin-bottom: 20px;
       font-size: 55px;
       line-height: 1;
+      img {
+        max-height: 120px;
+      }
     }
 
     .lead {
@@ -30,13 +33,14 @@
       font-size: 21px;
       padding: 14px 24px;
       border-radius: 2px;
-      color:#FFF; 
-      background:#469acc; 
-      text-align:center; 
+      color:#FFF;
+      background-color: @brand-primary;
+      text-align:center;
       font-size:1.3em;
       border: none;
       &:hover {
-        background:#1e70a1; text-decoration:none
+        background: darken(@brand-primary, 10%);
+        text-decoration: none;
       }
     }
   }
@@ -74,6 +78,73 @@
       line-height: 1;
     }
   }
+
+/* COPY THIS CLASS */
+.appwindow {
+  position: relative;
+  margin: 0 auto;
+  width: 150px;
+  height: 110px;
+  background-color: @gray-light;
+  border: 4px solid @gray-light;
+  border-radius: 3px;
+  overflow: hidden;
+  border-top-width: 0px;
+  z-index: -2;
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+    background-color: #fff;
+    z-index: -1;
+  }
+  &:before {
+    content: "●●●";
+    position: relative;
+    line-height: 0;
+    color: @gray;
+  }
+}
+
+/* CONTENT WHATEVER */
+.somecontent {
+  width: 100%;
+  height: 100%;
+  text-shadow: 1px 1px 1px darken(#8adb62, 15%);
+  background-color: darken(#8adb62, 5%);
+  color: #fff;
+  margin: 0 auto;
+  position: relative;
+  text-align: center;
+  line-height: 1.75; /* Dont vertically align as table ! */
+  font-size: 50px;
+  border-radius: 2px;
+}
+
+.somecontent.premium {
+  color: #ff;
+  text-shadow: 1px 1px 1px darken(#74b5e8, 15%);
+  background-color: darken(#74b5e8, 5%);
+}
+.somecontent.enterprise{
+  color: #ff;
+  text-shadow: 1px 1px 1px darken(#9e6de7, 15%);
+  background-color: darken(#9e6de7, 5%);
+}
+
+.marketing {
+  margin: 0 auto;
+  .sinopsis {
+    text-align: justify;
+    padding: 5px;
+  }
+  .title {
+    text-align: center;
+  }
+}
 
   /* Customize container */
   @media (min-width: 768px) {

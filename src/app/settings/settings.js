@@ -30,51 +30,17 @@ angular.module( 'apicatus.settings', [])
             }
         },
         data: { pageTitle: 'Settings' },
-        authenticate: false
+        authenticate: true
     });
 })
 
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'SettingsCtrl', function SettingsController( $scope ) {
-    console.log("SettingsCtrl", $scope);
-    $scope.tabs = [
-        { title:"Account", icon: "fa fa-user", content:"Dynamic content 1" },
-        { title:"Users", icon: "fa fa-users", content:"Dynamic content 1" },
-        { title:"Data sources", content:"Dynamic content 2", disabled: true }
-    ];
-    $scope.invoices = [{id: "1234",amount: 200, due: new Date(), status: "paid"},
-        {id: "1235",amount: 300, due: new Date(), status: "paid"},
-        {id: "1236",amount: 400, due: new Date(), status: "paid"},
-        {id: "1237",amount: 500, due: new Date(), status: "paid"},
-        {id: "1238",amount: 600, due: new Date(), status: "Posted"}];
-
-    $scope.users = [{
-        username: "James Woods",
-        email: "jwoods@ananke.com",
-        avatar: "https://pbs.twimg.com/profile_images/378800000534882248/fc2341fbc7d96cd7a9dc21f0f396e099.jpeg",
-        firstName: "James",
-        lastName: "Woods",
-        phone: "555-555-555",
-        address: "bonpland",
-        zip: 4336,
-        city: "Buenos Aires",
-        timezone: "AGT"
-    },{
-        username: "Peter Griffin",
-        email: "PeterGriffin@ananke.com",
-        avatar: "https://pbs.twimg.com/profile_images/1119269505/0509071614Peter_Griffin.jpg",
-        firstName: "Peter",
-        lastName: "Griffin",
-        phone: "555-555-555",
-        address: "bonpland",
-        zip: 4336,
-        city: "Buenos Aires",
-        timezone: "AGT"
-    }];
-
-    $scope.max = 100;
-    $scope.dynamic = 25;
+.controller( 'SettingsCtrl', function SettingsController( $scope, $modal, Restangular  ) {
+    var baseDigestors = Restangular.all('digestors');
+    $scope.applications = Restangular.one('digestors').getList().then(function(digestors) {
+        $scope.apis = digestors;
+    });
 });
 

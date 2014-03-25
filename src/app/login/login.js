@@ -20,7 +20,7 @@ angular.module( 'apicatus.login', [])
  * this way makes each module more "self-contained".
  */
 .config(function config( $stateProvider ) {
-    $stateProvider.state( 'login', {
+    $stateProvider.state( 'main.login', {
         url: '/login',
             views: {
                 "main": {
@@ -36,10 +36,12 @@ angular.module( 'apicatus.login', [])
  * And of course we define a controller for our route.
  */
 .controller( 'LoginCtrl', function LoginController( $scope, $state, AuthService ) {
+    console.log("user in scope: ", $scope.user);
     $scope.submit = function () {
-        AuthService.authenticate($scope.user, $scope.pass).then(function(result) {
-            $scope.isAuthenticated = result;
-            if($scope.isAuthenticated) {
+        $scope.processing = true;
+        AuthService.authenticate($scope.username, $scope.password).then(function(result) {
+            $scope.$emit('userLoggedIn', angular.copy(result));
+            if($scope.user.token) {
                 // Get previous state (page that requested authentication)
                 var toState = AuthService.getState();
                 if(toState.name) {
@@ -48,9 +50,20 @@ angular.module( 'apicatus.login', [])
                     $state.transitionTo("main.home"); // Redirect to home
                 }
             } else {
-                alert("wrong password and or username");
+                $scope.alerts = [{
+                    msg: 'error: Could not authenticate'
+                }];
             }
+            $scope.processing = false;
+        }, function(error) {
+            $scope.alerts = [{
+                msg: 'error: ' + error.data.error
+            }];
+            $scope.processing = false;
         });
+    };
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
     };
 });
 

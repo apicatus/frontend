@@ -1,11 +1,32 @@
 login {
+    .login-form {
+        max-width: 380px;
+        margin: 0 auto;
+        .logo {
+            max-width: 120px;
+        }
+        .panel-body {
+            padding: 18px;
+        }
+    }
+    i.fa-spinnerx {
+        -webkit-animation: spin 1s linear infinite;
+           -moz-animation: spin 1s linear infinite;
+                animation: spin 1s linear infinite;
+        }
+        @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+        @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+        @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+}
+
+loginx {
     h2 {
       text-align: center;
       color: #F1F2F4;
       text-shadow: 0 1px 0 #000;
     }
     a {
-      text-decoration: none; color: #EC5C93; 
+      text-decoration: none; color: #EC5C93;
     }
     .ribbon {
         background: rgba(200,200,200,.5);
@@ -16,9 +37,9 @@ login {
         top: 17px;
         border: 1px solid rgba(255,255,255,.3);
         border-top: 2px solid rgba(255,255,255,.5);
-        border-bottom: 0;  
+        border-bottom: 0;
         border-radius: 5px 5px 0 0;
-        box-shadow: 0 0 3px rgba(0,0,0,.7); 
+        box-shadow: 0 0 3px rgba(0,0,0,.7);
         &:before {
             content:"";
             display: block;
@@ -83,11 +104,11 @@ login {
         font-size: 1.5em;
         text-shadow: 0 1px 2px #21756A;
         &:hover {
-            background: linear-gradient(to bottom, rgba(107,198,186,1) 0%,rgba(57,175,154,1) 100%);  
+            background: linear-gradient(to bottom, rgba(107,198,186,1) 0%,rgba(57,175,154,1) 100%);
         }
         &:active {
             box-shadow: inset 0 0 5px #000;
-            background: linear-gradient(to bottom, rgba(57,175,154,1) 0%,rgba(107,198,186,1) 100%); 
+            background: linear-gradient(to bottom, rgba(57,175,154,1) 0%,rgba(107,198,186,1) 100%);
         }
     }
 

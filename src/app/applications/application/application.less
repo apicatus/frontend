@@ -1,9 +1,163 @@
+/* Methods Colors */
+@METHOD-GET-COLOR: #0064cd;
+@METHOD-POST-COLOR: #46a546;
+@METHOD-PUT-COLOR: #ff7d00;
+@METHOD-DELETE-COLOR: #BD2C00;
+@METHOD-OPTIONS-COLOR: #9C1ACA;
+@METHOD-HEAD-COLOR: #3BD9EC;
+@METHOD-CONNECT-COLOR: #A9304F;
+
 application {
+    .page-header {
+        padding: 0;
+        margin: 0px 0 15px;
+        border-bottom-style: dotted;
+        h1 {
+            margin: 0.25em 0;
+            font-weight: 100;
+            input[type="text"].resource-name {
+                margin-left: 10px;
+                font-weight: 100;
+                &:disabled {
+                    border: none;
+                }
+            }
+            i.heading {
+                color: @brand-primary;
+            }
+            i.edit {
+                font-size: 1em;
+            }
+        }
+    }
+    accordion {
+        .panel {
+            &.GET {
+                border-color: darken(@METHOD-GET-COLOR, 15%);
+                .panel-heading + .panel-collapse .panel-body {
+                    border-top: 1px solid darken(@METHOD-GET-COLOR, 15%);
+                }
+            }
+            &.POST {
+                border-color: darken(@METHOD-POST-COLOR, 15%);
+                .panel-heading + .panel-collapse .panel-body {
+                    border-top: 1px solid darken(@METHOD-POST-COLOR, 15%);
+                }
+            }
+            &.PUT {
+                border-color: darken(@METHOD-PUT-COLOR, 15%);
+                .panel-heading + .panel-collapse .panel-body {
+                    border-top: 1px solid darken(@METHOD-PUT-COLOR, 15%);
+                }
+            }
+            &.DELETE {
+                border-color: darken(@METHOD-DELETE-COLOR, 15%);
+                .panel-heading + .panel-collapse .panel-body {
+                    border-top: 1px solid darken(@METHOD-DELETE-COLOR, 15%);
+                }
+            }
+            &.OPTIONS {
+                border-color: darken(@METHOD-OPTIONS-COLOR, 15%);
+                .panel-heading + .panel-collapse .panel-body {
+                    border-top: 1px solid darken(@METHOD-OPTIONS-COLOR, 15%);
+                }
+            }
+            &.HEAD {
+                border-color: darken(@METHOD-HEAD-COLOR, 15%);
+                .panel-heading + .panel-collapse .panel-body {
+                    border-top: 1px solid darken(@METHOD-HEAD-COLOR, 15%);
+                }
+            }
+            &.CONNECT {
+                border-color: darken(@METHOD-CONNECT-COLOR, 15%);
+                .panel-heading + .panel-collapse .panel-body {
+                    border-top: 1px solid darken(@METHOD-CONNECT-COLOR, 15%);
+                }
+            }
+        }
+        .panel-heading {
+            padding: 0;
+            cursor: default;
+            a {
+                color: lighten(@gray-darker, 10%);
+                &:hover, &:active, &:focus {
+                    color: @gray-darker;
+                    cursor: pointer;
+                    text-decoration: none;
+                    span.method {
+                        color: #fff;
+                    }
+                }
+            }
+            span.method {
+                display: inline-block;
+                margin-right: 10px;
+                padding: 10px 20px;
+                color: darken(#fff, 5%);
+                font-weight: 100;
+
+                min-width: 110px;
+                text-align: center;
+                font-weight: 400;
+                border-width: 1px;
+                &.GET {
+                    background-color: @METHOD-GET-COLOR;
+                    border-right-color: darken(@METHOD-GET-COLOR, 15%);
+                    border-right-style: solid;
+                    text-shadow: 1px 1px darken(@METHOD-GET-COLOR, 15%);
+                }
+                &.POST {
+                    background-color: @METHOD-POST-COLOR;
+                    border-right-color: darken(@METHOD-POST-COLOR, 15%);
+                    border-right-style: solid;
+                    text-shadow: 1px 1px darken(@METHOD-POST-COLOR, 25%);
+                }
+                &.DELETE {
+                    background-color: @METHOD-DELETE-COLOR;
+                    border-right-color: darken(@METHOD-DELETE-COLOR, 15%);
+                    border-right-style: solid;
+                    text-shadow: 1px 1px darken(@METHOD-DELETE-COLOR, 25%);
+                }
+                &.PUT {
+                    background-color: @METHOD-PUT-COLOR;
+                    border-right-color: darken(@METHOD-PUT-COLOR, 15%);
+                    border-right-style: solid;
+                    text-shadow: 1px 1px darken(@METHOD-PUT-COLOR, 25%);
+                }
+                &.OPTIONS {
+                    background-color: @METHOD-OPTIONS-COLOR;
+                    border-right-color: darken(@METHOD-OPTIONS-COLOR, 15%);
+                    border-right-style: solid;
+                    text-shadow: 1px 1px darken(@METHOD-OPTIONS-COLOR, 25%);
+                }
+                &.HEAD {
+                    background-color: @METHOD-HEAD-COLOR;
+                    border-right-color: darken(@METHOD-HEAD-COLOR, 15%);
+                    border-right-style: solid;
+                    text-shadow: 1px 1px darken(@METHOD-HEAD-COLOR, 25%);
+                }
+                &.CONNECT {
+                    background-color: @METHOD-CONNECT-COLOR;
+                    border-right-color: darken(@METHOD-CONNECT-COLOR, 15%);
+                    border-right-style: solid;
+                    text-shadow: 1px 1px darken(@METHOD-CONNECT-COLOR, 25%);
+                }
+            }
+            span.trigger-collapse {
+                padding: 10px 10px;
+            }
+        }
+        .panel-body {
+            .ace_editor {
+                height: 200px;
+            }
+        }
+    }
     max-width: 960px;
     display: inherit;
     margin: 0 auto;
     .panel-body {
-        padding: 38px;
+        padding: 18px;
         .tab-content {
             padding: 10px;
             border: 1px solid;
@@ -14,7 +168,185 @@ application {
             margin-bottom: 10px;
         }
     }
-    .input-group {
-        /*margin-bottom: 10px;*/
+
+    /* footer notes */
+    .footer-notes {
+        margin-top: 20px;
+        box-sizing: border-box;
+        padding: 5px;
+        background-color: #334658;
+        color: @gray-light;
+        font-weight: 100;
+        border-radius: 4px;
+        box-shadow: none;
+        border: 1px solid #000;
+        strong {
+            font-weight: 100;
+            color: #fff;
+            text-shadow: 1px 1px 1px #000;
+        }
+    }
+    /* statiscis charts & graphs */
+    .graph {
+        .legend {
+            h2 {
+                margin: 0 0 6px;
+                line-height: 1.1;
+                text-transform: uppercase;
+                font-size: 15px;
+                color: #999;
+            }
+            .number {
+                line-height: 0.7;
+                color: #333;
+                font-size: 52px;
+                font-weight: bold;
+            }
+        }
+        .chart {
+            .chart-container {
+                height: 120px;
+                border: 1px solid @gray-light;
+                border-radius: 3px;
+            }
+        }
+    }
+
+    world-map {
+        display: block;
+        width: 100%;
+        height: 320px;
+        background-color: transparent;
+        .country {
+            fill: @brand-primary;
+            &:hover {
+                stroke: darken(@brand-primary, 10%);
+                stroke-width: 0.5px;
+                fill: lighten(@brand-primary, 10%)
+            }
+        }
+        .point {
+            fill: @gray;
+        }
+        .text {
+            fill: @gray;
+        }
+        .night {
+            stroke: steelblue;
+            fill: steelblue;
+            fill-opacity: .3;
+        }
+    }
+    /* LOG TABLE */
+    table.log-table {
+        th {
+            &.sortable {
+                font-weight: 100;
+                &:hover {
+                    background-color: lighten(@brand-primary, 40%);
+                }
+                &.sort-desc, &.sort-asc {
+                    background-color: @brand-primary;
+                    color: #fff;
+                    text-shadow: 0 1px 1px darken(@brand-primary, 25%);
+                    border-top-left-radius: 2px;
+                    border-top-right-radius: 2px;
+                }
+                div {
+                    padding-right: 18px;
+                    position: relative;
+
+                    font-family: FontAwesome;
+                    font-style: normal;
+                    font-weight: normal;
+                    line-height: 1;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+
+                    &:after, &:before {
+                        content: "\f106";
+                        visibility: visible;
+                        right: 8px;
+                        top: 50%;
+                        position: absolute;
+                        opacity: .3;
+                        margin-top: -11px;
+                        border: none;
+                        color: #000;
+                    }
+                    /* down */
+                    &:before {
+                        content: "\f107";
+                        margin-top: -5px;
+                        border: none;
+                    }
+                }
+                div:hover:after, div:hover:before {
+                    opacity: 1;
+                    visibility: visible;
+                }
+                &.sort-desc, &.sort-asc {
+                    div:after {
+                        margin-top: -7px;
+                    }
+                    div:before {
+                        visibility: hidden;
+                    }
+                }
+                &.sort-asc div:after, &.sort-asc div:hover:after {
+                    visibility: visible;
+                    opacity: 1;
+                    color: #fff;
+                }
+                &.sort-desc div:after {
+                    content: "\f107";
+                    border: none;
+                    visibility: visible;
+                    box-shadow: none;
+                    opacity: 1;
+                    color: #fff;
+                }
+            }
+        }
+        > thead, > tbody, > tfoot {
+            > tr {
+                > th, > td {
+                    padding: @table-cell-padding;
+                    line-height: @line-height-base;
+                    vertical-align: top;
+                    border-top: 1px solid lighten(@table-border-color, 20%);
+                }
+            }
+        }
+        > thead > tr > th {
+            border-bottom: 1px solid @brand-primary; /*@table-border-color;*/
+        }
+    }
+    .ui-show {
+        color: blue;
+        .transition(all 0.5s ease);
+    }
+    .ui-hide {
+        opacity: 0;
+        .transition(all 0.5s ease);
+    }
+    .source-editor {
+        margin-top: 15px;
+        overflow: hidden;
+        .transition(all 0.5s ease);
+        &.ui-hide {
+            height: 0px;
+        }
+        .ace_editor {
+            .transition(all 0.5s ease);
+            height: 400px;
+        }
+    }
+    pre {
+        background-color: #000;
+        color: #ddd;
+        border: none;
+        border-radius: 0px;
+        height: 80px;
     }
 }

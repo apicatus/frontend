@@ -22,7 +22,7 @@ module.exports = {
   app_files: {
     js: [ 'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js' ],
     jsunit: [ 'src/**/*.spec.js' ],
-    
+
     coffee: [ 'src/**/*.coffee', '!src/**/*.spec.coffee' ],
     coffeeunit: [ 'src/**/*.spec.coffee' ],
 
@@ -62,11 +62,37 @@ module.exports = {
    */
   vendor_files: {
     js: [
-      'vendor/angular/angular.js',
-      'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
-      'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
-      'vendor/angular-ui-router/release/angular-ui-router.js',
-      'vendor/angular-ui-utils/modules/route/route.js'
+      'lib/jquery/dist/jquery.js',
+      'lib/angular/angular.js',
+      'lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
+      'lib/angular-ui-router/release/angular-ui-router.js',
+      'lib/angular-ui-utils/ui-utils.js',
+      'lib/ng-table/ng-table.js',
+      'lib/restangular/dist/restangular.js',
+      'lib/angular-local-storage/angular-local-storage.js',
+      'lib/momentjs/moment.js',
+      'lib/lodash/dist/lodash.js',
+      'lib/ace-builds/src-min-noconflict/ace.js',
+      'lib/ace-builds/src-min-noconflict/mode-javascript.js',
+      'lib/ace-builds/src-min-noconflict/mode-json.js',
+      'lib/ace-builds/src-min-noconflict/worker-javascript.js',
+      'lib/ace-builds/src-min-noconflict/worker-json.js',
+      'lib/ace-builds/src-min-noconflict/theme-monokai.js',
+      'lib//angular-ui-ace/ui-ace.js',
+      'lib/angular-translate/angular-translate.js',
+      'lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
+      'lib/bootstrap/js/affix.js',
+      'lib/bootstrap/js/button.js',
+      'lib/bootstrap/js/collapse.js',
+      'lib/bootstrap/js/modal.js',
+      'lib/bootstrap/js/scrollspy.js',
+      'lib/bootstrap/js/tooltip.js',
+      'lib/bootstrap/js/alert.js',
+      'lib/bootstrap/js/carousel.js',
+      'lib/bootstrap/js/dropdown.js',
+      'lib/bootstrap/js/popover.js',
+      'lib/bootstrap/js/tab.js',
+      'lib/bootstrap/js/transition.js',
     ],
     css: [
     ],

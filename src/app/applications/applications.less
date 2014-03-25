@@ -1,88 +1,376 @@
 applications {
-    .panel-title {
-        text-transform: uppercase;
-        font-weight: 200;
-        i {
-            margin-right: 6px;
+    .btn-toolbar {
+        margin-bottom: 10px;
+    }
+    /* GRAPHS */
+    bar-chart {
+        .axis path, .axis line {
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis path{
+            fill: none;
+            stroke: none;
+        }
+        .bar {
+            fill: #fff;
+            fill-opacity: 0.25;
         }
     }
-    .app-list {
-        display: block;
-        list-style: none;
-        margin: 0px;
-        padding: 0px;
-        li {
-            position: relative;
-            margin: 4px;
-            height: 78px;
-            width: 78px;
-            float: left;
+    line-chart {
+        position: absolute;
+        top: 0px;
+        .axis path, .axis line {
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis path{
+            fill: none;
+            stroke: none;
+        }
+        .line {
+            fill: none;
+        }
+    }
+
+    /* TODO: MOVE TO APP LIST */
+    .container {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        .panel-body {
+            margin: 0px;
             padding: 10px;
-            border-radius: 2px;
-            background-color: @gray-light;
-            text-align: center;
-            -webkit-transition: all 0.25s ease-in-out;
-               -moz-transition: all 0.25s ease-in-out;
-                 -o-transition: all 0.25s ease-in-out;
-                    transition: all 0.25s ease-in-out;
+        }
+    }
+    .card {
+        /*background: white;
+        border-radius: 0.3rem;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        margin-bottom: 1em;
+        */
+        .front {
+            background: white;
+            border-radius: 0.3rem;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+            margin-bottom: 1em;
+        }
+        .back {
+            .panel {
+                height: 100%;
+                border: 0;
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+                .panel-heading {
+                    padding: 5px 10px;
+                }
+            }
+        }
+        &.stock {
             &:hover {
-                background-color: @brand-info;
+                .api-setup {
+                    opacity: 1;
+                    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.45);
+                }
+            }
+            .api-setup {
+                position: absolute;
+                background-color: transparent;
+                color: #fff;
+                opacity: 0;
+                right: 0;
+                top: 0;
+                transition: all 0.25s ease-in-out;
+                outline: none;
+                margin: 5px;
+                padding: 2px 6px;
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.5);
+                }
+            }
+            .stock-chart {
+                border-top-left-radius: 0.3rem;
+                border-top-right-radius: 0.3rem;
+                &.enabled {
+                    background-color: #00c5de;
+                }
+                &.disabled {
+                    background-color: #FD3E07;
+                }
+            }
+            .stock-chart {
+                height: 120px;
+                #chart {
+                    height: 10.7em;
+                    background: url(http://i.imgbox.com/abmuNQx2) center bottom no-repeat;
+                }
+            }
+            .current-price {
+                background: #1d2122;
+                padding: 1em;
+                width: 100%;
+                .info abbr {
+                    display: block;
+                    color: #f8f8f8;
+                    font-size: 1.5em;
+                    font-weight: 600;
+                    margin-top: 0.18em;
+                }
+                .changes {
+                    text-align: right;
+                    padding-left: 0px !important;
+                    padding-right: 0px !important;
+                    .value {
+                        font-size: 1.8em;
+                        font-weight: 600;
+                        &:before {
+                            content: "";
+                            height: 0;
+                            width: 0;
+                            border-color: transparent;
+                            border-style: solid;
+                            border-width: 0.25em;
+                            border-bottom-color: #4fd98b;
+                            display: inline-block;
+                            vertical-align: middle;
+                            margin-top: -0.5em;
+                            margin-right: 0.4em;
+                        }
+                        &.up {
+                            color: #4fd98b;
+                        }
+                        &.down {
+                            color: #e76646;
+                            &:before {
+                                border-color: #e76646 transparent transparent;
+                            }
+                        }
+                    }
+                    time, .change {
+                        color: #c8c8c8;
+                        font-weight: 300;
+                        font-size: 0.9em;
+                    }
+                }
+                .info {
+                    padding-left: 0px !important;
+                    padding-right: 0px !important;
+                    time, .change {
+                        color: #c8c8c8;
+                        font-weight: 300;
+                        font-size: 0.9em;
+                    }
+                }
+            }
+            .yearly-changes {
+                height: 6em;
+                padding: 15px 5px 10px 5px;
+                &:after {
+                    content: "";
+                    height: 100%;
+                    display: inline-block;
+                    vertical-align: middle;
+                }
+                div {
+                    padding-left: 5px !important;
+                    padding-right: 5px !important;
+                }
+                .year-all, .year-chart {
+                    display: inline-block;
+                    vertical-align: middle;
+                }
+                .year-chart, .chart-bars {
+                    height: 100%;
+                }
+            }
+            .summary {
+                padding: 5px 5px 10px 5px;
+                text-align: center;
+                div {
+                    padding-left: 5px !important;
+                    padding-right: 5px !important;
+                }
                 a {
-                    color: @gray-light;
-                    .icon-background {
-                        background-color: @gray-light;
-                        i {
-                            color: @brand-info;
+                    color: #46494c;
+                    display: block;
+                    background: rgba(0, 0, 0, 0.05);
+                    padding: 1em 0.5em;
+                    border-radius: 0.3rem;
+                    text-decoration: none;
+                    &:hover {
+                        color: #1c84d4;
+                        span {
+                            color: #1d8cdf;
                         }
                     }
                 }
-            }
-            a {
-                text-decoration: inherit;
-                -webkit-transition: all 0.25s ease-in-out;
-                   -moz-transition: all 0.25s ease-in-out;
-                     -o-transition: all 0.25s ease-in-out;
-                        transition: all 0.25s ease-in-out;
-                &:hover, :focus {
-                    text-decoration: inherit;
+                span {
+                    color: #a1a5a8;
+                    font-size: 0.9em;
+                    font-weight: 300;
+                    text-transform: uppercase;
                 }
-                img {
-                    max-width: 100%;
-                    max-height: 70%;
+                strong {
                     display: block;
-                    margin: auto;
-                    margin-bottom: 4px;
+                    font-weight: 600;
+                    font-size: 1.4em;
                 }
-                .icon-background {
-                    display: table;
-                    background-color: @brand-info;
-                    margin: 0 auto;
-                    width: 3em;
-                    height: 3em;
-                    border-radius: 50%;
-                    -webkit-transition: all 0.1s ease-out;
-                       -moz-transition: all 0.1s ease-out;
-                         -o-transition: all 0.1s ease-out;
-                            transition: all 0.1s ease-out;
-                    &:hover {
-                        width: 3.25em;
-                        height: 3.25em;
-                    };
-                    i {
-                        color: @gray-light;
-                        display: table-cell;
-                        vertical-align: middle;
-                        font-size:2em;
+            }
+            .year-chart .chart-bars {
+                list-style: none;
+                padding: 0;
+                padding-bottom: 1.5em;
+                margin: 0;
+                text-align: justify;
+                &:after {
+                    content: "";
+                    display: inline-block;
+                    width: 100%;
+                }
+                li {
+                    position: relative;
+                    font-size: 0.9em;
+                    width: 10px;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.1);
+                    display: inline-block;
+                    border-radius: 0.3rem;
+                    .value {
+                        position: absolute;
+                        display: block;
+                        width: 100%;
+                        height: 50%;
+                        left: 0;
+                        bottom: 0;
+                        background: #49c5b1;
+                        border-radius: 0.3rem;
+                    }
+                    label {
+                        color: #a1a5a8;
+                        width: 100%;
+                        display: block;
+                        text-align: center;
+                        position: absolute;
+                        font-size: 10px;
+                        font-weight: 100;
+                        bottom: -2em;
                     }
                 }
             }
-            .name {
-                position: relative;
-                bottom: 0px;
-                line-height: 14px;
-                font-size: 14px;
+            .year-all {
                 text-align: center;
+                strong {
+                    display: block;
+                    font-weight: 600;
+                    font-size: 1.4em;
+                }
+                span {
+                    color: #a1a5a8;
+                    font-size: 0.9em;
+                    font-weight: 300;
+                    text-transform: uppercase;
+                }
             }
         }
     }
+    /* FLIP CARD */
+    .card {
+        -webkit-perspective: 600px;
+           -moz-perspective: 600px;
+                perspective: 600px;
+    }
+    .card .front {
+        -webkit-transform: rotateX(0deg) rotateY(0deg);
+           -moz-transform: rotateX(0deg) rotateY(0deg);
+                transform: rotateX(0deg) rotateY(0deg);
+
+        -webkit-transform-style: preserve-3d;
+           -moz-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+
+        -webkit-backface-visibility: hidden;
+           -moz-backface-visibility: hidden;
+                backface-visibility: hidden;
+
+        /* -- transition is the magic sauce for animation -- */
+        -webkit-transition: all .4s ease-in-out;
+                transition: all .4s ease-in-out;
+    }
+    .card.flip .front {
+        z-index: 2;
+        border-color: #eee;
+        background: #333;
+
+        -webkit-transform: rotateY(180deg);
+           -moz-transform: rotateY(180deg);
+                transform: rotateY(180deg);
+    }
+    .card .back {
+        position: absolute;
+        top: 0px;
+        height: 100%;
+        width: 100%;
+        -webkit-transform: rotateY(-180deg);
+           -moz-transform: rotateY(-179deg); /* setting to 180 causes an unnatural-looking half-flip */
+                transform: rotateY(-179deg);
+
+        -webkit-transform-style: preserve-3d;
+           -moz-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+
+        -webkit-backface-visibility: hidden;
+           -moz-backface-visibility: hidden;
+                backface-visibility: hidden;
+
+        /* -- transition is the magic sauce for animation -- */
+        -webkit-transition: all .4s ease-in-out;
+                transition: all .4s ease-in-out;
+    }
+    .card.flip .back {
+        background: transparent;
+
+        -webkit-transform: rotateX(0deg) rotateY(0deg);
+           -moz-transform: rotateX(0deg) rotateY(0deg);
+                transform: rotateX(0deg) rotateY(0deg);
+        /*box-shadow: 0 15px 50px rgba(0,0,0,0.2);*/
+    }
+
+    .settings.panel {
+        .panel-body {
+            padding: 10px;
+        }
+    }
+
+
+    .app-cards-row {
+        -webkit-column-width: 18em;
+           -moz-column-width: 18em;
+                column-width: 18em;
+        -webkit-column-gap: 10px;
+           -moz-column-gap: 10px;
+                column-gap: 10px;
+        width: 100%;
+    }
+    @media screen and (max-width:480px) {
+        .app-cards-row {
+             -webkit-column-width: 100%;
+        }
+    }
+
+    @media screen and (min-width:481px) and (max-width:767px) {
+    }
+
+    @media screen and (min-width:768px) and (max-width:980px) {
+    }
+
+    @media screen and (min-width:1470px) {
+
+    }
+
+    .menu-category {
+        display: inline-block;
+        width:  100%;
+    }
+
 }
