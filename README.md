@@ -36,10 +36,8 @@ frontend/
   |  |  |- <reusable code>
   |  |- less/
   |  |  |- main.less
-  |- vendor/
-  |  |- angular-bootstrap/
-  |  |- bootstrap/
-  |  |- placeholders/
+  |- lib/
+  |  |- <bower libraries>/
   |- .bowerrc
   |- bower.json
   |- build.config.js
@@ -55,7 +53,7 @@ learn more.
 
 - `karma/` - test configuration.
 - `src/` - our application sources. [Read more &raquo;](src/README.md)
-- `vendor/` - third-party libraries. [Bower](http://bower.io) will install
+- `lib/` - third-party libraries. [Bower](http://bower.io) will install
   packages here. Anything added to this directory will need to be manually added
   to `build.config.js` and `karma/karma-unit.js` to be picked up by the build
   system.
