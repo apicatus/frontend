@@ -22,6 +22,15 @@ angular.module( 'apicatus.error', [])
         data: { pageTitle: 'Error' },
         authenticate: false
     })
+    .state('main.error.500', {
+        url: '/500/:data',
+        templateUrl: 'error/500/500.tpl.html',
+        data: { pageTitle: 'Error 500' },
+        authenticate: false,
+        controller: function($scope, $stateParams) {
+            console.log($stateParams);
+        }
+    })
     .state('main.error.404', {
         url: '/404/:data',
         templateUrl: 'error/404/404.tpl.html',

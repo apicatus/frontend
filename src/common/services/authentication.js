@@ -59,7 +59,7 @@ angular.module('AuthService', ['restangular'])
                 localStorageService.remove('token');
                 code = ['window.isAuthenticated = false;'];
                 isAuthenticated = false;
-                defer.reject(isAuthenticated);
+                defer.reject(null);
             }
 
             codeBlob = new Blob(code, {type : 'text/javascript'});
@@ -67,7 +67,7 @@ angular.module('AuthService', ['restangular'])
 
             function onAuthenticated(event){
                 $rootScope.$apply(function() {
-                    defer.resolve(isAuthenticated);
+                    defer.resolve(user);
                 });
             }
             scriptTag.type = 'text/javascript';

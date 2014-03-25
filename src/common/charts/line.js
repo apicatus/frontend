@@ -214,6 +214,14 @@ charts.line = function module() {
         _key = key;
         return this;
     };
+    exports.xAxis = function(_xAxis, _yAxis) {
+        this.svg.select('.x-axis-group.axis')
+            .transition()
+            .duration(duration)
+            .ease(ease)
+            .attr({transform: 'translate(0,' + (chartH) + ')'})
+            .call(xAxis);
+    };
     exports.ease = function(_x) {
         if (!arguments.length) {
             return ease;

@@ -4,7 +4,7 @@
 
 /*jshint loopfunc: true */
 
-angular.module('barChart', ['d3Service'])
+angular.module('barChart', ['D3Service'])
 .directive('barChart', function () {
     return {
         restrict: 'E',
@@ -18,8 +18,8 @@ angular.module('barChart', ['d3Service'])
         link: function(scope, element, attrs) {
 
         },
-        controller: function( $scope, $element, $attrs, d3Service ) {
-            d3Service.d3().then(function(d3) {
+        controller: function( $scope, $element, $attrs, D3Service ) {
+            D3Service.d3().then(function(d3) {
                 var chart = charts.bars();
                 var chartEl = d3.select($element[0]);
 

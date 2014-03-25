@@ -1,5 +1,6 @@
 
 angular.module( 'apicatus.application', [
+    'D3Service',
     'd3Service',
     'budgetDonut',
     'barChart',

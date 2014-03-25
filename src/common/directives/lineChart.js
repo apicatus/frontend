@@ -4,7 +4,7 @@
 
 /*jshint loopfunc: true */
 
-angular.module('lineChart', ['d3Service'])
+angular.module('lineChart', ['D3Service'])
 .directive('lineChart', function () {
     return {
         restrict: 'E',
@@ -16,8 +16,8 @@ angular.module('lineChart', ['d3Service'])
             key: '@',
             hovered: '&hovered'
         },
-        controller: function( $scope, $element, $attrs, d3Service ) {
-            d3Service.d3().then(function(d3) {
+        controller: function( $scope, $element, $attrs, D3Service ) {
+            D3Service.d3().then(function(d3) {
                 var chart = charts.line();
                 var chartEl = d3.select($element[0]);
 

@@ -36,11 +36,12 @@ angular.module( 'apicatus.login', [])
  * And of course we define a controller for our route.
  */
 .controller( 'LoginCtrl', function LoginController( $scope, $state, AuthService ) {
+    console.log("user in scope: ", $scope.user);
     $scope.submit = function () {
         $scope.processing = true;
         AuthService.authenticate($scope.username, $scope.password).then(function(result) {
-            $scope.isAuthenticated = result;
-            if($scope.isAuthenticated) {
+            $scope.$emit('userLoggedIn', angular.copy(result));
+            if($scope.user.token) {
                 // Get previous state (page that requested authentication)
                 var toState = AuthService.getState();
                 if(toState.name) {

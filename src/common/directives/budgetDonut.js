@@ -4,7 +4,7 @@
 
 /*jshint loopfunc: true */
 
-angular.module('budgetDonut', ['d3Service'])
+angular.module('budgetDonut', ['D3Service'])
 .directive('budgetDonut', function () {
     return {
         restrict: 'E',
@@ -15,8 +15,8 @@ angular.module('budgetDonut', ['d3Service'])
             competitors: '=',
             onClick: "&"
         },
-        controller: function( $scope, $element, $attrs, d3Service ) {
-            d3Service.d3().then(function(d3) {
+        controller: function( $scope, $element, $attrs, D3Service ) {
+            D3Service.d3().then(function(d3) {
                 var makeDonut = function(placeholder, width, height) {
                     ////////////////////////////////////////////////////////////////////////////
                     // Settings                                                               //

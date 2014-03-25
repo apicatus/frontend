@@ -236,7 +236,16 @@ nav {
                 }
             }
             /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
-
+            .open {
+                background-color: #111;
+                    a {
+                        background-color: #000;
+                        border: none;
+                    &:hover {
+                        background-color: #2f2f2f;
+                    }
+                }
+            }
             &>li.dropdown>ul.dropdown-menu {
                 position: relative;
                 min-width: @side-nav-width;
@@ -246,11 +255,11 @@ nav {
                 border-radius: 0;
                 background-color: transparent;
                 box-shadow: none;
-                box-shadow: none;
             }
             &>li.dropdown>ul.dropdown-menu>li>a {
                 color: #999999;
-                padding: 10px 15px 10px 25px;
+                line-height: 30px;
+                padding: 10px 15px 10px 50px;
                 &:hover,active,focus {
                     color: #fff;
                     background-color: #080808;
@@ -281,6 +290,10 @@ nav {
             li.close-menu {
                 height: @navbar-height;
                 width: @side-nav-width;
+                -webkit-transition: all 0.25s ease-in-out;
+                   -moz-transition: all 0.25s ease-in-out;
+                     -o-transition: all 0.25s ease-in-out;
+                        transition: all 0.25s ease-in-out;
                 button {
                     line-height: @navbar-height;
                     padding: 0px;
@@ -349,6 +362,11 @@ nav {
                    -moz-transform: scale(0,0);
                         transform: scale(0,0);
             }
+            .close-menu {
+                -webkit-transform: scale(1,1);
+                   -moz-transform: scale(1,1);
+                        transform: scale(1,1);
+            }
         }
         &:not(.open) {
             .side-nav {
@@ -359,6 +377,11 @@ nav {
                 -webkit-transform: scale(1,1);
                    -moz-transform: scale(1,1);
                         transform: scale(1,1);
+            }
+            .close-menu {
+                -webkit-transform: scale(0,0);
+                   -moz-transform: scale(0,0);
+                        transform: scale(0,0);
             }
         }
     }

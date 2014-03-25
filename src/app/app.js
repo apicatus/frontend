@@ -56,6 +56,9 @@ angular.module( 'apicatus', [
             case 404:
                 $state.transitionTo("main.error.404", {data: "response.data"});
                 break;
+            case 500:
+                $state.transitionTo("main.error.500", {data: "response.data"});
+                break;
         }
         return response;
     });
@@ -79,6 +82,12 @@ angular.module( 'apicatus', [
         });
     }
 
+    $scope.$on('userLoggedIn', function(event, user){
+        $scope.user = user;
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+    // User settings
     $scope.settings = localStorageService.get('settings') || {};
     $scope.$watch('settings', function(newVal, oldVal){
         console.log("settings changed: ", $scope.settings);

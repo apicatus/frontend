@@ -2,7 +2,8 @@
 /*jshint newcap: false */
 
 angular.module( 'apicatus.applications', [
-    'd3Service',
+    'D3Service',
+    'worldMap',
     'budgetDonut',
     'barChart',
     'lineChart'
@@ -142,10 +143,10 @@ angular.module( 'apicatus.applications', [
 })
 .controller( 'ApplicationCtrl', function ApplicationController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings, ngTableParams ) {
     $scope.httpSettings = httpSettings.settings();
-
-    $scope.getDate = function() {return new Date();};
     $scope.applications = Restangular.one('digestors', $stateParams.id).get().then(function(digestor) {
         $scope.api = digestor;
+        $scope.apiModel = JSON.stringify(angular.copy($scope.api), null, 4);
+        // If empty fill out
         if(!$scope.api.endpoints) {
             $scope.api.endpoints = [];
             return;
@@ -302,7 +303,31 @@ angular.module( 'apicatus.applications', [
     $scope.deleteMethod = function(methods, $index) {
         methods.splice($index, 1);
     };
+    $scope.header = {};
+    $scope.addHeader = function(method, header, scope) {
+        console.log("addHeader", header);
+        console.log("addHeader");
+        if(!method.response.headers) {
+            method.response.headers = [];
+        }
+        var indexes = method.response.headers.map(function(obj, index) {
+            if(obj.name == header.name) {
+                return index;
+            }
+        }).filter(isFinite)[0];
+        console.log("index", indexes);
+        if(angular.equals({}, header) || _.findIndex(method.response.headers, {name: header.name}) >= 0) {
+            return false;
+        }
+        method.response.headers.push(angular.copy(header));
+        $scope.header = {};
+        //$scope.api.put();*/
+    };
 
+    $scope.removeHeader = function(method, header, $index) {
+        _.uniq([{ 'x': 1 }, { 'x': 2 }, { 'x': 1 }], 'x');
+        method.response.headers.splice($index, 1);
+    };
     // API Demo
     $scope.createDemo = function(method) {
         // Create simple demo to test the endpoint
@@ -312,31 +337,28 @@ angular.module( 'apicatus.applications', [
             url: serviceUrl.protocol + "://" + $scope.api.name + "." + serviceUrl.host + ":" + serviceUrl.port + method.URI,
             data: {}
         };
-        method.demo = "$.ajax(" + JSON.stringify(options) + ")\n.then(function(r){\n\tconsole.log(r);\n});";
+        method.demo = "$.ajax(" + JSON.stringify(options) + ")\n.then(function(r){\n\tdocument.getElementById('output').innerText = r;\n});";
     };
     $scope.demo = function(demo) {
         var result = eval(demo);
     };
+
     // The modes
-    $scope.modes = ['Scheme', 'XML', 'Javascript'];
-    $scope.mode = $scope.modes[0];
-
-    $scope.aceLoaded = function(_editor) {
-        console.log("ace loaded: ", _editor);
-        window.ace = _editor;
-    };
-
-    // The ui-ace option
-    $scope.aceOption = {
-        mode: $scope.mode.toLowerCase(),
-        onLoad: function (_ace) {
-            console.log("ace loaded: ", _ace);
-            window.ace = _ace;
-            _ace.getSession().setMode('ace/mode/javascript');
-            // HACK to have the ace instance in the scope...
-            $scope.modeChanged = function () {
-                _ace.getSession().setMode('ace/mode/' + $scope.mode.toLowerCase());
-            };
+    $scope.editor = {
+        modes: ['Scheme', 'XML', 'Javascript'],
+        options: {
+            mode: 'json',
+            theme: 'monokai',
+            onLoad: function (_ace) {
+                console.log("ace loaded: ", _ace);
+                window.ace = _ace;
+                _ace.getSession().setMode('ace/mode/javascript');
+                _ace.getSession().setUseWorker(false);
+                // HACK to have the ace instance in the scope...
+                $scope.modeChanged = function () {
+                    _ace.getSession().setMode('ace/mode/' + $scope.mode.toLowerCase());
+                };
+            }
         }
     };
 })

@@ -46,7 +46,6 @@ html, body {
     }
     .page-wrapper {
         padding-top: @navbar-height + 10;
-        overflow-x: hidden;
     }
 
     .messages-dropdown .dropdown-menu {
@@ -59,11 +58,12 @@ html, body {
 }
 
 
-textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {
-border-color: #2c8b7c;
+/*textarea:focus, button:focus, select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {
+border-color: darken(@brand-primary, 10%);
+box-shadow: none;
 box-shadow: 0 1px 1px rgba(98, 124, 148, 0.15) inset, 0 0 8px #37ae9b;
 outline: 0 none;
-}
+}*/
 
 /* MODALS */
 /* NAVBAR STYLES */
@@ -116,8 +116,10 @@ outline: 0 none;
                 transition-timing-function: cubic-bezier(.3, 1.5, .6, 1);
     }
     .icon {
+        position: absolute;
+        font-size: 1em;
+        right: 16px;
         padding: 7px;
-        opacity: 0.35;
     }
     input {
         position: absolute;
@@ -133,6 +135,19 @@ outline: 0 none;
             & ~ .icon {
                 color: @brand-primary;
                 opacity: 1;
+            }
+        }
+    }
+}
+
+/* TABS */
+.nav-tabs {
+    li {
+        a {
+            cursor: pointer;
+            color: lighten(@gray, 20%);
+            &:hover {
+                color: @gray;
             }
         }
     }

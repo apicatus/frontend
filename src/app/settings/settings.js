@@ -37,7 +37,10 @@ angular.module( 'apicatus.settings', [])
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'SettingsCtrl', function SettingsController( $scope ) {
-    console.log("SettingsCtrl", $scope);
+.controller( 'SettingsCtrl', function SettingsController( $scope, $modal, Restangular  ) {
+    var baseDigestors = Restangular.all('digestors');
+    $scope.applications = Restangular.one('digestors').getList().then(function(digestors) {
+        $scope.apis = digestors;
+    });
 });
 
