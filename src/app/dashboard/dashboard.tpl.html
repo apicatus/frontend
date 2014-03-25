@@ -1,0 +1,29 @@
+<dashboard>
+    <div class="row">
+        <div class="col-md-12 resource-group">
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa icon-network"></i> APIS <span class="fa fa-angle-down"></span></button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li ng-repeat="api in apis"><a href=""><i class="icon-api"></i> {{api.name}}</a></li>
+                            <li class="divider"></li>
+                            <li><a href=""><i class="icon-network"></i> Full summary</a></li>
+                        </ul>
+                    </div>
+                    <button type="button" class="btn btn-default" ng-click="newApi()">
+                        <i class="icon-stats"></i> Stats
+                    </button>
+                    <button type="button" class="btn btn-default">
+                        <i class="fa fa-cloud-upload"></i> Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <img src="http://blog.programmableweb.com/wp-content/google-analytics-sm.png" />
+        </div>
+    </div>
+</dashboard>

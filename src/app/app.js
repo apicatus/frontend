@@ -6,6 +6,7 @@ angular.module( 'apicatus', [
     'apicatus.login',
     'apicatus.applications',
     'apicatus.application',
+    'apicatus.dashboard',
     'apicatus.settings',
     'apicatus.error',
     'AuthService',
