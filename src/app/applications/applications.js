@@ -255,12 +255,11 @@ angular.module( 'apicatus.applications', [
                 endpoint.methods = [];
                 console.log("modal ok: ", endpoint);
                 $scope.api.endpoints.push(endpoint);
-                $scope.api.put();
-                /*$scope.api.put().then(function(result) {
-                    $scope.api.endpoints.push(result);
+                //$scope.api.put();
+                $scope.api.put().then(function(result) {
                 }, function(error) {
-
-                });*/
+                    $scope.api.endpoints.pop();
+                });
             },
             function () {
                 console.info('Modal dismissed at: ' + new Date());
