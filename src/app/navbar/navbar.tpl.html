@@ -9,7 +9,8 @@
 </div>
 <ul class="collapse navbar-collapse navbar-ex1-collapse nav navbar-nav navbar-right navbar-user">
     <li ng-show="user" class="dropdown user-dropdown">
-        <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown" ng-model="user">{{user.username}} <i class="arrow fa fa-angle-right fa-rotate-90"></i> <img ng-src="{{user.avatar || 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'}}"/> <span class="inbox-alert badge bk-red">2</span></a>
+        <!-- a href="#" class="dropdown-toggle avatar" data-toggle="dropdown" ng-model="user">{{user.username}} <i class="arrow fa fa-angle-right fa-rotate-90"></i> <img ng-src="{{user.avatar || 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'}}"/> <span class="inbox-alert badge bk-red">2</span></a -->
+        <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown" ng-model="user">{{user.username}} <i class="arrow fa fa-angle-right fa-rotate-90"></i> <gravatar-image data-gravatar-email="user.email" data-gravatar-size="120" data-gravatar-rating="pg" data-gravatar-default="identicon" data-gravatar-secure="true"></gravatar-image><span class="inbox-alert badge bk-red">2</span></a>
         <ul class="dropdown-menu">
             <!-- li role="presentation" class="dropdown-header">Projects</li -->
             <li role="menuitem" ng-repeat="project in projects" class="project" ng-class="{active: project.isActive}"><a href=""><i class="fa fa-fw" ng-class="project.isActive ? 'fa-dot-circle-o':'fa-circle-o'"></i> {{project.name}}</a></li>

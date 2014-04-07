@@ -162,7 +162,7 @@ angular.module( 'apicatus.applications', [
                 console.log("file:", $scope.apiModel.file);
                 fileReader.readAsText($scope.apiModel.file, $scope)
                 .then(function(result) {
-                    console.log(result);
+                    //console.log(result);
                     //$scope.imageSrc = result;
                     $scope.apiModel.processing = true;
                     Restangular.one('import').customPOST({format: 'blueprint', model: result}, 'test').then(function (result) {
@@ -190,11 +190,18 @@ angular.module( 'apicatus.applications', [
                 console.log("modal ok: ", apiModel);
                 fileReader.readAsText(apiModel.file, $scope)
                 .then(function(result) {
-                    console.log(result);
+                    //console.log(result);
                     //$scope.imageSrc = result;
                     Restangular.one('import').customPOST({blueprint: result}, 'blueprint').then(function (result) {
                         console.log(result);
-                        $scope.apiModel.name = result.name;
+                        //$scope.apiModel.name = result.name;
+                        //$scope.apis.push(result);
+                        baseDigestors.post(result).then(function(result){
+                            $scope.apis.push(result);
+                        }, function(error) {
+                            alert(JSON.stringify(error, null, 4));
+                        });
+
                     }, function(error) {
                     });
                 });

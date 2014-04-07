@@ -79,6 +79,7 @@ module.exports = {
       'lib/ace-builds/src-min-noconflict/worker-json.js',
       'lib/ace-builds/src-min-noconflict/theme-monokai.js',
       'lib//angular-ui-ace/ui-ace.js',
+      'lib/angularjs-gravatardirective/dist/angularjs-gravatardirective.js',
       'lib/angular-translate/angular-translate.js',
       'lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'lib/bootstrap/js/affix.js',

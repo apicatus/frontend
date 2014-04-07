@@ -21,7 +21,8 @@ angular.module( 'apicatus', [
     'ui.ace',
     'ngTable',
     'parseURL',
-    'httpSettings'
+    'httpSettings',
+    'angularjs-gravatardirective'
 ])
 
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider, $translateProvider, RestangularProvider, localStorageServiceProvider ) {

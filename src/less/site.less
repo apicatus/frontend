@@ -22,6 +22,7 @@ html, body {
     max-width: 980px;
     margin: 0 auto;
     padding: 5px 15px;
+    padding-top: @navbar-height + 10;
 }
 .wrapper {
   /*background-image: url('images/background.jpg') !important;*/
@@ -44,10 +45,6 @@ html, body {
             }
         }
     }
-    .page-wrapper {
-        padding-top: @navbar-height + 10;
-    }
-
     .messages-dropdown .dropdown-menu {
         min-width: 300px;
     }
@@ -132,6 +129,7 @@ outline: 0 none;
         outline: none;
         box-shadow: none !important;
         border-radius: 4px !important;
+        min-width: 120px;
 
         &:focus {
             color: @gray-dark;
