@@ -6,7 +6,10 @@ angular.module( 'apicatus.applications', [
     'worldMap',
     'budgetDonut',
     'barChart',
-    'lineChart'
+    'lineChart',
+    'fileReader',
+    'fileInput',
+    'fileDrop'
 ])
 
 /**
@@ -47,7 +50,7 @@ angular.module( 'apicatus.applications', [
 })
 
 // Applications controller
-.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $modal, Restangular ) {
+.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $modal, fileReader, Restangular ) {
 
     var baseDigestors = Restangular.all('digestors');
 
@@ -106,7 +109,6 @@ angular.module( 'apicatus.applications', [
                 console.info('Modal dismissed at: ' + new Date());
         });
     };
-
     // Please note that $modalInstance represents a modal window (instance) dependency.
     // It is not the same as the $modal service used above.
     var newApiModalCtrl = function ($scope, $modalInstance, apis) {
@@ -140,8 +142,69 @@ angular.module( 'apicatus.applications', [
             type: "REST"
         });
     };
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Endpoints [ Create, Read, Update, Delete ]                             //
+    ////////////////////////////////////////////////////////////////////////////
+    $scope.import = function () {
+        // Please note that $modalInstance represents a modal window (instance) dependency.
+        // It is not the same as the $modal service used above.
+        var modalCtl = function ($scope, $modalInstance, apiModel) {
+            console.log("aqui hay controler");
+            $scope.apiModel = {};
+            $scope.submit = function () {
+                $modalInstance.close($scope.apiModel);
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+            $scope.readFile = function () {
+                console.log("file:", $scope.apiModel.file);
+                fileReader.readAsText($scope.apiModel.file, $scope)
+                .then(function(result) {
+                    console.log(result);
+                    //$scope.imageSrc = result;
+                    $scope.apiModel.processing = true;
+                    Restangular.one('import').customPOST({format: 'blueprint', model: result}, 'test').then(function (result) {
+                        console.log(result);
+                        $scope.apiModel.processing = false;
+                        $scope.apiModel.name = result.name;
+                    }, function(error) {
+                    });
+                });
+            };
+
+        };
+        var modalInstance = $modal.open({
+            templateUrl: 'import_modal.html',
+            controller: modalCtl,
+            windowClass: '',
+            resolve: {
+                apiModel: function () {
+                    return $scope.apiModel;
+                }
+            }
+        });
+        modalInstance.result.then(
+            function (apiModel) {
+                console.log("modal ok: ", apiModel);
+                fileReader.readAsText(apiModel.file, $scope)
+                .then(function(result) {
+                    console.log(result);
+                    //$scope.imageSrc = result;
+                    Restangular.one('import').customPOST({blueprint: result}, 'blueprint').then(function (result) {
+                        console.log(result);
+                        $scope.apiModel.name = result.name;
+                    }, function(error) {
+                    });
+                });
+            },
+            function () {
+                console.info('Modal dismissed at: ' + new Date());
+        });
+    };
 })
-.controller( 'ApplicationCtrl', function ApplicationController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings, ngTableParams ) {
+/*.controller( 'ApplicationCtrl', function ApplicationController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings, ngTableParams ) {
     $scope.httpSettings = httpSettings.settings();
     $scope.applications = Restangular.one('digestors', $stateParams.id).get().then(function(digestor) {
         $scope.api = digestor;
@@ -186,18 +249,6 @@ angular.module( 'apicatus.applications', [
                     }
                 });
             }
-            /*$scope.api.map(function(api) {
-                var digestorLogs = _.filter($scope.logs, {'digestor': api._id });
-                if(digestorLogs.length <= 0) {
-                    return;
-                }
-                digestorLogs = _.sortBy(digestorLogs, 'date');
-                var mean = 1;
-                //d3.mean(digestorLogs, function(d) { return d.time; });
-                api.meanTime = parseInt(mean, 10);
-                api.lastAccess = moment(digestorLogs[digestorLogs.length-1].date).fromNow();
-                api.logs = angular.copy(digestorLogs);
-            });*/
         });
     });
 
@@ -320,7 +371,7 @@ angular.module( 'apicatus.applications', [
         }
         method.response.headers.push(angular.copy(header));
         $scope.header = {};
-        //$scope.api.put();*/
+        //$scope.api.put();
     };
 
     $scope.removeHeader = function(method, header, $index) {
@@ -336,7 +387,7 @@ angular.module( 'apicatus.applications', [
             url: serviceUrl.protocol + "://" + $scope.api.name + "." + serviceUrl.host + ":" + serviceUrl.port + method.URI,
             data: {}
         };
-        method.demo = "$.ajax(" + JSON.stringify(options) + ")\n.then(function(r){\n\tdocument.getElementById('output').innerText = r;\n});";
+        method.demo = "$.ajax(" + JSON.stringify(options) + ")\n.then(function(response){\n\talert(response);\n});";
     };
     $scope.demo = function(demo) {
         var result = eval(demo);
@@ -368,5 +419,5 @@ angular.module( 'apicatus.applications', [
         start = +start; //parse to int
         return input.slice(start);
     };
-});
+})*/;
 

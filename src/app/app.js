@@ -96,18 +96,6 @@ angular.module( 'apicatus', [
         localStorageService.add('settings', newVal);
     }, true);
 
-    $scope.account = {
-        username: "Marty Macfly",
-        email: "jwoods@ananke.com",
-        avatar: "https://pbs.twimg.com/profile_images/1234618042/MartyMcfly.jpg",
-        firstName: "James",
-        lastName: "Woods",
-        phone: "555-555-555",
-        address: "bonpland",
-        zip: 4336,
-        city: "Buenos Aires",
-        timezone: "AGT"
-    };
     // authenticate
     //$scope.user = Restangular.one('user').customPOST({username: "admin", password: "admin"}, 'signin');
     // Restangular returns promises

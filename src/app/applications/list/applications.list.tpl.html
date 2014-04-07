@@ -6,7 +6,7 @@
                     <button type="button" class="btn btn-default" ng-click="newApi()">
                         <i class="icon-network"></i> New API
                     </button>
-                    <button type="button" class="btn btn-default">
+                    <button type="button" class="btn btn-default" ng-click="import()">
                         <i class="fa fa-cloud-upload"></i> Import
                     </button>
                     <div class="btn-group">
@@ -166,13 +166,76 @@
             <h4 class="modal-title"><i class="icon-network"></i> {{ 'APPLICATIONS.NEWAPI.TITLE' | translate }}</h4>
         </div>
         <div class="modal-body">
+
             <div class="form-group">
                 <label for="name">{{ 'APPLICATIONS.NEWAPI.NAME' | translate }}</label>
-                <input type="text" class="form-control" id="name" placeholder="{{ 'APPLICATIONS.NEWAPI.NAME' | translate }}" required ng-required="true" ng-model="api.name">
+                <div>
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <input type="text" id="name" class="form-control" placeholder="{{ 'APPLICATIONS.NEWAPI.NAME' | translate }}" required ng-required="true" ng-model="api.name" />
+                            <span class="help-block" ng-show="form.headerName.$error.required">Required</span>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input type="checkbox" ng-model="method.proxy.enabled">
+                                </span>
+                                <input type="url" id="proxy" class="form-control" ng-model="method.proxy.URI" placeholder="Version" ng-disabled="!method.proxy.enabled" ng-required="method.proxy.enabled">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-repeat="header in method.response.headers">
+                        <div class="col-xs-4">
+                            <input type="text" class="form-control" placeholder="Key" ng-model="header.name">
+                        </div>
+                        <div class="col-xs-6">
+                            <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
+                        </div>
+                        <div class="col-xs-2">
+                            <div class="btn-group pull-right">
+                                <button type="button" class="btn btn-danger" ng-click="removeHeader(method, header, $index)"><i class="fa fa-trash-o"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="synopsis">{{ 'APPLICATIONS.NEWAPI.SYNOPSIS' | translate }}</label>
+                <textarea id="synopsis" name="synopsis" class="form-control" rows="3" placeholder="{{ 'APPLICATIONS.NEWAPI.SYNOPSIS' | translate }}" ng-model="apiModel.synopsis"></textarea>
             </div>
             <div class="form-group">
                 <label for="domain">{{ 'APPLICATIONS.NEWAPI.DOMAIN' | translate }}</label>
                 <input type="text" class="form-control" id="domain" placeholder="{{ 'APPLICATIONS.NEWAPI.DOMAIN' | translate }}" ng-model="api.domain">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">{{ 'OK' | translate }}</button>
+            <button type="button" class="btn btn-danger" ng-click="cancel()">{{ 'CANCEL' | translate }}</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="import_modal.html">
+    <form role="form" ng-model="apiModel" ng-submit="submit()">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()"><i class="icon-close"></i></button>
+            <h4 class="modal-title"><i class="icon-network"></i> {{ 'APPLICATIONS.IMPORTAPI.TITLE' | translate }}</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="file">{{ 'APPLICATIONS.NEWAPI.MODEL' | translate }}</label>
+                <section file-drop="apiModel.file" id="drop_zone" class="drop-zone" on-drop="readFile()">
+                    <p class="drop-legend">
+                        <span>Drop your files here or <button class="btn btn-success" style="position:relative"><i ng-show="apiModel.processing" class="fa fa-spinner fa-spin"></i>
+                                Browse<input type="file" file-input="apiModel.file" name="file" class="file" accept=".md" on-change="readFile()" />
+                            </button></span>
+                        <br/>
+                    </p>
+                </section>
+            </div>
+            <div class="form-group">
+                <label for="name">{{ 'APPLICATIONS.NEWAPI.NAME' | translate }}</label>
+                <input type="text" class="form-control" id="name" placeholder="{{ 'APPLICATIONS.NEWAPI.NAME' | translate }}" ng-model="apiModel.name">
             </div>
         </div>
         <div class="modal-footer">
