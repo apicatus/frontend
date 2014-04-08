@@ -82,7 +82,8 @@ angular.module( 'apicatus.application', [
         var modalCtl = function ($scope, $modalInstance, endpoint) {
             console.log("aqui hay controler");
             $scope.endpoint = {
-                name: ""
+                name: '',
+                synopsis: ''
             };
             $scope.ok = function() {
                 console.log("ok:", endpoint);

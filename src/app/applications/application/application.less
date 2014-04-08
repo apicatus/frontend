@@ -6,6 +6,7 @@
 @METHOD-OPTIONS-COLOR: #9C1ACA;
 @METHOD-HEAD-COLOR: #3BD9EC;
 @METHOD-CONNECT-COLOR: #A9304F;
+@METHOD-PATCH-COLOR: #E7CA29;
 
 application {
     .page-header {
@@ -29,6 +30,10 @@ application {
             i.edit {
                 font-size: 1em;
             }
+        }
+        .synopsis {
+            color: @gray-light;
+            font-size: 1em;
         }
     }
     accordion {
@@ -73,6 +78,12 @@ application {
                 border-color: darken(@METHOD-CONNECT-COLOR, 15%);
                 .panel-heading + .panel-collapse .panel-body {
                     border-top: 1px solid darken(@METHOD-CONNECT-COLOR, 15%);
+                }
+            }
+            &.PATCH {
+                border-color: darken(@METHOD-PATCH-COLOR, 15%);
+                .panel-heading + .panel-collapse .panel-body {
+                    border-top: 1px solid darken(@METHOD-PATCH-COLOR, 15%);
                 }
             }
         }
@@ -142,6 +153,12 @@ application {
                     border-right-color: darken(@METHOD-CONNECT-COLOR, 15%);
                     border-right-style: solid;
                     text-shadow: 1px 1px darken(@METHOD-CONNECT-COLOR, 25%);
+                }
+                &.PATCH {
+                    background-color: @METHOD-PATCH-COLOR;
+                    border-right-color: darken(@METHOD-PATCH-COLOR, 15%);
+                    border-right-style: solid;
+                    text-shadow: 1px 1px darken(@METHOD-PATCH-COLOR, 25%);
                 }
             }
             span.trigger-collapse {
