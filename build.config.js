@@ -70,6 +70,7 @@ module.exports = {
       'lib/ng-table/ng-table.js',
       'lib/restangular/dist/restangular.js',
       'lib/angular-local-storage/angular-local-storage.js',
+      'lib/angular-cookies/angular-cookies.js',
       'lib/momentjs/moment.js',
       'lib/lodash/dist/lodash.js',
       'lib/ace-builds/src-min-noconflict/ace.js',

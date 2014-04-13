@@ -16,7 +16,10 @@
     "angular-translate": "~2.0",
     "angular-translate-loader-static-files": "~2.0",
     "ng-table": "~0.3",
-    "angularjs-gravatardirective": "~1.3"
+    "angularjs-gravatardirective": "~1.3",
+    "angular-cookies": "~1.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "angular-cookies": "~1.2"
+  }
 }

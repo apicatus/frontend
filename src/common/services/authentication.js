@@ -7,7 +7,7 @@ angular.module('AuthService', ['restangular'])
 .config(function AuthServiceConfig (RestangularProvider) {
     //console.log(RestangularProvider);
 })
-.factory('AuthService', ['$document', '$q', '$rootScope', 'Restangular', 'localStorageService', function($document, $q, $rootScope, Restangular, localStorageService) {
+.factory('AuthService', ['$document', '$q', '$rootScope', 'Restangular', 'localStorageService', '$cookies', function($document, $q, $rootScope, Restangular, localStorageService) {
     var isAuthenticated = false;
     var appState = {};  // holds the state of the app
 
@@ -39,10 +39,14 @@ angular.module('AuthService', ['restangular'])
         var code = [];
 
         var token = localStorageService.get('token');
-        if(token){
-                localStorageService.add('token', token.token);
-                Restangular.configuration.defaultHeaders.token = token.token;
-                isAuthenticated = true;
+        if(token) {
+            localStorageService.add('token', token.token);
+            Restangular.configuration.defaultHeaders.token = token.token;
+            isAuthenticated = true;
+        } else if ($cookies.token) {
+            token = unescape($cookies.token);
+            Restangular.configuration.defaultHeaders.token = token;
+            isAuthenticated = true;
         }
         Restangular.one('user').customPOST({username: user, password: pass}, 'signin').then(function (user) {
 
@@ -94,6 +98,10 @@ angular.module('AuthService', ['restangular'])
     function checkAuthenticated() {
         var token = localStorageService.get('token');
         if(token) {
+            isAuthenticated = true;
+            return true;
+        } else if ($cookies.token) {
+            token = unescape($cookies.token);
             isAuthenticated = true;
             return true;
         } else {

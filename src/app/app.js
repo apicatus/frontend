@@ -17,6 +17,7 @@ angular.module( 'apicatus', [
     'ui.router',
     'ui.utils',
     'LocalStorageModule',
+    'ngCookies',
     'pascalprecht.translate',
     'ui.ace',
     'ngTable',
@@ -75,12 +76,27 @@ angular.module( 'apicatus', [
     });
 })
 
-.controller( 'AppCtrl', function AppCtrl ( $scope, $location, localStorageService, Restangular ) {
+.controller( 'AppCtrl', function AppCtrl ( $scope, $location, localStorageService, $cookies, Restangular ) {
     var token = localStorageService.get('token');
-    if(token){
-        Restangular.configuration.defaultHeaders.token = token.token;
+    if(token) {
+        console.log("I got a local storage token", token);
+        Restangular.configuration.defaultHeaders.token = token;
         Restangular.one('user').get().then(function(user) {
             $scope.user = user;
+        }, function(error) {
+            console.log("could not authenticate user");
+            localStorageService.remove('token');
+        });
+    } else if ($cookies.token) {
+        token = unescape($cookies.token);
+        console.log("I got a cookie token", token);
+        Restangular.configuration.defaultHeaders.token = token;
+        Restangular.one('user').get().then(function(user) {
+            localStorageService.add('token', token);
+            $scope.user = user;
+        }, function(error) {
+            console.log("could not authenticate user");
+            $cookies.token = undefined;
         });
     }
 

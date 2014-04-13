@@ -96,6 +96,9 @@ nav {
             a {
                 background-color: #000;
                 color: #fff;
+                &:hover, &:focus {
+                    background-color: #000;
+                }
             }
         }
         a.avatar {
@@ -238,12 +241,9 @@ nav {
             /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
             .open {
                 background-color: #111;
-                    a {
-                        background-color: #000;
-                        border: none;
-                    &:hover {
-                        background-color: #2f2f2f;
-                    }
+                a {
+                    background-color: #000;
+                    border: none;
                 }
             }
             &>li.dropdown>ul.dropdown-menu {
@@ -353,6 +353,11 @@ nav {
 @media (min-width:768px) {
     body {
         &.open {
+            a {
+                &:hover, &:focus {
+                    background-color: #000;
+                }
+            }
             .side-nav {
                 left: @side-nav-width;
             }
