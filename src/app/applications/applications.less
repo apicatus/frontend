@@ -325,6 +325,7 @@ applications {
 
         /* -- transition is the magic sauce for animation -- */
         -webkit-transition: all .4s ease-in-out;
+           -moz-transition: all .4s ease-in-out;
                 transition: all .4s ease-in-out;
     }
     .card.flip .back {
@@ -354,7 +355,9 @@ applications {
     }
     @media screen and (max-width:480px) {
         .app-cards-row {
-             -webkit-column-width: 100%;
+            -webkit-column-width: 100%;
+               -mox-column-width: 100%;
+                    column-width: 100%;
         }
     }
 

@@ -24,3 +24,29 @@ dashboard {
         background-color: #000;
     }
 }
+
+world-map {
+    display: block;
+    width: 100%;
+    height: 320px;
+    background-color: transparent;
+    .country {
+        fill: @brand-primary;
+        &:hover {
+            stroke: darken(@brand-primary, 10%);
+            stroke-width: 0.5px;
+            fill: lighten(@brand-primary, 10%)
+        }
+    }
+    .point {
+        fill: @gray;
+    }
+    .text {
+        fill: @gray;
+    }
+    .night {
+        stroke: steelblue;
+        fill: steelblue;
+        fill-opacity: .3;
+    }
+}

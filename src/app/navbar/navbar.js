@@ -26,7 +26,7 @@ angular.module( 'apicatus.navbar', [
         element.bind("click", function () {
             console.log("click", element);
             scope.sideBarOpened = !scope.sideBarOpened;
-            document.body.classList.toggle('open');
+            document.body.classList.toggle('opened');
             $(window).trigger('resize');
         });
     };

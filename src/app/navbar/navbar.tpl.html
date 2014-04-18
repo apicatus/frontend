@@ -29,10 +29,10 @@
             <li><a ui-sref="main.applications.list"><i class="icon-network"></i> {{ 'SIDEBAR.APIS' | translate }}</a></li>
             <li class="dropdown">
                 <a ui-sref="main.dashboard" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-dashboard"></i> {{ 'SIDEBAR.INSPECTOR' | translate }} <b class="fa fa-angle-down"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#"><i class="fa fa-signal fa-fw"></i> Traffic</a></li>
-                    <li><a href="#"><i class="fa fa-globe fa-fw"></i> Demographics</a></li>
-                    <li><a href="#"><i class="fa fa-random fa-fw"></i> Content</a></li>
+                <ul class="dropdown-menu" role="menu"  aria-labelledby="dropdownMenu2">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-signal fa-fw"></i> Traffic</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-globe fa-fw"></i> Demographics</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-random fa-fw"></i> Content</a></li>
                 </ul>
             </li>
             <li class="divider"></li>

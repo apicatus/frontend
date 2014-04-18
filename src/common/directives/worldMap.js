@@ -22,8 +22,8 @@ angular.module('worldMap', ['D3Service', 'ProjectionService', 'TopoJsonService']
                 var worldmap = charts.worldmap();
                 var el = d3.select($element[0]);
 
-                var width = $element[0].parentElement.clientWidth;
-                var height = $element[0].parentElement.clientHeight;
+                var width = $($element[0].parentElement).width();
+                var height = $($element[0].parentElement).height();
                 worldmap.height(height);
                 worldmap.width(width);
 

@@ -13,7 +13,13 @@
  * specified, as shown below.
  */
 
-angular.module( 'apicatus.dashboard', [])
+angular.module( 'apicatus.dashboard', [
+    'D3Service',
+    'worldMap',
+    'budgetDonut',
+    'barChart',
+    'lineChart'
+])
 
 /**
  * Each section or module of the site can also have its own routes. AngularJS

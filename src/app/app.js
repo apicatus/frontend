@@ -70,6 +70,7 @@ angular.module( 'apicatus', [
             console.log("user isn't authenticated");
             AuthService.saveState(toState);
             // User isn’t authenticated
+            //$state.transitionTo("main.login");
             $state.transitionTo("main.login");
             event.preventDefault();
         }
