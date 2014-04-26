@@ -1,0 +1,75 @@
+<technology>
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-red">
+                <div class="content">
+                    <h1 class="text-left">1800</h1>
+                    <p>Mobile Sessions</p>
+                </div>
+                <div class="icon"><i class="fa fa-mobile"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-blue">
+                <div class="content">
+                    <h1 class="text-left timer" data-from="0" data-to="56" data-speed="2500">56</h1>
+                    <p>Tablet Sessions</p>
+                </div>
+                <div class="icon"><i class="fa fa-tablet"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-purple">
+                <div class="content">
+                    <h1 class="text-left timer" data-from="0" data-to="56" data-speed="2500">56</h1>
+                    <p>Desktop Sessions</p>
+                </div>
+                <div class="icon"><i class="fa fa-desktop"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Explorer</h3>
+                </div>
+                <div class="panel-body">
+                    <!-- world-map data="[1,2,3,4,5,6]"></world-map -->
+                    <div google-chart chart="widgets[0].chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Technology overview</div>
+                    <table class="table table-bordered table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Device</th>
+                                <th>Browser</th>
+                                <th>Sessions</th>
+                                <th>Avg. Session Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="platform in platforms">
+                                <td>{{platform.ua.device.type || 'desktop'}}</td>
+                                <td>{{platform.ua.browser.name}}</td>
+                                <td>{{platform.total}}</td>
+                                <td><progressbar class="progress-striped" max="totalSessions" value="geo[1]" type="warning"></progressbar></td>
+                                <td>{{geo[2]}}ms</td>
+                                <td>{{geo[3]}}ms</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</technology>

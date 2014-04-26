@@ -1,0 +1,150 @@
+<traffic>
+    <!-- div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="metric-tile tile-default" >
+                <div class="content">
+                    <h1 class="metric">180</h1>
+                    <h2 class="description">Avg Response Time</h2>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-users"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="metric-tile tile-default" >
+                <div class="content">
+                    <h1 class="metric">180</h1>
+                    <h2 class="description">Avg Response Time</h2>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-users"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="metric-tile tile-default" >
+                <div class="content">
+                    <h1 class="metric">180</h1>
+                    <h2 class="description">Avg Response Time</h2>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-users"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="metric-tile tile-default" >
+                <div class="content">
+                    <h1 class="metric">180</h1>
+                    <h2 class="description">Avg Response Time</h2>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-users"></i>
+                </div>
+            </div>
+        </div>
+    </div -->
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-red">
+                <div class="content">
+                    <h1 class="text-left timer">180</h1>
+                    <p>Avg Response Time</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-users"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-turquoise">
+                <div class="content">
+                    <h1 class="text-left timer">56</h1>
+                    <p>Max Response Time</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-comments"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-blue">
+                <div class="content">
+                    <h1 class="text-left timer">32</h1>
+                    <p>Network Request</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa fa-envelope"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-purple">
+                <div class="content">
+                    <h1 class="text-left timer">105</h1>
+                    <p>Network Errors</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-bar-chart-o"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Total bytes transferred</h3>
+                </div>
+                <div class="panel-body">
+                    <div google-chart chart="widgets[2].chart"></div>
+                </div>
+                <!-- div class="panel-footer">
+                    <span class="label label-primary">ColumnChart</span>
+                </div -->
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Google Chart</h3>
+                </div>
+                <div class="panel-body">
+                    <div google-chart chart="widgets[0].chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Performance</h3>
+                </div>
+                <div class="panel-body">
+                    <div google-chart chart="traffic.performance.chart"></div>
+                </div>
+                <div class="panel-footer">
+                    <span class="label label-primary">AreaChart</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">By Endpoint</h3>
+                </div>
+                <div class="panel-body">
+                    <div google-chart chart="byEndpoint.performance.chart"></div>
+                </div>
+                <div class="panel-footer">
+                    <span class="label label-primary">AreaChart</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</traffic>

@@ -1,0 +1,74 @@
+<geo>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-globe"></i> Map</h3>
+                </div>
+                <div class="panel-body">
+                    <!-- world-map data="[1,2,3,4,5,6]"></world-map -->
+                    <div google-chart chart="geoData"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading"><i class="fa fa-globe"></i> Region</div>
+                    <table class="table table-bordered table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Country</th>
+                                <th>Sessions</th>
+                                <th>Sessions %</th>
+                                <th>Min Response Time</th>
+                                <th>Max Response Time</th>
+                                <th>Avg Response Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="geo in geoRaw">
+                                <td><img class="flag" ng-src="{{geo[5]}}" /> {{geo[0]}}</td>
+                                <td>{{geo[1]}}</td>
+                                <td><progressbar class="progress-striped" max="totalSessions" value="geo[1]" type="warning"></progressbar></td>
+                                <td>{{geo[2]}}ms</td>
+                                <td>{{geo[3]}}ms</td>
+                                <td>{{geo[4]}}ms</td>
+                                <!-- td>{{geo._id}}</td>
+                                <td>{{geo.total}}</td>
+                                <td>{{geo.minTime}}ms</td>
+                                <td>{{geo.maxTime}}ms</td>
+                                <td>{{geo.avgTime}}ms</td -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading"><i class="fa fa-flag"></i> Languages</div>
+                    <table class="table table-bordered table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Language</th>
+                                <th>Sessions</th>
+                                <th>Sessions %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="language in languages">
+                                <td>{{language._id}}</td>
+                                <td>{{language.total}}</td>
+                                <td><progressbar class="progress-striped" max="totalSessions" value="language.total" type="warning"></progressbar></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</geo>
