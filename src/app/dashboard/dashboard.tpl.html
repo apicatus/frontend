@@ -1,4 +1,41 @@
 <dashboard>
+    <div class="dasboard-toolbar">
+        <div class="row">
+            <div class="col-md-12 resource-group">
+                <div class="btn-toolbar" role="toolbar">
+                    <div class="btn-group">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa icon-network"></i> APIS <span class="fa fa-angle-down"></span></button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li ng-repeat="api in apis"><a href=""><i class="fa fa-fw fa-circle-o"></i><i class="icon-api"></i> {{api.name}}</a></li>
+                                <li class="divider"></li>
+                                <li><a href=""><i class="icon-network"></i> Full summary</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cloud-download"></i> Export <span class="fa fa-angle-down"></span></button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href=""><i class="icon-network"></i> .csv</a></li>
+                                <li><a href=""><i class="icon-network"></i> .tsv</a></li>
+                                <li><a href=""><i class="icon-network"></i> .xml</a></li>
+                                <li class="divider"></li>
+                                <li><a href=""><i class="icon-network"></i> Full summary</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-default pull-right">
+                        <date-range id="reportrange" class="reportrange" type="daterange" ng-model="dateRange" format="D/M/YYYY">
+                            <i class="fa fa-calendar"></i>
+                            <span class="date">00/00/0000 - 00/00/0000</span> <i class="fa fa-angle-down"></i>
+                        </date-range>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ui-view></div>
+</dashboard>
+<!-- dashboard>
     <div class="row">
         <div class="col-md-12 resource-group">
             <div class="btn-toolbar" role="toolbar">
@@ -33,4 +70,4 @@
             </div>
         </div>
     </div>
-</dashboard>
+</dashboard -->

@@ -192,14 +192,8 @@ charts.worldmap = function module() {
 
                 topo = countries;
                 draw(topo);
+                exports.addpoint(-58.5201, -34.5309);
             });
-            $.getJSON("http://smart-ip.net/geoip-json?callback=?",
-                function(data){
-                    console.log(data);
-                    exports.addpoint(data.longitude, data.latitude, data.city);
-                    //$("span.city").html(data.city);
-                }
-            );
         });
     }
     exports.setup = function(el, w, h) {

@@ -9,6 +9,7 @@ angular.module( 'apicatus', [
     'apicatus.dashboard',
     'apicatus.settings',
     'apicatus.error',
+    'apicatus.help',
     'AuthService',
     'timeago',
     'humanize',

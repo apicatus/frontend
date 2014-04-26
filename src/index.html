@@ -16,14 +16,16 @@
         <meta property="og:image" content="" />
         <meta property="og:description" content=".">
 
+        <link rel="icon" type="image/png" href="assets/images/logo.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon-57-precomposed.png">
         <!-- mobile viewport -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <!-- font awesome from BootstrapCDN -->
         <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
         <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
-        <!-- highlight.js -->
-        <link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/default.min.css">
-        <script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
         <!-- compiled CSS --><% styles.forEach( function ( file ) { %>
         <link rel="stylesheet" type="text/css" href="<%= file %>" /><% }); %>
 
@@ -43,7 +45,6 @@
                 $("body").on('click', '#menu-toggle', function(event){
                     var button = $(this);
                     if(button.hasClass('closed')) {
-                        console.log("toggle is closed")
                         button.hide().removeClass("closed");
                         $("#wrapper").addClass("open");
                         $(".side-nav").removeClass("closed");
@@ -55,17 +56,6 @@
                     }
                     $(window).trigger('resize');
                 });
-                /*
-                $("body").on('click', 'button.menu-close', function(event){
-                    var button = $('#menu-toggle');
-                    button.addClass("closed").show();
-                    $(".navbar-menu").removeClass("open");
-                    $(".navbar-menu").addClass("closed");
-                    $("#wrapper").removeClass("open");
-                    $(".side-nav").addClass("closed");
-                    $(window).trigger('resize');
-                });
-                */
             });
         </script>
     </body>

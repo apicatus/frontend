@@ -12,23 +12,25 @@
  * The dependencies block here is also where component dependencies should be
  * specified, as shown below.
  */
-angular.module( 'apicatus.navbar', [
-])
+angular.module( 'apicatus.navbar', ['dateRange'])
 
 /**
  * And of course we define a controller for our route.
  */
 .controller( 'NavBarCtrl', function NavBarController($scope) {
     $scope.sideBarOpened = false;
+    $scope.oneAtATime = true;
+    $scope.addItem = function() {
+        var newItemNo = $scope.items.length + 1;
+        $scope.items.push('Item ' + newItemNo);
+    };
 })
 .directive("menuToggle", function () {
     return function (scope, element) {
         element.bind("click", function () {
-            console.log("click", element);
             scope.sideBarOpened = !scope.sideBarOpened;
             document.body.classList.toggle('opened');
             $(window).trigger('resize');
         });
     };
-})
-;
+});

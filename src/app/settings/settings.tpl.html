@@ -1,4 +1,24 @@
 <settings>
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="profile-cover">
+                <div class="profile-details">
+
+                    <div class="profile-box">
+                        <img class="avatar img-circle" ng-src="{{user.avatar || 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'}}"/>
+                        <h3 class="profile-user">{{user.username}}</h3>
+                    </div>
+
+
+                </div>
+                <ul class="social nav nav-pills">
+                    <li><a href="#"><i class="fa fa-github"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="#"><i class="fa fa-gears"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
     <div class="row settings">
         <div class="col-lg-12">
         <tabset>
@@ -35,8 +55,8 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-md-4 col-md-offset-4">
-                        <img ng-src="{{user.avatar || 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'}}"/>
+                    <div class="col-md-8">
+                        <!-- img class="img-thumbnail pull-right" ng-src="{{user.avatar || 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'}}"/ -->
                     </div>
                 </div>
             </tab>
@@ -85,8 +105,6 @@
             Data sources settings
             </tab>
         </tabset>
-
-
         </div>
     </div>
 </settings>

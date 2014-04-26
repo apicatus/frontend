@@ -5,10 +5,10 @@
  * automatically.
  */
 describe( 'home section', function() {
-  beforeEach( module( 'apicatus.home' ) );
+    beforeEach( module( 'apicatus.home' ) );
 
-  it( 'should have a dummy test', inject( function() {
-    expect( true ).toBeTruthy();
-  }));
+    it( 'should have a dummy test', inject( function() {
+        expect( true ).toBeTruthy();
+    }));
 });
 
