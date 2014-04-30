@@ -82,7 +82,7 @@ angular.module( 'apicatus', [
     var token = localStorageService.get('token');
     if(token) {
         console.log("I got a local storage token", token);
-        Restangular.configuration.defaultHeaders.token = token;
+        Restangular.configuration.defaultHeaders.token = token.token;
         Restangular.one('user').get().then(function(user) {
             $scope.user = user;
         }, function(error) {

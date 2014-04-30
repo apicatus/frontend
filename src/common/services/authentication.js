@@ -7,7 +7,7 @@ angular.module('AuthService', ['restangular'])
 .config(function AuthServiceConfig (RestangularProvider) {
     //console.log(RestangularProvider);
 })
-.factory('AuthService', ['$document', '$q', '$rootScope', 'Restangular', 'localStorageService', '$cookies', function($document, $q, $rootScope, Restangular, localStorageService) {
+.factory('AuthService', ['$document', '$q', '$rootScope', 'Restangular', 'localStorageService', '$cookies', function($document, $q, $rootScope, Restangular, localStorageService, $cookies) {
     var isAuthenticated = false;
     var appState = {};  // holds the state of the app
 

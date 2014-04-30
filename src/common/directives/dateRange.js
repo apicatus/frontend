@@ -10,7 +10,6 @@ angular.module('dateRange', [])
             if ($attributes.class !== 'reportrange') {
                 return;
             }
-            console.log("date range");
             var options = {};
             options.format = $attributes.format || 'YYYY-MM-DD';
             options.separator = $attributes.separator || ' - ';

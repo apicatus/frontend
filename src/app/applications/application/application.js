@@ -56,22 +56,18 @@ angular.module( 'apicatus.application', [
         });
     });
 
-    $scope.$watchCollection('api.endpoints', function(newVal, oldVal, scope) {
+    $scope.$watch('api.endpoints', function(newVal, oldVal, scope) {
+        console.log("api.endpoints: ", $scope.api.endpoints);
         if(newVal === oldVal || newVal.length <= 0) {
             return;
         }
-    });
+    }, true);
     $scope.currentPage = 1;
     $scope.setPage = function (pageNo) {
         $scope.currentPage = pageNo;
     };
     $scope.save = function(api) {
         $scope.api.put();
-    };
-    /////////////////////
-    // Settings Control
-    $scope.setOpened = function(endpoint, $index, isOpened) {
-        console.log(endpoint, $index, isOpened);
     };
     ////////////////////////////////////////////////////////////////////////////
     // Endpoints [ Create, Read, Update, Delete ]                             //
@@ -140,16 +136,75 @@ angular.module( 'apicatus.application', [
     ////////////////////////////////////////////////////////////////////////////
     // Methods [ Create, Read, Update, Delete ]                               //
     ////////////////////////////////////////////////////////////////////////////
-    $scope.createMethod = function(endpoint) {
+    /*$scope.createMethod = function(endpoint) {
         var method = {
             "name": "Method XX1",
             "synopsis": "Grabs information from the A1 data set",
             "method": "GET",
-            "URI": "/myroute"
+            "URI": "/myroute",
+            "response": {
+                "contentType": "application/json",
+                "statusCode": 200
+            }
         };
         $scope.createDemo(method);
         endpoint.methods.push(method);
-        $scope.api.put();
+        //$scope.api.put();
+    };
+    */
+    $scope.createMethod = function ($endpoint) {
+        // Please note that $modalInstance represents a modal window (instance) dependency.
+        // It is not the same as the $modal service used above.
+        var modalCtl = function ($scope, $modalInstance, method) {
+            $scope.httpSettings = httpSettings.settings();
+            $scope.method = {
+                name: "",
+                synopsis: "Grabs information from the A1 data set",
+                method: "GET",
+                URI: "/myroute",
+                response: {
+                    "contentType": "application/json",
+                    "statusCode": 200
+                }
+            };
+            $scope.ok = function() {
+                console.log("ok:", method);
+            };
+            $scope.submit = function () {
+                console.log("ok:", method);
+                $modalInstance.close($scope.method);
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+        var modalInstance = $modal.open({
+            templateUrl: 'new_method_modal.html',
+            controller: modalCtl,
+            windowClass: '',
+            resolve: {
+                method: function () {
+                    return $scope.method;
+                }
+            }
+        });
+        modalInstance.result.then(
+            function (method) {
+                $endpoint.methods.push(method);
+                console.log("modal ok: ", method);
+                //$scope.api.endpoints.push(endpoint);
+                //$scope.api.put();
+
+                /*
+                $scope.api.put().then(function(result) {
+                }, function(error) {
+                    $scope.api.endpoints.pop();
+                });
+                */
+            },
+            function () {
+                console.info('Modal dismissed at: ' + new Date());
+        });
     };
     $scope.updateMethod = function(method, $index) {
         console.log(method);
@@ -157,6 +212,7 @@ angular.module( 'apicatus.application', [
     };
     $scope.deleteMethod = function(methods, $index) {
         methods.splice($index, 1);
+        $scope.api.put();
     };
     $scope.header = {};
     $scope.addHeader = function(method, header, scope) {
@@ -197,7 +253,6 @@ angular.module( 'apicatus.application', [
     $scope.demo = function(demo) {
         var result = eval(demo);
     };
-
     // The modes
     $scope.editor = {
         modes: ['Scheme', 'XML', 'Javascript'],

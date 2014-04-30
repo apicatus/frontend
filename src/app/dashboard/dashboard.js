@@ -16,6 +16,7 @@
 angular.module( 'apicatus.dashboard', [
     'apicatus.dashboard.geo',
     'apicatus.dashboard.technology',
+    'apicatus.dashboard.traffic',
     'D3Service',
     'worldMap',
     'budgetDonut',
@@ -46,8 +47,19 @@ angular.module( 'apicatus.dashboard', [
     .state('main.dashboard.traffic', {
         url: '/traffic',
         templateUrl: 'dashboard/traffic/traffic.tpl.html',
+        controller: 'DashboardTrafficCtrl',
         data: { pageTitle: 'Traffic' },
         //authenticate: true,
+        resolve: {
+            projects: function($stateParams, $timeout, $q) {
+                var deferred = $q.defer();
+                //console.log("scope", $scope);
+                $timeout(function(){
+                    deferred.resolve([{ id: 0, name: "Alice" }, { id: 1, name: "Bob" }]);
+                }, 1500);
+                return deferred.promise;
+            }
+        },
         onEnter: function(){
             console.log("enter Traffic");
         }
@@ -97,6 +109,11 @@ angular.module( 'apicatus.dashboard', [
 .controller( 'DashboardCtrl', function DashboardController( $scope, $modal, Restangular  ) {
     var baseDigestors = Restangular.all('digestors');
     $scope.potatoes = 55;
+    $scope.selectedApi = {};
+    $scope.dateRange = {
+        since: moment().subtract('days', 29).valueOf(),
+        until: moment().valueOf()
+    };
     $scope.widgets = [{
         title: "My Metrics",
         id: 22,
@@ -386,68 +403,6 @@ angular.module( 'apicatus.dashboard', [
         maximize: true
         }];
 
-
-    $scope.traffic = {
-        performance: {
-            title: "Total bytes transferred",
-            id: 22,
-            width: "100%",
-            height: "480px",
-            aspectRatio: null,
-            chart: {
-                type: "LineChart",
-                options: {
-                    height: 200,
-                    animation: {
-                        duration: 1000,
-                        easing: 'inAndOut'
-                    },
-                    backgroundColor: "transparent",
-                    colors: ['#edc951', '#00a0b0', '#cc333f', '#eb6841'],
-                    chartArea: { left: 20, top: 0, width: "80%", height: "85%"},
-                    curveType: 'function',
-                    legend: { position: 'right', maxLines: 3 },
-                    isStacked: true,
-                    vAxis: {
-                        title: 'Total bytes transferred',
-                        titleTextStyle: { color: '#666', fontName: 'Titillium Web', italic: false },
-                        gridlines: { color: '#DDD' },
-                        minorGridlines: { color: '#eee', count: 2 },
-                        baselineColor: '#ccc'
-                    },
-                    hAxis: {
-                        baselineColor: '#ccc',
-                        textStyle: { color: '#666', fontName: 'Titillium Web', fontSize: 9, italic: false }
-                    }
-                },
-                formatters: {
-                    number: [{
-                        columnNum: 1,
-                        pattern: "$ #,##0.00"
-                    }]
-                },
-                data: [
-                    ['Year', 'GET', 'PUT', "POST"],
-                    ['2000', 1000, 300, 10],
-                    ['2001', 800, 430, 70],
-                    ['2002', 920, 530, 50],
-                    ['2003', 710, 630, 40],
-                    ['2004', 680, 730, 30],
-                    ['2005', 1170, 460, 60],
-                    ['2006', 660, 120, 340],
-                    ['2007', 830, 520, 80],
-                    ['2008', 930, 550, 55],
-                    ['2009', 630, 560, 75],
-                    ['2010', 530, 530, 88],
-                    ['2011', 730, 520, 60],
-                    ['2011', 830, 510, 50],
-                    ['2011', 1130, 540, 90],
-                    ['2014', 980, 520, 70]
-                ]
-            },
-            maximize: true
-        }
-    };
     $scope.byEndpoint = {
         performance: {
             title: "Total bytes transferred",
@@ -500,9 +455,24 @@ angular.module( 'apicatus.dashboard', [
             maximize: true
         }
     };
-
+    $scope.selectApi = function($api) {
+        $scope.selectedApi = $api;
+    };
     $scope.applications = Restangular.one('digestors').getList().then(function(digestors) {
         $scope.apis = digestors;
+        $scope.selectedApi = digestors[0];
     });
+    $scope.$watch('selectedApi', function(newVal, oldVal, scope) {
+        if(newVal === oldVal || newVal.length <= 0) {
+            return;
+        }
+        console.log("selectedApi: ", $scope.selectedApi);
+    }, true);
+    $scope.$watch('dateRange', function(newVal, oldVal, scope) {
+        if(newVal === oldVal || newVal.length <= 0) {
+            return;
+        }
+        console.log("dateRange: ", $scope.dateRange);
+    }, false);
 });
 

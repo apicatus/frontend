@@ -7,6 +7,7 @@
 @METHOD-HEAD-COLOR: #3BD9EC;
 @METHOD-CONNECT-COLOR: #A9304F;
 @METHOD-PATCH-COLOR: #E7CA29;
+@METHOD-TRACE-COLOR: #F577CD;
 
 application {
     .page-header {
@@ -87,6 +88,12 @@ application {
                     border-top: 1px solid darken(@METHOD-PATCH-COLOR, 15%);
                 }
             }
+            &.TRACE {
+                border-color: darken(@METHOD-TRACE-COLOR, 15%);
+                .panel-heading + .panel-collapse .panel-body {
+                    border-top: 1px solid darken(@METHOD-TRACE-COLOR, 15%);
+                }
+            }
         }
         .panel-heading {
             padding: 0;
@@ -109,7 +116,7 @@ application {
                 color: darken(#fff, 5%);
                 font-weight: 100;
 
-                min-width: 110px;
+                min-width: 125px;
                 text-align: center;
                 font-weight: 400;
                 border-width: 1px;
@@ -161,9 +168,21 @@ application {
                     border-right-style: solid;
                     text-shadow: 1px 1px darken(@METHOD-PATCH-COLOR, 25%);
                 }
+                &.TRACE {
+                    background-color: @METHOD-TRACE-COLOR;
+                    border-right-color: darken(@METHOD-TRACE-COLOR, 15%);
+                    border-right-style: solid;
+                    text-shadow: 1px 1px darken(@METHOD-TRACE-COLOR, 25%);
+                }
             }
             span.trigger-collapse {
                 padding: 10px 10px;
+                i {
+                    .transition(all 0.25s ease-in-out);
+                    &.open {
+                        .scale(1, -1);
+                    }
+                }
             }
         }
         .panel-body {
@@ -196,7 +215,6 @@ application {
         /*margin-bottom: 10px;*/
     }
     .ace_editor {
-
         height: 200px;
     }
 
@@ -240,31 +258,6 @@ application {
                 border: 1px solid @gray-light;
                 border-radius: 3px;
             }
-        }
-    }
-    world-map {
-        display: block;
-        width: 100%;
-        height: 320px;
-        background-color: transparent;
-        .country {
-            fill: @brand-primary;
-            &:hover {
-                stroke: darken(@brand-primary, 10%);
-                stroke-width: 0.5px;
-                fill: lighten(@brand-primary, 10%)
-            }
-        }
-        .point {
-            fill: @gray;
-        }
-        .text {
-            fill: @gray;
-        }
-        .night {
-            stroke: steelblue;
-            fill: steelblue;
-            fill-opacity: .3;
         }
     }
     /* LOG TABLE */
@@ -340,7 +333,7 @@ application {
         }
     }
     /* LOG TABLE */
-     table.log-table {
+    table.log-table {
         th {
             &.sortable {
                 font-weight: 100;

@@ -47,7 +47,7 @@
     </div -->
     <div class="row">
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-red">
+            <div class="dashboard-tile detail tile-red sm">
                 <div class="content">
                     <h1 class="text-left timer">180</h1>
                     <p>Avg Response Time</p>
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-turquoise">
+            <div class="dashboard-tile detail tile-turquoise sm">
                 <div class="content">
                     <h1 class="text-left timer">56</h1>
                     <p>Max Response Time</p>
@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-blue">
+            <div class="dashboard-tile detail tile-blue sm">
                 <div class="content">
                     <h1 class="text-left timer">32</h1>
                     <p>Network Request</p>
@@ -80,7 +80,7 @@
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-purple">
+            <div class="dashboard-tile detail tile-purple sm">
                 <div class="content">
                     <h1 class="text-left timer">105</h1>
                     <p>Network Errors</p>
@@ -92,59 +92,111 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-6 col-md-6">
+        <div class="col-md-3 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Bytes In / Out</h3>
+                </div>
+                <div class="panel-body">
+                    <div google-chart chart="traffic.inVsOut.chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Total bytes transferred</h3>
                 </div>
                 <div class="panel-body">
-                    <div google-chart chart="widgets[2].chart"></div>
-                </div>
-                <!-- div class="panel-footer">
-                    <span class="label label-primary">ColumnChart</span>
-                </div -->
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Google Chart</h3>
-                </div>
-                <div class="panel-body">
-                    <div google-chart chart="widgets[0].chart"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12 col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Performance</h3>
-                </div>
-                <div class="panel-body">
                     <div google-chart chart="traffic.performance.chart"></div>
                 </div>
-                <div class="panel-footer">
-                    <span class="label label-primary">AreaChart</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-default sm">
+                <div class="content">
+                    <h1 class="text-left timer">180</h1>
+                    <p>Total bytes in</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-sign-in"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-default sm">
+                <div class="content">
+                    <h1 class="text-left timer">56</h1>
+                    <p>Total bytes out</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-sign-out"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-default sm">
+                <div class="content">
+                    <h1 class="text-left timer">32</h1>
+                    <p>Average bytes in</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa fa-sign-in"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="dashboard-tile detail tile-default sm">
+                <div class="content">
+                    <h1 class="text-left timer">105</h1>
+                    <p>Average bytes out</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-sign-out"></i>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-12 col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">By Endpoint</h3>
-                </div>
-                <div class="panel-body">
-                    <div google-chart chart="byEndpoint.performance.chart"></div>
-                </div>
-                <div class="panel-footer">
-                    <span class="label label-primary">AreaChart</span>
-                </div>
-            </div>
+            <tabset ng-model="mytabs">
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-gears"></i> By API
+                    </tab-heading>
+                    <div google-chart chart="widgets[0].chart"></div>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-gears"></i> By IP
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                            <div google-chart chart="traffic.performance.chart"></div>
+                        </div>
+                    </div>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-gears"></i> By Target URL
+                    </tab-heading>
+                    <div google-chart chart="widgets[1].chart"></div>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-gears"></i> By User Agent
+                    </tab-heading>
+                    <div google-chart chart="widgets[2].chart"></div>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-gears"></i> By Verb
+                    </tab-heading>
+                    <div google-chart chart="traffic.performance.chart"></div>
+                </tab>
+            </tabset>
         </div>
     </div>
 </traffic>

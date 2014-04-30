@@ -9,7 +9,7 @@ angular.module( 'apicatus.dashboard.technology', [
     'lineChart'
 ])
 .controller( 'DashboardTechnologyCtrl', function DashboardTechnologyController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings, ngTableParams ) {
-    Restangular.all('platform').getList().then(function(data) {
+    Restangular.all('platform').getList({api: $scope.selectedApi}).then(function(data) {
         $scope.platforms = data;
         $scope.devices = data.map(function(data, index) {
             return {
