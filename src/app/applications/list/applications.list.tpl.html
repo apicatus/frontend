@@ -26,126 +26,7 @@
     <div class="row">
         <div class="col-md-12 resource-group">
             <div class="menu app-cards-row">
-                <div ng-repeat="api in apis" ng-init="settings.applications[api._id] = {name: api.name}" class="menu-category" ng-show="settings.applications.showdisabled || api.enabled">
-                    <div class="stock card" ng-init="flipped=false" ng-class="{flip: flipped, public: api.public}">
-                        <div class="front">
-                            <div class="stock-chart" ng-class="api.enabled ? 'enabled' : 'disabled'">
-                                <bar-chart title="{{title}}" data="data"></bar-chart>
-                                <line-chart title="{{title}}" data="api.logs" key="time"></line-chart>
-                                <button class="btn api-setup pull-right" ng-click="flipped=!flipped"><i class="fa fa-cogs"></i></button>
-                            </div>
-                            <div class="current-price container">
-                                <div class="info col-sm-6"><a href="#/main/applications/{{api._id}}"><abbr>{{api.name}}</abbr></a>
-                                    <time><i class="fa fa-clock-o"></i> <span timeago="{{api.lastAccess}}"></span></time>
-                                </div>
-                                <div class="changes col-sm-6">
-                                    <div class="value down">{{api.logs[api.logs.length-1].time}}ms</div>
-                                    <div class="change">{{api.logs[api.logs.length-1].time - api.logs[api.logs.length-2].time}}ms ({{api.logs[api.logs.length-1].time / api.logs[api.logs.length-2].time * 100 | number:0}}%)</div>
-                                </div>
-                            </div>
-                            <div class="yearly-changes container" ng-show="api.enabled">
-                                <div class="year-all col-lg-6 col-sm-6"><strong ng-init="cosa=1000000">{{cosa | humanize}}</strong><span>Weekly change</span>
-                                </div>
-                                <div class="year-chart col-lg-6 col-sm-6">
-                                    <ul class="chart-bars">
-                                        <li data-value="35" data-title="January">
-                                            <div class="value"></div>
-                                            <label>Mo</label>
-                                        </li>
-                                        <li data-value="35" data-title="February">
-                                            <div class="value"></div>
-                                            <label>Tu</label>
-                                        </li>
-                                        <li data-value="35" data-title="March">
-                                            <div class="value"></div>
-                                            <label>We</label>
-                                        </li>
-                                        <li data-value="35" data-title="April">
-                                            <div class="value"></div>
-                                            <label>Th</label>
-                                        </li>
-                                        <li data-value="35" data-title="May">
-                                            <div class="value"></div>
-                                            <label>Fr</label>
-                                        </li>
-                                        <li data-value="35" data-title="June">
-                                            <div class="value"></div>
-                                            <label>Sa</label>
-                                        </li>
-                                        <li data-value="35" data-title="July">
-                                            <div class="value"></div>
-                                            <label>Su</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="summary container">
-                                <div class="col-lg-6 col-sm-6" ng-init="0"><a><strong>{{api.logs.length || 0}}</strong><span>requests</span></a>
-                                </div>
-                                <div class="col-lg-6 col-sm-6" ng-init="0"><a><strong>{{api.meanTime || '&#x221e; '}}ms</strong><span>Average</span></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="back">
-                            <div class="settings panel panel-default">
-                                <div class="panel-heading clearfix">
-                                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;"><i class="fa fa-sitemap"></i> {{api.name}}</h4>
-                                    <div class="btn-group pull-right">
-                                        <button class="btn btn-sm btn-default"><i class="fa fa-question-circle"></i></button>
-                                        <button class="btn btn-sm btn-default" ng-click="flipped=!flipped"><i class="fa fa-share"></i></button>
-                                    </div>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <form role="form" ng-model="account">
-                                                <div class="form-group">
-                                                    <label for="domain">API Domain</label>
-                                                    <input type="text" class="form-control" id="domain" placeholder="domain" ng-model="api.domain">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="proxy">Global Proxy</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon">
-                                                            <input type="checkbox">
-                                                        </span>
-                                                        <input type="text" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>Enable
-                                                        <input type="checkbox" id="enable" ng-model="api.enabled">
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>Public
-                                                        <input type="checkbox" id="public" ng-model="api.public">
-                                                    </label>
-                                                </div>
-
-
-                                                <div class="row">
-                                                    <div class="col-xs-6">
-                                                        <div class="form-group">
-                                                            <button type="submit" class="btn btn-default">Submit</button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-6">
-                                                        <div class="form-group">
-                                                            <button class="btn btn-danger pull-right"><i class="fa fa-trash-o"></i></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="col-md-12">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div ng-include="'applications/list/components/card.tpl.html'"></div>
             </div>
         </div>
     </div>
@@ -180,7 +61,7 @@
                                 <span class="input-group-addon">
                                     <input type="checkbox" ng-model="method.proxy.enabled">
                                 </span>
-                                <input type="url" id="proxy" class="form-control" ng-model="method.proxy.URI" placeholder="Version" ng-disabled="!method.proxy.enabled" ng-required="method.proxy.enabled">
+                                <input type="number" id="version" class="form-control" placeholder="{{ 'APPLICATIONS.NEWAPI.VERSION' | translate }}" ng-disabled="!method.proxy.enabled" ng-required="method.proxy.enabled" ng-model="api.version" >
                             </div>
                         </div>
                     </div>
@@ -201,11 +82,11 @@
             </div>
             <div class="form-group">
                 <label for="synopsis">{{ 'APPLICATIONS.NEWAPI.SYNOPSIS' | translate }}</label>
-                <textarea id="synopsis" name="synopsis" class="form-control" rows="3" placeholder="{{ 'APPLICATIONS.NEWAPI.SYNOPSIS' | translate }}" ng-model="apiModel.synopsis"></textarea>
+                <textarea id="synopsis" name="synopsis" class="form-control" rows="3" placeholder="{{ 'APPLICATIONS.NEWAPI.SYNOPSIS' | translate }}" ng-model="api.synopsis"></textarea>
             </div>
             <div class="form-group">
-                <label for="domain">{{ 'APPLICATIONS.NEWAPI.DOMAIN' | translate }}</label>
-                <input type="text" class="form-control" id="domain" placeholder="{{ 'APPLICATIONS.NEWAPI.DOMAIN' | translate }}" ng-model="api.domain">
+                <label for="subdomain">{{ 'APPLICATIONS.NEWAPI.DOMAIN' | translate }}</label>
+                <input type="text" class="form-control" id="subdomain" placeholder="{{ 'APPLICATIONS.NEWAPI.SUBDOMAIN' | translate }}" ng-model="api.subdomain">
             </div>
         </div>
         <div class="modal-footer">

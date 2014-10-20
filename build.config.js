@@ -30,7 +30,7 @@ module.exports = {
     ctpl: [ 'src/common/**/*.tpl.html' ],
 
     html: [ 'src/index.html' ],
-    less: 'src/less/main.less'
+    less: [ 'src/less/main.less' ]
   },
 
   /**
@@ -67,14 +67,10 @@ module.exports = {
       'lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
       'lib/angular-ui-router/release/angular-ui-router.js',
       'lib/angular-ui-utils/ui-utils.js',
-      'lib/ng-table/ng-table.js',
-      'lib/angular-google-chart/ng-google-chart.js',
       'lib/restangular/dist/restangular.js',
       'lib/angular-local-storage/angular-local-storage.js',
       'lib/angular-cookies/angular-cookies.js',
       'lib/momentjs/moment.js',
-      'lib/bootstrap-daterangepicker/daterangepicker.js',
-      'lib/odometer/odometer.js',
       'lib/lodash/dist/lodash.js',
       'lib/ace-builds/src-min-noconflict/ace.js',
       'lib/ace-builds/src-min-noconflict/mode-javascript.js',
@@ -83,7 +79,6 @@ module.exports = {
       'lib/ace-builds/src-min-noconflict/worker-json.js',
       'lib/ace-builds/src-min-noconflict/theme-monokai.js',
       'lib//angular-ui-ace/ui-ace.js',
-      'lib/angularjs-gravatardirective/dist/angularjs-gravatardirective.js',
       'lib/angular-translate/angular-translate.js',
       'lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'lib/bootstrap/js/affix.js',

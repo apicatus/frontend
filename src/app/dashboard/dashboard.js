@@ -21,8 +21,7 @@ angular.module( 'apicatus.dashboard', [
     'worldMap',
     'budgetDonut',
     'barChart',
-    'lineChart',
-    'googlechart'
+    'lineChart'
 ])
 
 /**

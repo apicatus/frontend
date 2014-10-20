@@ -35,16 +35,21 @@ nav {
     }
     .navbar-product {
         float: left;
-        font-weight: 300;
+        font-weight: 100;
         padding: 0px;
-        font-size: 24px;
+        font-size: 32px;
         color: @brand-primary;
+        margin-top: 18px;
         i {
             margin: 6px;
             color: @gray-light;
         }
         a {
             text-decoration: none;
+            vertical-align: middle;
+        }
+        .current {
+            vertical-align: middle;
         }
         i.icon-arrow {
             color: #FFD03B;
@@ -58,6 +63,17 @@ nav {
         strong {
             font-weight: 400;
         }
+    }
+
+    .inline-logo {
+        background-image: url('images/logo.svg');
+        width: 32px;
+        height: 32px;
+        background-repeat: no-repeat;
+        display: inline-block;
+        margin: 5px;
+        background-size: cover;
+        vertical-align: text-bottom;
     }
     .navbar-range {
         /*position: absolute;*/

@@ -91,12 +91,21 @@
             </div>
         </div>
     </div>
+    <!-- CHARTS -->
     <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Bytes In / Out</h3>
+
+                <div class="panel-heading clearfix">
+                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;"><i class="fa fa-sitemap"></i> Bytes In / Out</h4>
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-sm btn-default"><i class="fa fa-question-circle"></i>X</button>
+                        <button class="btn btn-sm btn-default" ng-click="flipped=!flipped"><i class="fa fa-share"></i>X</button>
+                    </div>
                 </div>
+                <!-- div class="panel-heading">
+                    <h3 class="panel-title">Bytes In / Out</h3>
+                </div -->
                 <div class="panel-body">
                     <div google-chart chart="traffic.inVsOut.chart"></div>
                 </div>
@@ -113,11 +122,12 @@
             </div>
         </div>
     </div>
+    <!-- CHARTS -->
     <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="dashboard-tile detail tile-default sm">
                 <div class="content">
-                    <h1 class="text-left timer">180</h1>
+                    <h1 class="text-left timer">{{contentlength.value.in.sum}}</h1>
                     <p>Total bytes in</p>
                 </div>
                 <div class="icon">
@@ -128,7 +138,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="dashboard-tile detail tile-default sm">
                 <div class="content">
-                    <h1 class="text-left timer">56</h1>
+                    <h1 class="text-left timer">{{contentlength.value.out.sum}}</h1>
                     <p>Total bytes out</p>
                 </div>
                 <div class="icon">
@@ -139,7 +149,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="dashboard-tile detail tile-default sm">
                 <div class="content">
-                    <h1 class="text-left timer">32</h1>
+                    <h1 class="text-left timer">{{contentlength.value.in.avg}}</h1>
                     <p>Average bytes in</p>
                 </div>
                 <div class="icon">
@@ -150,7 +160,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="dashboard-tile detail tile-default sm">
                 <div class="content">
-                    <h1 class="text-left timer">105</h1>
+                    <h1 class="text-left timer">{{contentlength.value.out.avg}}</h1>
                     <p>Average bytes out</p>
                 </div>
                 <div class="icon">
@@ -199,4 +209,29 @@
             </tabset>
         </div>
     </div>
+
+    <!-- CHARTS -->
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Error Rate</h3>
+                </div>
+                <div class="panel-body">
+                    <budget-donut data="[1,2,3,4,5]" chart="traffic.inVsOut.chart"></budget-donut>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Total Errors</h3>
+                </div>
+                <div class="panel-body">
+                    <div google-chart chart="traffic.performance.chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- CHARTS -->
 </traffic>

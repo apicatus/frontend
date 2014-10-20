@@ -32,7 +32,7 @@ angular.module( 'apicatus.dashboard.traffic', [
             since: $scope.dateRange.since,
             until: $scope.dateRange.until
         }).then(function(data) {
-            $scope.contentlength = data;
+            $scope.contentlength = data[0];
             //console.log("contentlength: ", data[0].value['in'].sum);
             var ivo = data[0].value.dataset.map(function(data, index){
                 return [moment(data.date).format('DD MMM'), data.bytesIn, data.bytesOut];

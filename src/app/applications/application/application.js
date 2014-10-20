@@ -8,7 +8,7 @@ angular.module( 'apicatus.application', [
     'barChart',
     'lineChart'
 ])
-.controller( 'ApplicationCtrl', function ApplicationController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings, ngTableParams ) {
+.controller( 'ApplicationCtrl', function ApplicationController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings ) {
     $scope.httpSettings = httpSettings.settings();
     $scope.applications = Restangular.one('digestors', $stateParams.id).get().then(function(digestor) {
         $scope.api = digestor;
@@ -26,32 +26,9 @@ angular.module( 'apicatus.application', [
                     var method = endpoint.methods[j];
                     // Pair methods and logs
                     method.logs = _.filter(logs, {'method': method._id });
-                    method.tableParams = makeTableParmas(method.logs);
+                    //method.tableParams = makeTableParmas(method.logs);
                     $scope.createDemo(method);
                 }
-            }
-
-            function makeTableParmas(data) {
-                return new ngTableParams({
-                    page: 1,            // show first page
-                    count: 10,           // count per page
-                    sorting: {
-                        name: 'asc'     // initial sorting
-                    }
-                }, {
-                    counts: [], // hide page counts control
-                    total: $scope.api.logs.length, // length of data
-                    getData: function($defer, params) {
-                        // use build-in angular filter
-                        var orderedData = params.sorting() ? $filter('orderBy')(data , params.orderBy()) : data;
-                        orderedData = params.filter() ? $filter('filter')(orderedData, params.filter()) : orderedData;
-                        params.total(orderedData.length);
-                        orderedData.forEach(function(data, index) {
-                            //console.log(data.time);
-                        });
-                        $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                    }
-                });
             }
         });
     });

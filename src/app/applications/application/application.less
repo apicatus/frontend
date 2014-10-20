@@ -178,7 +178,6 @@ application {
             span.trigger-collapse {
                 padding: 10px 10px;
                 i {
-                    .transition(all 0.25s ease-in-out);
                     &.open {
                         .scale(1, -1);
                     }
@@ -357,14 +356,6 @@ application {
         > thead > tr > th {
             border-bottom: 1px solid @brand-primary; /*@table-border-color;*/
         }
-    }
-    .ui-show {
-        color: blue;
-        .transition(all 0.5s ease);
-    }
-    .ui-hide {
-        opacity: 0;
-        .transition(all 0.5s ease);
     }
     .source-editor {
         margin-top: 15px;

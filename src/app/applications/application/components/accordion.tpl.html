@@ -1,0 +1,234 @@
+<accordion close-others="false" ng-init="settings.application[endpoint._id].methods = settings.application[endpoint._id].methods || {date: getDate()}">
+    <accordion-group class="panel" ng-init="settings.application[endpoint._id].methods[method._id] = settings.application[endpoint._id].methods[method._id] || {date: getDate()}" ng-class="{true: method.method}[true]" id="{{method._id}}" ng-repeat="method in endpoint.methods" is-open="settings.application[endpoint._id].methods[method._id].isOpened">
+        <accordion-heading class="clearfix" style="padding-top: 7.5px;">
+            <a href="" ng-click="settings.application[endpoint._id].methods[method._id].isOpened != settings.application[endpoint._id].methods[method._id].isOpened"> <!-- setOpened(endpoint, $index, isOpened) -->
+                <span class="method" ng-class="{true: method.method}[true]">{{method.method}}</span>
+                <span class="route">{{method.URI}}</span>
+                <!-- span class="pull-right trigger-collapse"><i class="fa" ng-class="{'fa-chevron-up': settings.application[endpoint._id].methods[method._id].isOpened, 'fa-chevron-down': !settings.application[endpoint._id].methods[method._id].isOpened}"></i></span -->
+                <span class="pull-right trigger-collapse"><i class="fa fa-chevron-down" ng-class="{'open': settings.application[endpoint._id].methods[method._id].isOpened}"></i></span>
+            </a>
+            <!-- span><i class="pull-right fa" ng-class="{'fa-chevron-down': isopen, 'fa-chevron-right': !isopen}"></i></span -->
+        </accordion-heading>
+        <div class="row">
+            <div class="col-md-12">
+                <tabset ng-model="mytabs">
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-gears"></i> Setup
+                        </tab-heading>
+                        <form name="form" class="form-horizontal" ng-submit="updateMethod(method, $index)">
+
+                            <div class="form-group">
+                                <label for="route" class="col-lg-2 control-label">Route</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control" id="route" placeholder="Route" ng-model="method.URI">
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-class="{'has-error': form.name.$invalid}">
+                                <label for="proxy" class="col-lg-2 control-label">Proxy</label>
+                                <div class="col-lg-10">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <input type="checkbox" ng-model="method.proxy.enabled">
+                                        </span>
+                                        <input type="url" id="proxy" class="form-control" ng-model="method.proxy.URI" placeholder="proxy url (http / https)" ng-disabled="!method.proxy.enabled" ng-required="method.proxy.enabled">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="method" class="col-lg-2 control-label">Method</label>
+                                <div class="col-lg-10">
+                                    <label class="label-select">
+                                        <select class="form-control custom-dropdown" id="method" ng-model="method.method" ng-options="methods.label as methods.label group by methods.group for methods in httpSettings.methods"></select>
+                                    </label>
+                                </div>
+                            </div>
+                            <fieldset ng-disabled="method.proxy.enabled" ng-hide="method.proxy.enabled">
+                            <div class="form-group">
+                                <label for="contentType" class="col-lg-2 control-label">Content type</label>
+                                <div class="col-lg-10">
+                                    <label class="label-select">
+                                        <!-- select class="" ng-init="method.response.contentType = httpSettings.contentTypes[method.produces].id" ng-model="method.produces.contentType" ng-options="contentTypes.id as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes"></select -->
+                                        <!-- select ui-select2="" style="width:340px" class="col-lg-2" ng-model="method.response.contentType" ng-options="contentTypes.label as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes"></select -->
+                                        <span class="custom-dropdown">
+                                            <select class="form-control custom-dropdown" id="contentType" ng-model="method.response.contentType" ng-options="contentTypes.label as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes">
+                                                <option></option>
+                                            </select>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- CUSTOM HEADERS -->
+                            <div class="form-group">
+                                <label for="inputPassword1" class="col-lg-2 control-label">headers</label>
+                                <div class="col-lg-10">
+                                    <div class="row" ng-model="header">
+                                        <div class="col-xs-4">
+                                            <input type="text" class="form-control" placeholder="Key" ng-model="header.name" name="headerName">
+                                            <span class="help-block" ng-show="form.headerName.$error.required">Required</span>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <div class="btn-group pull-right">
+                                                <button type="button" class="btn btn-default" ng-click="addHeader(method, header, $scope)"><i class="fa fa-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-repeat="header in method.response.headers">
+                                        <div class="col-xs-4">
+                                            <input type="text" class="form-control" placeholder="Key" ng-model="header.name">
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <div class="btn-group pull-right">
+                                                <button type="button" class="btn btn-danger" ng-click="removeHeader(method, header, $index)"><i class="fa fa-trash-o"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Headers -->
+                            <div class="form-group">
+                                <label for="statusCode" class="col-lg-2 control-label">Status Code</label>
+                                <div class="col-lg-10">
+                                    <label class="label-select">
+                                        <span class="custom-dropdown">
+                                            <select class="form-control custom-dropdown" id="statusCode" ng-model="method.response.statusCode" ng-options="status.id as status.label group by status.group for status in httpSettings.statuses"></select>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- Response -->
+                            <div class="form-group">
+                                <label for="inputPassword1" class="col-lg-2 control-label">Response Body</label>
+                                <div class="col-lg-10">
+                                    <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="method.response.body"></div>
+                                </div>
+                            </div>
+                            </fieldset>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-lg-10">
+                                    <div class="btn-group">
+                                        <button type="submit" class="btn btn-default" ng-disabled="form.$pristine && !form.$invalid"><i class="fa fa-save"></i></button>
+                                        <button class="btn btn-default" ng-click="removeMethod(method, $index)"><i class="fa fa-power-off"></i></button>
+                                    </div>
+                                    <button class="btn btn-danger pull-right" ng-click="deleteMethod(endpoint.methods, $index)" tooltip="Remove"><i class="fa fa-trash-o"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-bolt"></i> Try
+                        </tab-heading>
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="method.demo"></div>
+                            </div>
+                            <div class="col-md-12">
+                                <pre id="output">#</pre>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="toolbar well well-sm">
+                                    <div class="btn-toolbar" role="toolbar">
+                                        <div class="btn-group">
+                                            <button class="btn btn-primary" ng-click="demo(method.demo)"><i class="fa fa-play"></i></button>
+                                            <button class="btn btn-primary" ng-click="removeMethod($index, $index)"><i class="fa fa-circle"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </tab>
+                    <tab active="mytabs.debug.isActive" select="mytabs.debug.isActive = 'true'">
+                        <tab-heading>
+                            <i class="fa fa-puzzle-piece"></i> Debug
+                        </tab-heading>
+                        <table class="table table-striped log-table" show-filter="false" ng-table="method.tableParams">
+                            <tbody>
+                                <tr ng-repeat="log in $data">
+                                    <td data-title="'Date'" sortable="'date'" timeago="{{log.date}}">{{log.date}}</td>
+                                    <td data-title="'Query'" sortable="'query'">{{log.query}}</td>
+                                    <td data-title="'IP'" sortable="'ip'" class="text-center">{{log.ip}}</td>
+                                    <td data-title="'Status'" sortable="'status'" class="text-center"><span class="label" ng-class="{'label-success': log.status < 300, 'label-warning': log.status >= 300 && log.status < 400, 'label-danger': log.status > 400}">{{log.status}}</span></td>
+                                    <td data-title="'Latency (ms)'" sortable="'time'" class="text-right">{{log.time}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- pagination ng-model="method" total-items="method.logs.length" items-per-page="10" page="currentPage" max-size="10" on-select-page="setPage(page)"></pagination -->
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-bar-chart-o"></i> Statistics
+                        </tab-heading>
+
+                        <!-- AVAIL -->
+                        <div class="row graph">
+                            <div class="col-sm-3 legend">
+                                <h2>APP SERVER AVAILABILITY</h2>
+                                <span class="number" title="Updated about 14 seconds ago">100.0%</span>
+                            </div>
+                            <div class="col-sm-9 chart">
+                                <div class="chart-container"></div>
+                            </div>
+                        </div>
+
+                        <div class="row graph">
+                            <div class="col-sm-3 legend">
+                                <h2>MEAN API RESPONSE TIME</h2>
+                                <span class="number" title="Updated about 14 seconds ago">77ms</span>
+                            </div>
+                            <div class="col-sm-9 chart">
+                                <div class="chart-container"></div>
+                            </div>
+                        </div>
+
+                        <div class="row graph">
+                            <div class="col-sm-3 legend">
+                                <h2>98TH PERC. WEB RESPONSE TIME</h2>
+                                <span class="number" title="Updated about 14 seconds ago">304ms</span>
+                            </div>
+                            <div class="col-sm-9 chart">
+                                <div class="chart-container"></div>
+                            </div>
+                        </div>
+
+                        <div class="row graph">
+                            <div class="col-sm-3 legend">
+                                <h2>FAILURE RATE</h2>
+                                <span class="number" title="Updated about 14 seconds ago">0.012%</span>
+                            </div>
+                            <div class="col-sm-9 chart">
+                                <div class="chart-container"></div>
+                            </div>
+                        </div>
+
+                        <div class="row graph">
+                            <div class="col-sm-3 legend">
+                                <h2>EXCEPTION PERCENTAGE</h2>
+                                <span class="number" title="Updated about 14 seconds ago">1.035%</span>
+                            </div>
+                            <div class="col-sm-9 chart">
+                                <div class="chart-container"></div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab active="mytabs.locations.isActive">
+                        <tab-heading>
+                            <i class="fa fa-globe"></i> Locations
+                        </tab-heading>
+                        <!-- world-map data="[1,2,3,4,5,6]"></world-map -->
+                    </tab>
+                    <button class="btn btn-default pull-right" tooltip="Refresh"><i class="fa fa-refresh"></i></button>
+                </tabset>
+            </div>
+        </div>
+    </accordion-group>
+</accordion>

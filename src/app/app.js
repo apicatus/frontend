@@ -21,15 +21,15 @@ angular.module( 'apicatus', [
     'ngCookies',
     'pascalprecht.translate',
     'ui.ace',
-    'ngTable',
     'parseURL',
     'httpSettings',
-    'angularjs-gravatardirective'
+    'ngSocket'
 ])
 
-.config( function myAppConfig ( $stateProvider, $urlRouterProvider, $translateProvider, RestangularProvider, localStorageServiceProvider ) {
+.config( function myAppConfig ( $stateProvider, $urlRouterProvider, $locationProvider, $translateProvider, $documentProvider, RestangularProvider, localStorageServiceProvider ) {
     $urlRouterProvider.otherwise( '/main/home' );
-    RestangularProvider.setBaseUrl('http://miapi.com:8080');
+    //$locationProvider.html5Mode(true);
+    RestangularProvider.setBaseUrl(document.location.origin);
     RestangularProvider.setRestangularFields({
         id: "_id"
     });
@@ -42,7 +42,7 @@ angular.module( 'apicatus', [
         prefix: '/languages/',
         suffix: '.json'
     });
-    $translateProvider.preferredLanguage('en');
+    $translateProvider.preferredLanguage('es');
     //RestangularProvider.setDefaultHttpFields({cache: true});
     localStorageServiceProvider.setPrefix('apicatus');
 })
@@ -77,8 +77,12 @@ angular.module( 'apicatus', [
         }
     });
 })
-
-.controller( 'AppCtrl', function AppCtrl ( $scope, $location, localStorageService, $cookies, Restangular ) {
+.factory('mySocket', function (ngSocketFactory) {
+    var mySocket = ngSocketFactory();
+    mySocket.forward('error');
+    return mySocket;
+})
+.controller( 'AppCtrl', function AppCtrl ( $scope, $location, localStorageService, $cookies, Restangular, mySocket ) {
     var token = localStorageService.get('token');
     if(token) {
         console.log("I got a local storage token", token);
@@ -101,6 +105,10 @@ angular.module( 'apicatus', [
             $cookies.token = undefined;
         });
     }
+    mySocket.emit('angularMessage', {data: "myMessage"});
+    mySocket.on('message', function(result){
+        console.log("socket message: ", result);
+    });
 
     $scope.$on('userLoggedIn', function(event, user){
         $scope.user = user;

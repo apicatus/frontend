@@ -44,22 +44,41 @@ angular.module( 'apicatus.applications', [
         controller: 'ApplicationCtrl',
         data: { pageTitle: 'Resource editor'},
         onEnter: function(){
-          console.log("enter contacts.detail");
+            console.log("enter contacts.detail");
         }
     });
 })
 
+.controller( 'FormCtrl', function FormController( $scope ) {
+    $scope.update = function(api) {
+        api.put().then(function(result) {
+            console.log("api updated", result);
+        });
+    };
+    $scope.remove = function(api) {
+        api.remove().then(function() {
+            $scope.apis = _.without($scope.apis, api);
+        });
+    };
+})
 // Applications controller
 .controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $modal, fileReader, Restangular ) {
 
-    var baseDigestors = Restangular.all('digestors');
-
-    $scope.applications = Restangular.one('digestors').getList().then(function(digestors) {
-        //$scope.apis = _.sortBy(digestors, {enabled: true});
-        /*$scope.apis = digestors.sort(function(a, b) {
-            return b.enabled - a.enabled;
-        });*/
+    $scope.apis = Restangular.all('digestors').getList().$object;
+    /*$scope.applications = Restangular.one('digestors').getList().then(function(digestors) {
         $scope.apis = digestors;
+
+        Restangular.one('summary').getList().then(function(data) {
+            var summary = angular.copy(data);
+            $scope.apis.forEach(function(api){
+                var apiSummary = summary.filter(function(summary){
+                    return summary._id == api._id;
+                });
+                api.summary = apiSummary[0];
+                console.log("apiSummary: ", $scope.apis);
+            });
+        });
+
         Restangular.one('logs').getList().then(function(logs){
             $scope.logs = logs;
             $scope.apis.map(function(api) {
@@ -78,11 +97,8 @@ angular.module( 'apicatus.applications', [
             });
         });
     });
-    //Restangular.one('projects').getList().then(function(project){
-        //console.log("project", project);
-    //});
+    */
     $scope.data = [1, 4, 2, 4, 7, 2, 9, 5, 6, 4, 1, 6, 8, 2];
-
 
     $scope.newApi = function () {
         var modalInstance = $modal.open({
@@ -99,8 +115,9 @@ angular.module( 'apicatus.applications', [
         modalInstance.result.then(
             function (api) {
                 console.log("modal ok: ", api);
-                baseDigestors.post(api).then(function(result){
-                    $scope.apis.push(api);
+                Restangular.all('digestors').post(api).then(function(result) {
+                    console.log("api created ok: ", result);
+                    $scope.apis.push(result);
                 }, function(error) {
 
                 });
@@ -114,7 +131,8 @@ angular.module( 'apicatus.applications', [
     var newApiModalCtrl = function ($scope, $modalInstance, apis) {
         $scope.api = {
             name: "test123",
-            domain: "myDomain"
+            subdomain: "mySubdomain",
+            synopsis: "API Description"
         };
         $scope.ok = function() {
             console.log("ok:", apis);
@@ -126,21 +144,6 @@ angular.module( 'apicatus.applications', [
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
-    };
-    $scope.addApplication = function() {
-        $scope.apis.push({
-            _id: "5262f08d284b9963b1000001",
-            allowCrossDomain: false,
-            created: "2013-10-19T20:50:21.553Z",
-            enabled: true,
-            entries: [],
-            hits: 0,
-            lastAccess: "2013-10-19T20:50:21.553Z",
-            lastUpdate: "2013-10-19T20:50:21.553Z",
-            logging: false,
-            name: "myApi3",
-            type: "REST"
-        });
     };
 
     ////////////////////////////////////////////////////////////////////////////
@@ -196,7 +199,7 @@ angular.module( 'apicatus.applications', [
                         console.log(result);
                         //$scope.apiModel.name = result.name;
                         //$scope.apis.push(result);
-                        baseDigestors.post(result).then(function(result){
+                        Restangular.all('digestors').post(result).then(function(result){
                             $scope.apis.push(result);
                         }, function(error) {
                             alert(JSON.stringify(error, null, 4));
