@@ -25,7 +25,7 @@
 <ul class="collapse navbar-collapse navbar-ex1-collapse nav navbar-nav navbar-right navbar-user">
     <li ng-show="user" class="dropdown user-dropdown">
         <!-- a href="#" class="dropdown-toggle avatar" data-toggle="dropdown" ng-model="user">{{user.username}} <i class="arrow fa fa-angle-right fa-rotate-90"></i> <img ng-src="{{user.avatar || 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'}}"/> <span class="inbox-alert badge bk-red">2</span></a -->
-        <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown" ng-model="user">{{user.username}} <i class="arrow fa fa-angle-right fa-rotate-90"></i> <gravatar-image data-gravatar-email="user.email" data-gravatar-size="120" data-gravatar-rating="pg" data-gravatar-default="identicon" data-gravatar-secure="true"></gravatar-image><span class="inbox-alert badge bk-red">2</span></a>
+        <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown" ng-model="user">{{user.username}} <i class="arrow fa fa-angle-right fa-rotate-90"></i> <img ng-src="{{user.avatar || 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'}}"/> <span class="inbox-alert badge bk-red">2</span></a>
         <ul class="dropdown-menu">
             <!-- li role="presentation" class="dropdown-header">Projects</li -->
             <li role="menuitem" ng-repeat="project in projects" class="project" ng-class="{active: project.isActive}"><a href=""><i class="fa fa-fw" ng-class="project.isActive ? 'fa-dot-circle-o':'fa-circle-o'"></i> {{project.name}}</a></li>
@@ -41,7 +41,6 @@
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav closed" ng-model="menu">
             <li class="close-menu"><button menu-toggle class="menu-close pull-right"><i class="icon-close"></i></button></li>
-            <!-- li><a ui-sref="main.applications.list"><i class="icon-network"></i> {{ 'SIDEBAR.APIS' | translate }}</a></li -->
             <li class="accordion">
                 <div class="section">
                     <a ui-sref-active='active' ui-sref="main.applications.list"><i class="icon-network fa-fw"></i><span> {{ 'SIDEBAR.APIS' | translate }}</span></a>
@@ -61,47 +60,10 @@
                         </ul>
                     </div>
                 </div>
-                <!-- div class="section">
-                    <input type="radio" name="menu-toggle" id="section-monitoring" value="toggle" />
-                    <label for="section-monitoring"><span><i class="icon-pulse fa-fw"></i> Monitoring</span><b class="fa fa-angle-down pull-right"></b></label>
-                    <div class="content">
-                        <ul>
-                            <li ui-sref-active='active'><a ui-sref="main.dashboard.behavior"><i class="icon-event fa-fw"></i> API Usage</a></li>
-                            <li ui-sref-active='active'><a ui-sref="main.dashboard.traffic"><i class="icon-pulse fa-fw"></i> Errors and Crashes</a></li>
-                            <li ui-sref-active='active'><a ui-sref="main.dashboard.geo"><i class="icon-globe fa-fw"></i> API Performance</a></li>
-                            <li ui-sref-active='active'><a ui-sref="main.dashboard.technology"><i class="icon-stack fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.TECHNOLOGY' | translate }}</a></li>
-                        </ul>
-                    </div>
-                </div -->
             </li>
             <li class="divider"></li>
             <li ui-sref-active='active' class="secondary"><a ui-sref="main.help"><i class="icon-help fa-fw"></i> {{ 'SIDEBAR.HELP' | translate }}</a></li>
             <li ui-sref-active='active' class="secondary"><a ui-sref="main.help"><i class="icon-flag fa-fw"></i> {{ 'SIDEBAR.ABOUT' | translate }}</a></li>
         </ul>
-        <!-- ul class="nav navbar-nav side-nav closed" ng-model="menu">
-            <li class="close-menu"><button menu-toggle class="menu-close pull-right"><i class="icon-close"></i></button></li>
-            <li><a ui-sref="main.applications.list"><i class="icon-network"></i> {{ 'SIDEBAR.APIS' | translate }}</a></li>
-            <li class="dropdown">
-                <a ui-sref="main.dashboard" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-dashboard"></i> {{ 'SIDEBAR.INSPECTOR' | translate }} <b class="fa fa-angle-down"></b></a>
-                <ul class="dropdown-menu" role="menu"  aria-labelledby="dropdownMenu2">
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-signal fa-fw"></i> Traffic</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-globe fa-fw"></i> Demographics</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-random fa-fw"></i> Content</a></li>
-                </ul>
-            </li>
-            <li class="divider"></li>
-            <li class="secondary"><a href="#"><i class="icon-help fa-fw"></i> {{ 'SIDEBAR.HELP' | translate }}</a></li>
-            <li class="secondary"><a href="#"><i class="icon-about fa-fw"></i> {{ 'SIDEBAR.ABOUT' | translate }}</a></li>
-        </ul -->
-
-
-        <!-- div class="navbar-range">
-            <div class="date-container">
-                <date-range id="reportrange" class="reportrange" type="daterange" ng-model="dateRange" format="D/M/YYYY">
-                    <i class="calendar icon-calendar"></i>
-                    <span class="date">00/00/0000 - 00/00/0000</span><button><i class="arrow icon-chevron fa-rotate-90"></i></button>
-                </date-range>
-            </div>
-        </div -->
     </div>
 </div>

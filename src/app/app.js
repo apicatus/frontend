@@ -27,7 +27,7 @@ angular.module( 'apicatus', [
 ])
 
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider, $locationProvider, $translateProvider, $documentProvider, RestangularProvider, localStorageServiceProvider ) {
-    $urlRouterProvider.otherwise( '/main/home' );
+    $urlRouterProvider.otherwise( '/main/applications/list' );
     //$locationProvider.html5Mode(true);
     RestangularProvider.setBaseUrl(document.location.origin);
     RestangularProvider.setRestangularFields({
@@ -42,7 +42,7 @@ angular.module( 'apicatus', [
         prefix: '/languages/',
         suffix: '.json'
     });
-    $translateProvider.preferredLanguage('es');
+    $translateProvider.preferredLanguage('en');
     //RestangularProvider.setDefaultHttpFields({cache: true});
     localStorageServiceProvider.setPrefix('apicatus');
 })

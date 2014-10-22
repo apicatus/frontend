@@ -6,12 +6,46 @@ angular.module( 'apicatus.application', [
     'd3Service',
     'budgetDonut',
     'barChart',
-    'lineChart'
+    'lineChart',
+    'vectorMap'
 ])
-.controller( 'ApplicationCtrl', function ApplicationController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings ) {
+.config(function config( $stateProvider ) {
+    $stateProvider.state('main.applications.application', {
+        url: '/:id',
+        templateUrl: 'applications/application/application.tpl.html',
+        controller: 'ApplicationCtrl',
+        data: { pageTitle: 'Resource editor'},
+        onEnter: function(){
+            console.log("enter contacts.detail");
+        }
+    });
+})
+.controller( 'ApplicationCtrl', function ApplicationController( $scope, $location, $stateParams, $modal, $filter, $http, $timeout, Restangular, parseURL, httpSettings ) {
+
+
+    $scope.worldMap = {
+        "AF": 16.63,
+        "AL": 11.58,
+        "DZ": 158.97,
+        "AO": 85.81,
+        "AG": 1.1,
+        "AR": 351.02,
+        "AM": 8.83,
+        "AU": 1219.72,
+        "AT": 366.26,
+        "AZ": 52.17,
+        "BS": 7.54
+    };
+    $scope.waitAndActivate = function() {
+        $timeout(function(){
+            console.log("activate");
+            $scope.imActivex = true;
+        }, 0);
+    };
     $scope.httpSettings = httpSettings.settings();
     $scope.applications = Restangular.one('digestors', $stateParams.id).get().then(function(digestor) {
         $scope.api = digestor;
+        console.log("Endpoints: ", $scope.api);
         $scope.apiModel = JSON.stringify(angular.copy($scope.api), null, 4);
         // If empty fill out
         if(!$scope.api.endpoints) {
@@ -33,12 +67,6 @@ angular.module( 'apicatus.application', [
         });
     });
 
-    $scope.$watch('api.endpoints', function(newVal, oldVal, scope) {
-        console.log("api.endpoints: ", $scope.api.endpoints);
-        if(newVal === oldVal || newVal.length <= 0) {
-            return;
-        }
-    }, true);
     $scope.currentPage = 1;
     $scope.setPage = function (pageNo) {
         $scope.currentPage = pageNo;
@@ -227,8 +255,16 @@ angular.module( 'apicatus.application', [
         };
         method.demo = "$.ajax(" + JSON.stringify(options) + ")\n.then(function(response){\n\talert(response);\n});";
     };
-    $scope.demo = function(demo) {
-        var result = eval(demo);
+    $scope.demo = function(method) {
+        var result = $scope.$evalAsync(function(){
+            return eval(method.demo);
+        });
+        var url = document.location.protocol + '//' + $scope.api.name + '.' + document.location.host + method.URI;
+        $http.get(url).then(function(result, status){
+            console.log(url, result);
+            window.rr = result;
+        });
+        console.log("M: ", method);
     };
     // The modes
     $scope.editor = {

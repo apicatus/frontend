@@ -16,12 +16,7 @@
 angular.module( 'apicatus.dashboard', [
     'apicatus.dashboard.geo',
     'apicatus.dashboard.technology',
-    'apicatus.dashboard.traffic',
-    'D3Service',
-    'worldMap',
-    'budgetDonut',
-    'barChart',
-    'lineChart'
+    'apicatus.dashboard.traffic'
 ])
 
 /**

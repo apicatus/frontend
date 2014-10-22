@@ -8,7 +8,21 @@ angular.module( 'apicatus.dashboard.geo', [
     'barChart',
     'lineChart'
 ])
-.controller( 'DashboardGeoCtrl', function DashboardGeoController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings, ngTableParams ) {
+.controller( 'DashboardGeoCtrl', function DashboardGeoController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings ) {
+    $scope.worldMap = [{
+        latLng: [40.71, -74],
+        name: "New York"
+    }, {
+        latLng: [39.9, 116.4],
+        name: "Beijing"
+    }, {
+        latLng: [31.23, 121.47],
+        name: "Shanghai"
+    }, {
+        latLng: [-33.86, 151.2],
+        name: "Sydney"
+    }];
+
     Restangular.all('geo').getList().then(function(data) {
         //console.log("geo: ", angular.copy(geo));
         $scope.geoRaw = data.map(function(data, index) {
@@ -31,39 +45,6 @@ angular.module( 'apicatus.dashboard.geo', [
         });
         country.unshift(['Country', 'Hits', 'Min Response Time']);
 
-        $scope.geoData = {
-            type: "GeoChart",
-            options: {
-                height: 400,
-                animation: {
-                    duration: 1000,
-                    easing: 'inAndOut'
-                },
-                backgroundColor: "transparent",
-                colors: ['#edc951', '#eb6841'],
-                chartArea: { left: 20, top: 0, width: "80%", height: "85%"},
-                bar: { groupWidth: '75%' },
-                legend: {
-                    textStyle: { color: '#666', fontName: 'Titillium Web', fontSize: 9 }
-                },
-                tooltip: {
-                    textStyle: { color: '#666', fontName: 'Titillium Web', fontSize: 11 }
-                },
-                isStacked: true,
-                vAxis: {
-                    title: 'Total bytes transferred',
-                    titleTextStyle: { color: '#666', fontName: 'Titillium Web', italic: false },
-                    gridlines: { color: '#DDD' },
-                    minorGridlines: { color: '#eee', count: 2 },
-                    baselineColor: '#ccc'
-                },
-                hAxis: {
-                    baselineColor: '#ccc',
-                    textStyle: { color: '#666', fontName: 'Titillium Web', fontSize: 9, italic: false }
-                }
-            },
-            data: country
-        };
     }, function() {
         console.log("There was an error");
     });

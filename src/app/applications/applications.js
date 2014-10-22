@@ -24,7 +24,13 @@ angular.module( 'apicatus.applications', [
         template: '<ui-view/>',
         views: {
             "main": {
-                templateUrl: 'applications/applications.tpl.html'
+                templateUrl: 'applications/applications.tpl.html',
+                controller: 'ApplicationsCtrl as applications',
+                resolve: {
+                    apis: ['Restangular', function (Restangular) {
+                        return Restangular.all('digestors').getList().$object;
+                    }]
+                }
             }
         },
         data: { pageTitle: 'Applications' },
@@ -33,38 +39,19 @@ angular.module( 'apicatus.applications', [
     .state('main.applications.list', {
         url: '/list',
         templateUrl: 'applications/list/applications.list.tpl.html',
-        //authenticate: true,
         onEnter: function(){
             console.log("enter contacts.list");
-        }
-    })
-    .state('main.applications.application', {
-        url: '/:id',
-        templateUrl: 'applications/application/application.tpl.html',
-        controller: 'ApplicationCtrl',
-        data: { pageTitle: 'Resource editor'},
-        onEnter: function(){
-            console.log("enter contacts.detail");
         }
     });
 })
 
-.controller( 'FormCtrl', function FormController( $scope ) {
-    $scope.update = function(api) {
-        api.put().then(function(result) {
-            console.log("api updated", result);
-        });
-    };
-    $scope.remove = function(api) {
-        api.remove().then(function() {
-            $scope.apis = _.without($scope.apis, api);
-        });
-    };
-})
 // Applications controller
-.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $modal, fileReader, Restangular ) {
+.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $modal, fileReader, Restangular, apis ) {
 
-    $scope.apis = Restangular.all('digestors').getList().$object;
+    //$scope.apis = Restangular.all('digestors').getList().$object;
+
+    var applications = this.apis = apis;
+    $scope.apis = apis;
     /*$scope.applications = Restangular.one('digestors').getList().then(function(digestors) {
         $scope.apis = digestors;
 
@@ -98,18 +85,43 @@ angular.module( 'apicatus.applications', [
         });
     });
     */
-    $scope.data = [1, 4, 2, 4, 7, 2, 9, 5, 6, 4, 1, 6, 8, 2];
+    this.data = [1, 4, 2, 4, 7, 2, 9, 5, 6, 4, 1, 6, 8, 2];
+
+    this.weekdays = moment.weekdaysMin();
+
+    this.update = function(api) {
+        api.put().then(function(result) {
+            console.log("api updated", result);
+        });
+    };
+    this.remove = function(api) {
+        var that = this;
+        api.remove().then(function() {
+            that.apis = _.without(that.apis, api);
+        });
+    };
 
     $scope.newApi = function () {
+        // Please note that $modalInstance represents a modal window (instance) dependency.
+        // It is not the same as the $modal service used above.
+        var newApiModalCtrl = function ($scope, $modalInstance) {
+            $scope.api = {
+                name: "test123",
+                subdomain: "mySubdomain",
+                synopsis: "API Description"
+            };
+            $scope.submit = function () {
+                $modalInstance.close($scope.api);
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+
         var modalInstance = $modal.open({
             templateUrl: 'new_api_modal.html',
             controller: newApiModalCtrl,
-            windowClass: '',
-            resolve: {
-                apis: function () {
-                    return $scope.apis;
-                }
-            }
+            windowClass: ''
         });
 
         modalInstance.result.then(
@@ -126,25 +138,7 @@ angular.module( 'apicatus.applications', [
                 console.info('Modal dismissed at: ' + new Date());
         });
     };
-    // Please note that $modalInstance represents a modal window (instance) dependency.
-    // It is not the same as the $modal service used above.
-    var newApiModalCtrl = function ($scope, $modalInstance, apis) {
-        $scope.api = {
-            name: "test123",
-            subdomain: "mySubdomain",
-            synopsis: "API Description"
-        };
-        $scope.ok = function() {
-            console.log("ok:", apis);
-        };
-        $scope.submit = function () {
-            console.log("ok:", apis);
-            $modalInstance.close($scope.api);
-        };
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    };
+
 
     ////////////////////////////////////////////////////////////////////////////
     // Endpoints [ Create, Read, Update, Delete ]                             //
@@ -152,6 +146,7 @@ angular.module( 'apicatus.applications', [
     $scope.import = function () {
         // Please note that $modalInstance represents a modal window (instance) dependency.
         // It is not the same as the $modal service used above.
+        var that = this;
         var modalCtl = function ($scope, $modalInstance, apiModel) {
             console.log("aqui hay controler");
             $scope.apiModel = {};
@@ -162,14 +157,10 @@ angular.module( 'apicatus.applications', [
                 $modalInstance.dismiss('cancel');
             };
             $scope.readFile = function () {
-                console.log("file:", $scope.apiModel.file);
                 fileReader.readAsText($scope.apiModel.file, $scope)
                 .then(function(result) {
-                    //console.log(result);
-                    //$scope.imageSrc = result;
                     $scope.apiModel.processing = true;
                     Restangular.one('import').customPOST({format: 'blueprint', model: result}, 'test').then(function (result) {
-                        console.log(result);
                         $scope.apiModel.processing = false;
                         $scope.apiModel.name = result.name;
                     }, function(error) {
@@ -190,20 +181,21 @@ angular.module( 'apicatus.applications', [
         });
         modalInstance.result.then(
             function (apiModel) {
-                console.log("modal ok: ", apiModel);
                 fileReader.readAsText(apiModel.file, $scope)
                 .then(function(result) {
                     //console.log(result);
                     //$scope.imageSrc = result;
                     Restangular.one('import').customPOST({blueprint: result}, 'blueprint').then(function (result) {
-                        console.log(result);
                         //$scope.apiModel.name = result.name;
                         //$scope.apis.push(result);
-                        Restangular.all('digestors').post(result).then(function(result){
-                            $scope.apis.push(result);
+                        console.log("iports", applications, that.apis, $scope);
+
+                        /*Restangular.all('digestors').post(result).then(function(result){
+                            that.apis.push(result);
                         }, function(error) {
-                            alert(JSON.stringify(error, null, 4));
+                            console.log(error);
                         });
+                        */
 
                     }, function(error) {
                     });
@@ -212,6 +204,25 @@ angular.module( 'apicatus.applications', [
             function () {
                 console.info('Modal dismissed at: ' + new Date());
         });
+    };
+})
+.filter('listToMatrix', function() {
+    function listToMatrix(list, elementsPerSubArray) {
+        var matrix = [], i, k;
+
+        for (i = 0, k = -1; i < list.length; i++) {
+            if (i % elementsPerSubArray === 0) {
+                k++;
+                matrix[k] = [];
+            }
+
+            matrix[k].push(list[i]);
+        }
+
+        return matrix;
+    }
+    return function(list, elementsPerSubArray) {
+        return listToMatrix(list, elementsPerSubArray);
     };
 });
 

@@ -21,18 +21,28 @@
         <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/apple-touch-icon-114-precomposed.png">
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/apple-touch-icon-72-precomposed.png">
         <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon-57-precomposed.png">
+
         <!-- mobile viewport -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
         <!-- socket.io -->
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
         <!-- font awesome from BootstrapCDN -->
-        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
         <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
+        <!-- jvectormap -->
+        <link rel="stylesheet" rel="stylesheet" media="all" href="//jvectormap.com/css/jquery-jvectormap-2.0.0.css"/>
+
         <!-- compiled CSS --><% styles.forEach( function ( file ) { %>
         <link rel="stylesheet" type="text/css" href="<%= file %>" /><% }); %>
 
         <!-- compiled JavaScript --><% scripts.forEach( function ( file ) { %>
         <script type="text/javascript" src="<%= file %>"></script><% }); %>
+
+        <!-- jvectormap -->
+        <script src="//jvectormap.com/js/jquery-jvectormap-2.0.0.min.js"></script>
+        <script src="//jvectormap.com/js/jquery-jvectormap-world-mill-en.js"></script>
 
     </head>
     <body ng-class="{open: sideBarOpened}">

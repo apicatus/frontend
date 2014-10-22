@@ -16,13 +16,26 @@
     "APPLY": "Apply",
     "CONTINUE": "Continue",
     "ADD": "Add",
+    "REMOVE": "Remove",
     "_____ERROR": "",
     "ERROR": "Error",
     "ERROR_ON_PAGE": "An error has occured when loading data.",
     "PROBLEM_PERSISTS": "If the problem persists please contact your Account Executive.",
+
+    "USERMENU.PROFILE": "Profile",
+    "USERMENU.INBOX": "Inbox",
+    "USERMENU.LOG-OUT": "Logout",
+    "USERMENU.SETTINGS": "Settings",
+
     "SIDEBAR.APIS": "Workbench",
     "SIDEBAR.INSPECTOR": "Inspector",
     "SIDEBAR.DASHBOARD": "Dashboard",
+    "SIDEBAR.DASHBOARD.BEHAVIOR": "Behavior",
+    "SIDEBAR.DASHBOARD.TRAFFIC": "Traffic",
+    "SIDEBAR.DASHBOARD.GEOMAP": "Demographics",
+    "SIDEBAR.DASHBOARD.REAL-TIME": "RealTime",
+    "SIDEBAR.DASHBOARD.TECHNOLOGY": "Technology",
+
     "SIDEBAR.HELP": "Help",
     "SIDEBAR.ABOUT": "About",
     "APPLICATIONS.NEWAPI.TITLE": "New API",
@@ -34,5 +47,9 @@
     "APPLICATION.NEWENDPOINT.TITLE": "New Endpoint",
     "APPLICATION.NEWENDPOINT.NAME": "Endpoint name",
     "APPLICATION.NEWMETHOD.TITLE": "New Method",
-    "APPLICATION.NEWMETHOD.NAME": "Method name"
+    "APPLICATION.NEWMETHOD.NAME": "Method name",
+    "APPLICATION.NEWMETHOD.ROUTE": "Route",
+    "APPLICATION.NEWMETHOD.METHOD": "Method",
+    "APPLICATION.NEWMETHOD.CONTENTTYPE": "Content Type",
+    "APPLICATION.NEWMETHOD.STATUSCODE": "Status"
 }

@@ -1,4 +1,4 @@
-<div ng-repeat="api in applications.apis" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+<div ng-repeat="api in applications.apis" class="card-container">
     <div class="stock card" ng-class="{flip: flipped, public: api.public}">
         <div class="front">
             <div class="stock-chart" ng-class="api.enabled ? 'enabled' : 'disabled'">

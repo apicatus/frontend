@@ -1,4 +1,4 @@
-<applications ng-controller="ApplicationsCtrl" ng-init="settings.applications = settings.applications || {date: getDate(), showdisabled: false}">
+<applications ng-init="settings.applications = settings.applications || {date: getDate(), showdisabled: false}">
     <div class="row">
         <div class="col-md-12 resource-group">
             <div class="btn-toolbar" role="toolbar">
@@ -9,7 +9,7 @@
                     <button type="button" class="btn btn-default" ng-click="import()">
                         <i class="fa fa-cloud-upload"></i> Import
                     </button>
-                    <div class="btn-group">
+                    <div class="btn-group" dropdown>
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i> Sort <span class="fa fa-angle-down"></span></button>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href=""><i class="fa fa-sort-alpha-asc fa-fw"></i> Name</a></li>
@@ -23,12 +23,9 @@
             </div>
         </div>
     </div>
+    
     <div class="row">
-        <div class="col-md-12 resource-group">
-            <div class="menu app-cards-row">
-                <div ng-include="'applications/list/components/card.tpl.html'"></div>
-            </div>
-        </div>
+        <div ng-include="'applications/list/components/card.tpl.html'"></div>
     </div>
 
     <div class="row">
