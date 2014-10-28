@@ -64,7 +64,7 @@ module.exports = {
     js: [
       'lib/jquery/dist/jquery.js',
       'lib/angular/angular.js',
-      'lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
+      'lib/angular-bootstrap/ui-bootstrap-tpls.js',
       'lib/angular-ui-router/release/angular-ui-router.js',
       'lib/angular-ui-utils/ui-utils.js',
       'lib/restangular/dist/restangular.js',

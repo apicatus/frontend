@@ -8,7 +8,7 @@
             </div>
             <div class="current-price container">
                 <div class="info col-sm-6"><a ui-sref="main.applications.application({id: api._id})"><abbr>{{api.name}}</abbr></a>
-                    <time><i class="fa fa-clock-o"></i> <span timeago="{{api.lastAccess}}"></span></time>
+                    <time><i class="fa fa-clock-o"></i> <span>{{api.lastAccess | timeago}}</span></time>
                 </div>
                 <div class="changes col-sm-6">
                     <div class="value down">{{api.logs[api.logs.length-1].time}}ms</div>

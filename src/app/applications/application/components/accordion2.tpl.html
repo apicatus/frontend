@@ -19,7 +19,7 @@
                             <div class="form-group">
                                 <label for="route" class="col-lg-2 control-label">Route</label>
                                 <div class="col-lg-10">
-                                    <input type="text" class="form-control" id="route" placeholder="Route" ng-model="method.URI">
+                                    <input type="text" class="form-control" id="route" placeholder="Route" ng-model="method.URI" required ng-required="true" >
                                 </div>
                             </div>
 
@@ -122,13 +122,13 @@
                             </div>
                         </form>
                     </tab>
-                    <tab>
+                    <tab ng-controller="DemoCtrl as demo" select="myDemo = demo.create(method)">
                         <tab-heading>
                             <i class="fa fa-bolt"></i> Try
                         </tab-heading>
                         <div class="row">
                             <div class="col-md-12">
-                                <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="method.demo"></div>
+                                <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="myDemo"></div>
                             </div>
                             <div class="col-md-12">
                                 <pre class="output">{{method.demoResponse}}</pre>
@@ -137,7 +137,7 @@
                                 <div class="toolbar well well-sm">
                                     <div class="btn-toolbar" role="toolbar">
                                         <div class="btn-group">
-                                            <button class="btn btn-primary" ng-click="demo(method)"><i class="fa fa-play"></i></button>
+                                            <button class="btn btn-primary" ng-click="demo.play(myDemo)"><i class="fa fa-play"></i></button>
                                             <button class="btn btn-primary" ng-click="removeMethod($index, $index)"><i class="fa fa-circle"></i></button>
                                         </div>
                                     </div>
@@ -146,9 +146,9 @@
 
                         </div>
                     </tab>
-                    <tab>
+                    <tab ng-controller="LogsCtrl as logs" >
                         <tab-heading>
-                            <i class="fa fa-puzzle-piece"></i> Debug
+                            <i class="fa fa-puzzle-piece"></i> Logs
                         </tab-heading>
                         <table class="table table-striped log-table">
                             <thead>
@@ -161,50 +161,54 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="log in method.logs">
-                                    <td>{{log.date}}</td>
-                                    <td>{{log.query}}</td>
-                                    <td>{{log.ip}}</td>
-                                    <td class="text-center"><span class="label" ng-class="{'label-success': log.status < 300, 'label-warning': log.status >= 300 && log.status < 400, 'label-danger': log.status > 400}">{{log.status}}</span></td>
-                                    <td class="text-right">{{log.time}}</td>
+                                <tr ng-repeat="log in logs.records">
+                                    <td>{{log._source.date | date:'MM/dd/yy hh:mm a'}}</td>
+                                    <td>{{log._source.uri.search}}</td>
+                                    <td>{{log._source.ip}}</td>
+                                    <td class="text-center"><span class="label" ng-class="{'label-success': log._source.status < 300, 'label-warning': log._source.status >= 300 && log._source.status < 400, 'label-danger': log._source.status > 400}">{{log._source.status}}</span></td>
+                                    <td class="text-right">{{log._source.time}}</td>
                                 </tr>
                             </tbody>
                         </table>
+                        <pagination ng-change="logs.pageChanged(logs.currentPage)" total-items="logs.totalItems" ng-model="logs.currentPage" max-size="logs.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="logs.numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
                         <!-- pagination ng-model="method" total-items="method.logs.length" items-per-page="10" page="currentPage" max-size="10" on-select-page="setPage(page)"></pagination -->
                     </tab>
-                    <tab>
+                    <tab ng-controller="StatisticsCtrl as statistics" select="statistics.init(method)"> <!-- ng-init=" = (metrics | filter:{_id: method._id})" -->
                         <tab-heading>
                             <i class="fa fa-bar-chart-o"></i> Statistics
                         </tab-heading>
-
                         <!-- AVAIL -->
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>APP SERVER AVAILABILITY</h2>
                                 <span class="number" title="Updated about 14 seconds ago">100.0%</span>
                             </div>
-                            <div class="col-sm-9 chart">
-                                <div class="chart-container"></div>
+                            <div class="col-sm-9">
+                                <div class="chart-container statiscis">
+                                    
+                                </div>
                             </div>
                         </div>
 
                         <div class="row graph">
                             <div class="col-sm-3 legend">
-                                <h2>MEAN API RESPONSE TIME</h2>
-                                <span class="number" title="Updated about 14 seconds ago">77ms</span>
+                                <h2>AVG. API RESPONSE TIME</h2>
+                                <span class="number" title="Updated about 14 seconds ago">{{ statistics.average | number:0 }}ms</span>
                             </div>
-                            <div class="col-sm-9 chart">
-                                <div class="chart-container"></div>
+                            <div class="col-sm-9">
+                                <div class="chart-container statiscis">
+                                    <my-graph data="statistics.latency" data-unit="ms"></my-graph>
+                                </div>
                             </div>
                         </div>
 
                         <div class="row graph">
                             <div class="col-sm-3 legend">
-                                <h2>98TH PERC. WEB RESPONSE TIME</h2>
-                                <span class="number" title="Updated about 14 seconds ago">304ms</span>
+                                <h2>95TH PERC. API RESPONSE TIME</h2>
+                                <span class="number" title="Updated about 14 seconds ago">{{ statistics.percentiles['95.0'] | number:0 }}ms</span>
                             </div>
-                            <div class="col-sm-9 chart">
-                                <div class="chart-container"></div>
+                            <div class="col-sm-9">
+                                <div class="chart-container statiscis"></div>
                             </div>
                         </div>
 
@@ -213,8 +217,8 @@
                                 <h2>FAILURE RATE</h2>
                                 <span class="number" title="Updated about 14 seconds ago">0.012%</span>
                             </div>
-                            <div class="col-sm-9 chart">
-                                <div class="chart-container"></div>
+                            <div class="col-sm-9">
+                                <div class="chart-container statiscis"></div>
                             </div>
                         </div>
 
@@ -223,8 +227,55 @@
                                 <h2>EXCEPTION PERCENTAGE</h2>
                                 <span class="number" title="Updated about 14 seconds ago">1.035%</span>
                             </div>
-                            <div class="col-sm-9 chart">
-                                <div class="chart-container"></div>
+                            <div class="col-sm-9">
+                                <div class="chart-container statiscis"></div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab ng-init="bytesTransferred = (getBytesTransferred | filter:{_id: method._id})">
+                        <tab-heading>
+                            <i class="fa fa-line-chart"></i> Summary
+                        </tab-heading>
+
+                        <div class="row graph">
+                            <div class="col-sm-3 legend">
+                                <h2>TOTAL. BYTES OUT</h2>
+                                <span class="number">{{bytesTransferred[0].summary.out.total}}b</span>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="chart-container statiscis">
+                                    <stacked-bar-chart data="bytesTransferred[0].dataset" data-unit="ms"></stacked-bar-chart>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row graph">
+                            <div class="col-sm-3 legend">
+                                <h2>AVG. BYTES OUT</h2>
+                                <span class="number">{{bytesTransferred[0].summary.out.avg | number:0}}b</span>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="chart-container statiscis"></div>
+                            </div>
+                        </div>
+
+                        <div class="row graph">
+                            <div class="col-sm-3 legend">
+                                <h2>MAX. BYTES OUT</h2>
+                                <span class="number">{{bytesTransferred[0].summary.out.max}}b</span>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="chart-container statiscis"></div>
+                            </div>
+                        </div>
+
+
+                        <div class="row graph">
+                            <div class="col-sm-3 legend">
+                                <h2>MIN. BYTES OUT</h2>
+                                <span class="number">{{bytesTransferred[0].summary.out.min}}b</span>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="chart-container statiscis"></div>
                             </div>
                         </div>
                     </tab>

@@ -28,7 +28,10 @@ angular.module( 'apicatus.applications', [
                 controller: 'ApplicationsCtrl as applications',
                 resolve: {
                     apis: ['Restangular', function (Restangular) {
-                        return Restangular.all('digestors').getList().$object;
+                        return Restangular.all('digestors').getList();
+                    }],
+                    summary: ['Restangular', function (Restangular) {
+                        return Restangular.all('summary').getList();
                     }]
                 }
             }
@@ -46,12 +49,27 @@ angular.module( 'apicatus.applications', [
 })
 
 // Applications controller
-.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $modal, fileReader, Restangular, apis ) {
+.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $modal, fileReader, Restangular, apis, summary ) {
 
     //$scope.apis = Restangular.all('digestors').getList().$object;
 
     var applications = this.apis = apis;
     $scope.apis = apis;
+    $scope.summary = summary;
+    console.log("summary: ", summary);
+
+    $scope.sort = {
+        property: 'name',
+        reverse: false
+    };
+    // Change column sorting
+    $scope.sortBy = function(property) {
+        $scope.sort = {
+            property: property,
+            reverse: !$scope.sort.reverse
+        };
+        console.log("sortBy", $scope.sort);
+    };
     /*$scope.applications = Restangular.one('digestors').getList().then(function(digestors) {
         $scope.apis = digestors;
 

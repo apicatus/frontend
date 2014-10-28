@@ -10,13 +10,23 @@
                         <i class="fa fa-cloud-upload"></i> Import
                     </button>
                     <div class="btn-group" dropdown>
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i> Sort <span class="fa fa-angle-down"></span></button>
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i> {{ 'SORT' | translate }} <span class="fa fa-angle-down"></span></button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href=""><i class="fa fa-sort-alpha-asc fa-fw"></i> Name</a></li>
-                            <li><a href=""><i class="fa fa-fire fa-fw"></i> Activity</a></li>
-                            <li><a href=""><i class="fa fa-calendar fa-fw"></i> Date</a></li>
+                            <li>
+                                <a href="" ng-click="sortBy('name')"><i class="fa fa-fw" ng-class="sort.property == 'name' ? 'fa-check-square' : 'fa-square-o'"></i> {{ 'NAME' | translate }}</a>
+                            </li>
+                            <li>
+                                <a href="" ng-click="sortBy('activity')"><i class="fa fa-fw" ng-class="sort.property == 'activity' ? 'fa-check-square' : 'fa-square-o'"></i> {{ 'ACTIVITY' | translate }}</a>
+                            </li>
+                            <li>
+                                <a href="" ng-click="sortBy('lastAccess')"><i class="fa fa-fw" ng-class="sort.property == 'lastAccess' ? 'fa-check-square' : 'fa-square-o'"></i> {{ 'DATE' | translate }}</a>
+                            </li>
                             <li class="divider"></li>
-                            <li><a href="" ng-click="settings.applications.showdisabled=!settings.applications.showdisabled"><i class="fa fa-fw" ng-class="settings.applications.showdisabled ? 'fa-check-square' : 'fa-square-o'"></i> Show disabled</a></li>
+                            <li>
+                                <a href="" ng-click="showdisabled = !showdisabled">
+                                    <i class="fa fa-fw" ng-class="showdisabled ? 'fa-check-square' : 'fa-square-o'"></i> Show disabled
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

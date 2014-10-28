@@ -65,7 +65,7 @@ angular.module('ngSocket', [])
 
             return function socketFactory (options) {
                 options = options || {};
-                var socket = options.ioSocket || io.connect({ 'query': 'token=loggedInUser' });
+                var socket = options.ioSocket || io.connect({ 'query': 'token=loggedInUser', 'secure': true });
                 var prefix = options.prefix || defaultPrefix;
                 var defaultScope = options.scope || $rootScope;
 

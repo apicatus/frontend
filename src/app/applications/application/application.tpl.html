@@ -7,7 +7,7 @@
                     <button type="button" class="btn btn-default" ng-click="createEndpoint()">
                         <i class="fa fa-file-o"></i> New
                     </button>
-                    <button type="button" class="btn btn-default" ng-click="showHide=!showHide" ng-class="{active: showHide}">
+                    <button type="button" class="btn btn-default" ng-click="showSource=!showSource" ng-class="{active: showSource}">
                         <i class="fa fa-code"></i> source
                     </button>
                     <div class="btn-group">
@@ -19,7 +19,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="btn-group" ng-hide="!showHide">
+                <div class="btn-group" ng-hide="!showSource">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default" ng-click="tabs[0].active = true">
                             <i class="fa fa-save"></i> Save
@@ -29,18 +29,18 @@
                 <div class="col-md-2 pull-right master-search">
                     <input type="text" name="search" autocomplete="off" id="id_search" typeahead="endpoint.name for endpoint in api.endpoints | filter:$viewValue | limitTo:8" class="form-control" maxlength="200" placeholder="Search" ng-model="settings.application.query" name="query">
                     <span class="icon input-group-btn">
-                        <i class=" fa fa-search"></i>
+                        <i class="fa fa-search"></i>
                     </span>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row source-editor" ui-hide="!showHide">
+    <div class="row source-editor" ui-hide="!showSource" ng-controller="SourceCtrl as source" ng-init="source = source.create(api)">
         <div class="col-md-12">
-            <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="apiModel"></div>
+            <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="source"></div>
         </div>
     </div>
-    <div class="row" ng-hide="showHide" ng-repeat="endpoint in api.endpoints | filter: settings.application.query | orderBy: settings.application.orderBy">
+    <div class="row" ng-hide="showSource" ng-repeat="endpoint in api.endpoints | filter: settings.application.query | orderBy: settings.application.orderBy">
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12">
@@ -49,7 +49,7 @@
                             <i class="icon-api heading"></i>
                             <input type="text" class="resource-name" ng-model="endpoint.name" ng-disabled="edit" ng-init="edit=true" required>
                             <div class="btn-group btn-group-sm pull-right">
-                                <button type="button" class="btn btn-default" ng-click="createMethod(endpoint)"><i class="fa fa-file-o"></i></button>
+                                <button type="button" class="btn btn-default" ng-click="createMethod(endpoint, $index)"><i class="fa fa-file-o"></i></button>
                                 <button type="button" class="btn btn-default"><i class="fa fa-plus-square-o"></i></button>
                                 <button type="button" class="btn btn-default fg-red" ng-click="deleteEndpoint(api.endpoints, $index)"><i class="fa fa-trash-o"></i></button>
                             </div>
@@ -130,7 +130,7 @@
             </div>
             <div class="form-group has-feedback">
                 <label for="route">{{ 'APPLICATION.NEWMETHOD.ROUTE' | translate }}</label>
-                <input type="text" class="form-control" id="route" placeholder="{{ 'APPLICATION.NEWMETHOD.ROUTE' | translate }}" name="route" required ng-required="true" ng-model="method.route">
+                <input type="text" class="form-control" id="route" placeholder="{{ 'APPLICATION.NEWMETHOD.ROUTE' | translate }}" name="route" required ng-required="true" ng-model="method.URI">
             </div>
             <!-- div class="form-group has-feedback">
                 <label for="proxy">{{ 'APPLICATION.NEWMETHOD.PROXY' | translate }}</label>

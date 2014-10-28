@@ -1,4 +1,4 @@
-<div ng-repeat="api in applications.apis" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+<div ng-repeat="api in applications.apis | orderBy:sort.property:sort.reverse" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
     <div class="stock card" ng-class="{flip: flipped, public: api.public}">
         <div class="front">
             <div class="stock-chart" ng-class="api.enabled ? 'enabled' : 'disabled'">
@@ -8,7 +8,7 @@
             </div>
             <div class="current-price container">
                 <div class="info col-sm-6"><a ui-sref="main.applications.application({id: api._id})"><abbr>{{api.name}}</abbr></a>
-                    <time><i class="fa fa-clock-o"></i> <span timeago="{{api.lastAccess}}"></span></time>
+                    <time><i class="fa fa-clock-o"></i> <span>{{api.lastAccess | timeago}}</span></time>
                 </div>
                 <div class="changes col-sm-6">
                     <div class="value down">{{api.logs[api.logs.length-1].time}}ms</div>
@@ -28,9 +28,12 @@
                 </div>
             </div>
             <div class="summary container">
-                <div class="col-lg-6 col-sm-6"><a><strong>{{api.summary.total || 0}}</strong><span>requests</span></a>
+                <div class="col-lg-6 col-sm-6">
+                    <a href="">
+                        <strong>{{ (summary | filter:{_id: api._id})[0].total || 0 }}</strong><span>requests</span>
+                    </a>
                 </div>
-                <div class="col-lg-6 col-sm-6"><a><strong>{{api.summary.avg_time || '&#x221e; '}}ms</strong><span>Average</span></a>
+                <div class="col-lg-6 col-sm-6"><a><strong>{{ (summary | filter:{_id: api._id})[0].avg_time | number:1 }} ms</strong><span>Average</span></a>
                 </div>
             </div>
         </div>

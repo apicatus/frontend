@@ -78,7 +78,7 @@
                     <tbody>
                       <tr ng-repeat="api in apis">
                         <td>{{api.name}}</td>
-                        <td timeago="{{api.created}}">{{api.created}}</td>
+                        <td>{{api.created | timeago}}</td>
                         <td><span class="label" ng-class="api.enabled ? 'label-success' : 'label-danger'">{{api.enabled}}</span></td>
                         <td><span class="label" ng-class="api.public ? 'label-success' : 'label-danger'">{{api.public}}</span></td>
                         <td><span class="label" ng-class="api.logging ? 'label-success' : 'label-danger'">{{api.logging}}</span></td>

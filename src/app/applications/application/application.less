@@ -251,12 +251,40 @@ application {
                 font-weight: bold;
             }
         }
-        .chart {
-            .chart-container {
-                height: 120px;
-                border: 1px solid @gray-light;
-                border-radius: 3px;
-            }
+    }
+
+    .statiscis {
+        height: 120px;
+        border: 1px solid @gray-light;
+        border-radius: 3px;
+        padding: 10px;
+        box-sizing: border-box;
+        my-graph, stacked-bar-chart {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        path.path {
+            stroke: @brand-primary;
+            stroke-width: 2px;
+            stroke-opacity: 1;
+            fill: none;
+        }
+        .axis line, .graph .axis path {
+            stroke-width: 1px;
+            fill: none;
+            stroke: #eee;
+            shape-rendering: crispEdges;
+        }
+        .axis path {
+            stroke-width: 1px;
+            fill: none;
+            stroke: #eee;
+            shape-rendering: crispEdges;
+        }
+        text {
+            font-size: 0.85em;
+            fill: @gray;
         }
     }
     /* LOG TABLE */
@@ -375,5 +403,8 @@ application {
         border: none;
         border-radius: 0px;
         height: 80px;
+    }
+    .pagination {
+        margin-bottom: 5px;
     }
 }

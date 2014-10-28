@@ -154,7 +154,7 @@
                         <table class="table table-striped log-table" show-filter="false" ng-table="method.tableParams">
                             <tbody>
                                 <tr ng-repeat="log in $data">
-                                    <td data-title="'Date'" sortable="'date'" timeago="{{log.date}}">{{log.date}}</td>
+                                    <td data-title="'Date'" sortable="'date'">{{log.date | timeago}}</td>
                                     <td data-title="'Query'" sortable="'query'">{{log.query}}</td>
                                     <td data-title="'IP'" sortable="'ip'" class="text-center">{{log.ip}}</td>
                                     <td data-title="'Status'" sortable="'status'" class="text-center"><span class="label" ng-class="{'label-success': log.status < 300, 'label-warning': log.status >= 300 && log.status < 400, 'label-danger': log.status > 400}">{{log.status}}</span></td>

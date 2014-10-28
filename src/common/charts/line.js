@@ -19,11 +19,11 @@ charts.line = function module() {
             var _key =  _selection.node().getAttribute('key') || 'value';
 
             _data.map(function(data) {
-                data.date = new Date(data.date);
+                data.date = new Date(data.time);
             });
             var x = d3.time.scale()
                 .range([0, chartW])
-                .domain(d3.extent(_data, function(d) { return d.date; }));
+                .domain(d3.extent(_data, function(d) { return d.time; }));
 
             var y = d3.scale.linear()
                 .range([chartH, 0])
@@ -38,7 +38,7 @@ charts.line = function module() {
                 .orient("left");
 
             var line = d3.svg.line()
-                .x(function(d) { return x(d.date); })
+                .x(function(d) { return x(d.time); })
                 .y(function(d) { return y(d[_key]); });
 
             var barW = chartW / _data.length;

@@ -2,26 +2,71 @@
 /*jshint newcap: false */
 
 angular.module( 'apicatus.application', [
-    'D3Service',
-    'd3Service',
-    'budgetDonut',
-    'barChart',
-    'lineChart',
-    'vectorMap'
+    'ui.ace',
+    'vectorMap',
+    'myGraph',
+    'stackedBarChart'
 ])
+.factory('MetricsService', ['$cacheFactory', 'Restangular', function($cacheFactory, Restangular) {
+    var route = 'metrics';
+    var cache = $cacheFactory(route);
+    return Restangular
+        .withConfig(function(RestangularConfigurer) {
+            RestangularConfigurer.setDefaultHttpFields({cache: cache});
+        })
+        .extendCollection(route, function(collection) {
+            collection.clearCache = function() {
+                console.log("extendModel.clearCache: ", collection);
+                cache.removeAll();
+            };
+            collection.getMethodData = function(id) {
+                console.log("extendModel.getMethodData: ", id);
+            };
+            return collection;
+        })
+        .extendModel(route, function(metrics) {
+            metrics.clearCache = function() {
+                console.log("extendModel.clearCache: ", id);
+                cache.removeAll();
+            };
+            metrics.getMethodData = function(id) {
+                console.log("extendModel.getMethodData: ", id);
+            };
+            return metrics;
+        })
+        .service(route);
+}])
 .config(function config( $stateProvider ) {
     $stateProvider.state('main.applications.application', {
         url: '/:id',
         templateUrl: 'applications/application/application.tpl.html',
         controller: 'ApplicationCtrl',
+        resolve: {
+            api: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
+                return Restangular.one('digestors', $stateParams.id).get();
+            }],
+            logs: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
+                return [];//Restangular.all('logs').getList({digestor: $stateParams.id, limit: 10});
+            }],
+            /*metrics: ['$stateParams', 'Restangular', 'MetricsService', function ($stateParams, Restangular, MetricsService) {
+                return Restangular.one('metrics').getList($stateParams.id, {limit: 10});
+            }],*/
+            getBytesTransferred: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
+                return Restangular.one('getBytesTransferred').getList($stateParams.id, {limit: 10});
+            }]
+
+            /*,
+            performance: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
+                return Restangular.one('metrics', $stateParams.id).all('performance').getList({digestor: $stateParams.id, limit: 0});
+            }]*/
+        },
         data: { pageTitle: 'Resource editor'},
         onEnter: function(){
-            console.log("enter contacts.detail");
+            console.log("enter application.detail");
         }
     });
 })
-.controller( 'ApplicationCtrl', function ApplicationController( $scope, $location, $stateParams, $modal, $filter, $http, $timeout, Restangular, parseURL, httpSettings ) {
-
+.controller( 'ApplicationCtrl', function ApplicationController( $scope, $timeout, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings, api) {
 
     $scope.worldMap = {
         "AF": 16.63,
@@ -36,16 +81,45 @@ angular.module( 'apicatus.application', [
         "AZ": 52.17,
         "BS": 7.54
     };
-    $scope.waitAndActivate = function() {
-        $timeout(function(){
-            console.log("activate");
-            $scope.imActivex = true;
-        }, 0);
-    };
     $scope.httpSettings = httpSettings.settings();
+    $scope.api = api;
+    /*
+    $scope.logs = logs;
+    $scope.metrics = metrics;
+    $scope.getBytesTransferred = getBytesTransferred;
+    $scope.percentiles = metrics.percentiles;
+    */
+
+    /*
+    $scope.percentiles = metrics.map(function(metric, index) {
+        return {_id: metric._id, percentiles: (function(arr) {
+            function getPercentile(percentile, array) {
+                var index = percentile * arr.length;
+                var nearest = Math.floor(index);
+                if(index % 1 === 0) {
+                    return (array[nearest-1] + array[nearest]) / 2;
+                } else {
+                    return array[nearest];
+                }
+            }
+            var percentiles = [];
+            percentiles[98] = getPercentile(0.98, arr);
+            percentiles[90] = getPercentile(0.90, arr);
+
+            return percentiles;
+        })
+        (
+            metric.dataset.map(function(set){
+                return set.data;
+            })
+            .sort(function(a, b){
+                return a-b;
+            })
+        )};
+    });*/
+    /*
     $scope.applications = Restangular.one('digestors', $stateParams.id).get().then(function(digestor) {
         $scope.api = digestor;
-        console.log("Endpoints: ", $scope.api);
         $scope.apiModel = JSON.stringify(angular.copy($scope.api), null, 4);
         // If empty fill out
         if(!$scope.api.endpoints) {
@@ -66,11 +140,7 @@ angular.module( 'apicatus.application', [
             }
         });
     });
-
-    $scope.currentPage = 1;
-    $scope.setPage = function (pageNo) {
-        $scope.currentPage = pageNo;
-    };
+    */
     $scope.save = function(api) {
         $scope.api.put();
     };
@@ -123,14 +193,6 @@ angular.module( 'apicatus.application', [
         });
     };
 
-    $scope.createEndpoint2 = function (api) {
-        var endpoint = {
-            name: "Resource group",
-            methods: []
-        };
-        $scope.api.endpoints.push(endpoint);
-        $scope.api.put();
-    };
     $scope.updateEndpoint = function(endpoint, $index) {
         $scope.api.put();
     };
@@ -141,42 +203,22 @@ angular.module( 'apicatus.application', [
     ////////////////////////////////////////////////////////////////////////////
     // Methods [ Create, Read, Update, Delete ]                               //
     ////////////////////////////////////////////////////////////////////////////
-    /*$scope.createMethod = function(endpoint) {
-        var method = {
-            "name": "Method XX1",
-            "synopsis": "Grabs information from the A1 data set",
-            "method": "GET",
-            "URI": "/myroute",
-            "response": {
-                "contentType": "application/json",
-                "statusCode": 200
-            }
-        };
-        $scope.createDemo(method);
-        endpoint.methods.push(method);
-        //$scope.api.put();
-    };
-    */
-    $scope.createMethod = function ($endpoint) {
+    $scope.createMethod = function (endpoint, $index) {
         // Please note that $modalInstance represents a modal window (instance) dependency.
         // It is not the same as the $modal service used above.
-        var modalCtl = function ($scope, $modalInstance, method) {
+        var modalCtl = function ($scope, $modalInstance) {
             $scope.httpSettings = httpSettings.settings();
             $scope.method = {
                 name: "",
                 synopsis: "Grabs information from the A1 data set",
                 method: "GET",
-                URI: "/myroute",
+                URI: "",
                 response: {
                     "contentType": "application/json",
                     "statusCode": 200
                 }
             };
-            $scope.ok = function() {
-                console.log("ok:", method);
-            };
             $scope.submit = function () {
-                console.log("ok:", method);
                 $modalInstance.close($scope.method);
             };
             $scope.cancel = function () {
@@ -186,26 +228,17 @@ angular.module( 'apicatus.application', [
         var modalInstance = $modal.open({
             templateUrl: 'new_method_modal.html',
             controller: modalCtl,
-            windowClass: '',
-            resolve: {
-                method: function () {
-                    return $scope.method;
-                }
-            }
+            windowClass: ''
         });
         modalInstance.result.then(
             function (method) {
-                $endpoint.methods.push(method);
                 console.log("modal ok: ", method);
-                //$scope.api.endpoints.push(endpoint);
-                //$scope.api.put();
-
-                /*
+                endpoint.methods.push(method);
                 $scope.api.put().then(function(result) {
+                    console.log("PUT: ", result);
                 }, function(error) {
-                    $scope.api.endpoints.pop();
+                    endpoint.methods.splice($index, 1);
                 });
-                */
             },
             function () {
                 console.info('Modal dismissed at: ' + new Date());
@@ -241,7 +274,6 @@ angular.module( 'apicatus.application', [
     };
 
     $scope.removeHeader = function(method, header, $index) {
-        _.uniq([{ 'x': 1 }, { 'x': 2 }, { 'x': 1 }], 'x');
         method.response.headers.splice($index, 1);
     };
     // API Demo
@@ -259,12 +291,6 @@ angular.module( 'apicatus.application', [
         var result = $scope.$evalAsync(function(){
             return eval(method.demo);
         });
-        var url = document.location.protocol + '//' + $scope.api.name + '.' + document.location.host + method.URI;
-        $http.get(url).then(function(result, status){
-            console.log(url, result);
-            window.rr = result;
-        });
-        console.log("M: ", method);
     };
     // The modes
     $scope.editor = {
@@ -285,11 +311,92 @@ angular.module( 'apicatus.application', [
         }
     };
 })
-// We already have a limitTo filter built-in to angular,
-// let's make a startFrom filter
-.filter('startFrom', function() {
-    return function(input, start) {
-        start = +start; //parse to int
-        return input.slice(start);
+.controller( 'DemoCtrl', function DemoController($scope, parseURL, Restangular) {
+
+    var demo = this;
+    // Create demo code for method
+    this.create = function(method) {
+        var serviceUrl = parseURL.parse(Restangular.configuration.baseUrl);
+        var options = {
+            type: method.method.toUpperCase(),
+            url: serviceUrl.protocol + "://" + $scope.api.name + "." + serviceUrl.host + ":" + serviceUrl.port + method.URI,
+            data: {}
+        };
+        return "$.ajax(" + JSON.stringify(options) + ")\n.then(function(response){\n\talert(JSON.stringify(response, null, 4));\n});";
     };
-});
+    // Play method demo
+    this.play = function(demo) {
+        console.log("play demo");
+        var result = $scope.$evalAsync(function(){
+            return eval(demo);
+        });
+    };
+})
+.controller( 'SourceCtrl', function SourceController() {
+
+    var source = this;
+
+    this.create = function(api) {
+        return JSON.stringify(api, null, 4);
+    };
+    this.save = function(model) {
+        var api = JSON.parse(api);
+        console.log(api);
+    };
+})
+.controller( 'LogsCtrl', ['Restangular', function LogsController(Restangular) {
+
+    var logs = this;
+    logs.currentPage = 1;
+    logs.maxSize = 10;
+    logs.totalItems = 0;
+
+    this.load = function(method) {
+        var limit = logs.maxSize;
+        var from = (logs.currentPage - 1) * logs.maxSize;
+        if(logs.currentPage > 1 && (logs.currentPage * logs.maxSize > logs.totalItems)) {
+            limit = (logs.totalItems - (logs.currentPage - 1) * logs.maxSize);
+            console.log("limit: ", limit, " from: ", from);
+        }
+        Restangular.one('logs').get({method: method._id, limit: limit, from: from}).then(function(records) {
+            logs.totalItems = records.total;
+            logs.records = records.hits;
+        }, function(error) {
+            console.log("error getting logs: ", error);
+        });
+    };
+    this.pageChanged = function(page) {
+        logs.load(logs.method);
+        console.log("pageChanged: ", page, logs.currentPage);
+    };
+
+
+
+}])
+.controller( 'StatisticsCtrl', ['$timeout', 'Restangular', function StatisticsController($timeout, Restangular) {
+
+    var statistics = this;
+
+    statistics.load = function(method) {
+        Restangular.one('metrics', method._id).get().then(function(records) {
+            statistics.percentiles = records.percentiles;
+            statistics.average = records.average;
+            statistics.latency = records.letancy;
+        }, function(error) {
+            console.log("error getting logs: ", error);
+        });
+        // Auto Update 
+        /*
+        $timeout(function(){
+            statistics.load(method);
+        }, 1500);
+        */
+    };
+    statistics.init = function(method) {
+        statistics.method = method;
+        statistics.load(statistics.method);
+    };
+}]);
+
+
+

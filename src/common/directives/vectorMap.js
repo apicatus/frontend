@@ -8,6 +8,7 @@ angular.module('vectorMap', [])
         link: function (scope, element, attrs, ngModel) {
             var map = null;
 
+            console.log("VECTORMAP");
 
             scope.$watch(attrs.ngModel, function () {
                 $timeout(function() {
