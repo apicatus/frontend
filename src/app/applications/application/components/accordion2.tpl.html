@@ -226,7 +226,10 @@
                                 <span class="number" title="Updated about 14 seconds ago">{{ statistics.percentiles['95.0'] | number:0 }}ms</span>
                             </div>
                             <div class="col-sm-9">
-                                <div class="chart-container statiscis"></div>
+                                <div class="chart-container statiscis">
+                                    <bivariate-chart data="statistics.timestatistics" timestamp-key="key" data-unit="ms"></bivariate-chart>
+                                </div>
+
                             </div>
                         </div>
 

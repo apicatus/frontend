@@ -5,7 +5,8 @@ angular.module( 'apicatus.application', [
     'ui.ace',
     'vectorMap',
     'myGraph',
-    'stackedBarChart'
+    'stackedBarChart',
+    'bivariateChart'
 ])
 .factory('MetricsService', ['$cacheFactory', 'Restangular', function($cacheFactory, Restangular) {
     var route = 'metrics';
@@ -444,7 +445,7 @@ angular.module( 'apicatus.application', [
 
         ///analitics/:entity/:id
         Restangular.one('timestatistics/method', method._id).getList().then(function(records) {
-            console.log("timestatistics: ", records);
+            statistics.timestatistics = records;
         }, function(error) {
             console.log("error getting analitics: ", error);
         });

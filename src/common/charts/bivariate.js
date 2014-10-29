@@ -9,6 +9,9 @@ charts.bivariate = function module() {
     var svg, container = null, duration = 650;
     var stack = d3.layout.stack();
     var dispatch = d3.dispatch('customHover');
+    var keys = {
+        timestamp: 'key'
+    };
     function exports(_selection) {
         _selection.each(function(_data) {
             if(!_data) {
@@ -16,13 +19,15 @@ charts.bivariate = function module() {
             }
             var graph = this;
 
-            function draw(dataset) {
+            function draw(data) {
                 var size = {
                     'width': width - margin.left - margin.right,
                     'height': height - margin.top - margin.bottom
                 };
-                var dateStart = dataset[0][0].time;
-                var dateEnd = dataset[0][dataset[0].length - 1].time;
+                console.log("data: ", data);
+                var pathContainer = null;
+                var dateStart = data[0][keys.timestamp];
+                var dateEnd = data[data.length - 1][keys.timestamp];
                 var daySpan = Math.round((dateEnd - dateStart) / (1000 * 60 * 60 * 24));
                 var ticks, subs;
 
@@ -37,21 +42,22 @@ charts.bivariate = function module() {
                     subs = 6;
                 }
 
+                console.log("data: ", daySpan);
                 //Set up scales
                 var xScale = d3.time.scale()
                     //.domain([new Date(dataset[0][0].time), d3.time.minute.offset(new Date(dataset[0][dataset[0].length - 1].time), 8)])
-                    .domain(d3.extent(data, function(d) { return d.date; }))
+                    .domain(d3.extent(data, function(d) { return d[keys.timestamp]; }))
                     .rangeRound([0, size.width]);
 
                 var yScale = d3.scale.linear()
-                    .domain([d3.min(data, function(d) { return d.min; }), d3.max(data, function(d) { return d.max; })])
+                    .domain([d3.min(data, function(d) { return d.time_stats.min; }), d3.max(data, function(d) { return d.time_stats.max; })])
                     .range([size.height, 0]);
 
                 var xAxis = d3.svg.axis()
                     .scale(xScale)
                     .tickSize(5)
-                    //.tickSubdivide(subs)
-                    //.ticks(ticks)
+                    .tickSubdivide(subs)
+                    .ticks(ticks)
                     .orient("bottom")
                     .tickFormat(function(d) {
                         if (daySpan <= 1) {
@@ -68,9 +74,9 @@ charts.bivariate = function module() {
                     .ticks(2);
 
                 var area = d3.svg.area()
-                    .x(function(d) { return x(d.date); })
-                    .y0(function(d) { return y(d.min); })
-                    .y1(function(d) { return y(d.max); });
+                    .x(function(d) { return xScale(d[keys.timestamp]); })
+                    .y0(function(d) { return yScale(d.time_stats.min); })
+                    .y1(function(d) { return yScale(d.time_stats.max); });
                 
                 //Create SVG element
                 if(!svg) {
@@ -78,28 +84,45 @@ charts.bivariate = function module() {
                         .append("svg")
                         .attr("width", "100%")
                         .attr("height", "100%");
+                    
+                    pathContainer = svg.append("g")
+                        .attr("transform", "translate(" + margin.left + ",0)");
                 } else {
                     svg.select(".area")
                         .datum(data)
                         .attr("class", "area")
+                        .style("fill", "#49c5b1")
+                        .style("fill-opacity", 0.5)
                         .attr("d", area);
                     return;
                 }
-                
-                svg.append("path")
-                    .datum(data)
-                    .attr("class", "area")
-                    .attr("d", area);
 
                 svg.append("g")
                     .attr("class", "x axis")
                     .attr("transform", "translate(50," + size.height + ")")
                     .call(xAxis);
 
-                svg.append("g")
+                var g = svg.append("g")
                     .attr("class", "y axis")
                     .attr("transform", "translate(" + margin.left + ",0)")
-                    .call(yAxis);
+                    .call(yAxis)
+                    /*.insert("g", ".bars")         
+                    .attr("class", "grid horizontal")
+                    .call(d3.svg.axis().scale(yScale)
+                        .orient("left")
+                        .tickPadding(5)
+                        .ticks(2)
+                        .tickSize(-(size.width), 0, 0)
+                        .tickFormat("")
+                    )*/;
+
+                pathContainer.append("path")
+                    .datum(data)
+                    .attr("class", "area")
+                    .style("stroke", "#49c5b1")
+                    .style("fill", "#49c5b1")
+                    .style("fill-opacity", 0.5)
+                    .attr("d", area);
 
             }
 
@@ -126,6 +149,13 @@ charts.bivariate = function module() {
             return gap;
         }
         gap = _x;
+        return this;
+    };
+    exports.timestampKey = function(_x) {
+        if (!arguments.length) {
+            return keys.timestamp;
+        }
+        keys.timestamp = _x;
         return this;
     };
     exports.axis = function(_xAxis, _yAxis) {

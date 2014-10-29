@@ -29,12 +29,11 @@ angular.module('stackedBarChart', ['D3Service'])
             });
 
             var render = function(data, canvas) {
-                var width = canvas[0].offsetWidth;
-                var height = canvas[0].offsetHeight;
-                console.log("height: " + height + " width: " + width);
-                chartEl.call(chart.height(height));
-                chartEl.call(chart.width(width));
                 scope.$watchCollection('data', function (newVal, oldVal) {
+                    var width = canvas[0].offsetWidth;
+                    var height = canvas[0].offsetHeight;
+                    chartEl.call(chart.height(height));
+                    chartEl.call(chart.width(width));
                     chartEl.datum(newVal).call(chart);
                 }, true);
             };
