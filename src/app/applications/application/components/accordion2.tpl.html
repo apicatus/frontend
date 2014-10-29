@@ -45,71 +45,89 @@
                                 </div>
                             </div>
                             <fieldset ng-disabled="method.proxy.enabled" ng-hide="method.proxy.enabled">
-                            <div class="form-group">
-                                <label for="contentType" class="col-lg-2 control-label">Content type</label>
-                                <div class="col-lg-10">
-                                    <label class="label-select">
-                                        <!-- select class="" ng-init="method.response.contentType = httpSettings.contentTypes[method.produces].id" ng-model="method.produces.contentType" ng-options="contentTypes.id as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes"></select -->
-                                        <!-- select ui-select2="" style="width:340px" class="col-lg-2" ng-model="method.response.contentType" ng-options="contentTypes.label as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes"></select -->
-                                        <span class="custom-dropdown">
-                                            <select class="form-control custom-dropdown" id="contentType" ng-model="method.response.contentType" ng-options="contentTypes.label as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes">
-                                                <option></option>
-                                            </select>
-                                        </span>
-                                    </label>
+                                <div class="form-group">
+                                    <label for="contentType" class="col-lg-2 control-label">Content type</label>
+                                    <div class="col-lg-10">
+                                        <label class="label-select">
+                                            <!-- select class="" ng-init="method.response.contentType = httpSettings.contentTypes[method.produces].id" ng-model="method.produces.contentType" ng-options="contentTypes.id as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes"></select -->
+                                            <!-- select ui-select2="" style="width:340px" class="col-lg-2" ng-model="method.response.contentType" ng-options="contentTypes.label as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes"></select -->
+                                            <span class="custom-dropdown">
+                                                <select class="form-control custom-dropdown" id="contentType" ng-model="method.response.contentType" ng-options="contentTypes.label as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes">
+                                                    <option></option>
+                                                </select>
+                                            </span>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- CUSTOM HEADERS -->
-                            <div class="form-group">
-                                <label for="inputPassword1" class="col-lg-2 control-label">headers</label>
-                                <div class="col-lg-10">
-                                    <div class="row" ng-model="header">
-                                        <div class="col-xs-4">
-                                            <input type="text" class="form-control" placeholder="Key" ng-model="header.name" name="headerName">
-                                            <span class="help-block" ng-show="form.headerName.$error.required">Required</span>
+                                <!-- CUSTOM HEADERS -->
+                                <div class="form-group">
+                                    <label for="inputPassword1" class="col-lg-2 control-label">headers</label>
+                                    <div class="col-lg-10">
+                                        <div class="row" ng-model="header">
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" placeholder="Key" ng-model="header.name" name="headerName">
+                                                <span class="help-block" ng-show="form.headerName.$error.required">Required</span>
+                                            </div>
+                                            <div class="col-xs-7">
+                                                <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="btn-group pull-right">
+                                                    <button type="button" class="btn btn-default" ng-click="addHeader(method, header, $scope)"><i class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-xs-7">
-                                            <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
-                                        </div>
-                                        <div class="col-xs-1">
-                                            <div class="btn-group pull-right">
-                                                <button type="button" class="btn btn-default" ng-click="addHeader(method, header, $scope)"><i class="fa fa-plus"></i></button>
+                                        <div class="row" ng-repeat="header in method.response.headers">
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" placeholder="Key" ng-model="header.name">
+                                            </div>
+                                            <div class="col-xs-7">
+                                                <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="btn-group pull-right">
+                                                    <button type="button" class="btn btn-danger" ng-click="removeHeader(method, header, $index)"><i class="fa fa-times"></i></button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row" ng-repeat="header in method.response.headers">
-                                        <div class="col-xs-4">
-                                            <input type="text" class="form-control" placeholder="Key" ng-model="header.name">
-                                        </div>
-                                        <div class="col-xs-7">
-                                            <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
-                                        </div>
-                                        <div class="col-xs-1">
-                                            <div class="btn-group pull-right">
-                                                <button type="button" class="btn btn-danger" ng-click="removeHeader(method, header, $index)"><i class="fa fa-times"></i></button>
-                                            </div>
-                                        </div>
+                                </div>
+                                <!-- Headers -->
+                                <div class="form-group">
+                                    <label for="statusCode" class="col-lg-2 control-label">Status Code</label>
+                                    <div class="col-lg-10">
+                                        <label class="label-select">
+                                            <span class="custom-dropdown">
+                                                <select class="form-control custom-dropdown" id="statusCode" ng-model="method.response.statusCode" ng-options="status.id as status.label group by status.group for status in httpSettings.statuses"></select>
+                                            </span>
+                                        </label>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Headers -->
-                            <div class="form-group">
-                                <label for="statusCode" class="col-lg-2 control-label">Status Code</label>
-                                <div class="col-lg-10">
-                                    <label class="label-select">
-                                        <span class="custom-dropdown">
-                                            <select class="form-control custom-dropdown" id="statusCode" ng-model="method.response.statusCode" ng-options="status.id as status.label group by status.group for status in httpSettings.statuses"></select>
-                                        </span>
-                                    </label>
+                                <!-- Response -->
+                                <div class="form-group">
+                                    <label for="inputPassword1" class="col-lg-2 control-label">Response Body</label>
+                                    <div class="col-lg-10">
+                                        <tabset>
+                                            <tab>
+                                                <tab-heading>
+                                                    <i class="fa fa-cubes"></i> Body data
+                                                </tab-heading>
+                                                <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="method.response.body"></div>
+                                            </tab>
+                                            <tab disabled="method.response.contentType != 'application/json'">
+                                                <tab-heading>
+                                                    <i class="fa fa-code"></i> Schema
+                                                </tab-heading>
+                                                <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="method.response.validator.schema"></div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" ng-model="method.response.validator.enabled"> Enable
+                                                    </label>
+                                                </div>
+                                            </tab>
+                                        </tabset>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Response -->
-                            <div class="form-group">
-                                <label for="inputPassword1" class="col-lg-2 control-label">Response Body</label>
-                                <div class="col-lg-10">
-                                    <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="method.response.body"></div>
-                                </div>
-                            </div>
                             </fieldset>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-lg-10">
@@ -146,7 +164,7 @@
 
                         </div>
                     </tab>
-                    <tab ng-controller="LogsCtrl as logs" >
+                    <tab ng-controller="LogsCtrl as logs" select="logs.init(method)">
                         <tab-heading>
                             <i class="fa fa-puzzle-piece"></i> Logs
                         </tab-heading>
@@ -155,17 +173,17 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Query</th>
-                                    <th>IP</th>
-                                    <th>Status</th>
-                                    <th>Latency (ms)</th>
+                                    <th class="text-center">IP</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-right">Latency (ms)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="log in logs.records">
                                     <td>{{log._source.date | date:'MM/dd/yy hh:mm a'}}</td>
                                     <td>{{log._source.uri.search}}</td>
-                                    <td>{{log._source.ip}}</td>
-                                    <td class="text-center"><span class="label" ng-class="{'label-success': log._source.status < 300, 'label-warning': log._source.status >= 300 && log._source.status < 400, 'label-danger': log._source.status > 400}">{{log._source.status}}</span></td>
+                                    <td class="text-center">{{log._source.ip}}</td>
+                                    <td class="text-center"><span class="label" ng-class="{'label-success': log._source.status < 300, 'label-warning': log._source.status >= 300 && log._source.status < 400, 'label-danger': log._source.status >= 400}">{{log._source.status}}</span></td>
                                     <td class="text-right">{{log._source.time}}</td>
                                 </tr>
                             </tbody>
@@ -181,11 +199,11 @@
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>APP SERVER AVAILABILITY</h2>
-                                <span class="number" title="Updated about 14 seconds ago">100.0%</span>
+                                <span class="number" title="Updated about 14 seconds ago">{{statistics.terms.availability | number:2}}%</span>
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    
+                                    <stacked-bar-chart data="statistics.availability"></stacked-bar-chart>
                                 </div>
                             </div>
                         </div>
@@ -215,10 +233,12 @@
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>FAILURE RATE</h2>
-                                <span class="number" title="Updated about 14 seconds ago">0.012%</span>
+                                <span class="number" title="Updated about 14 seconds ago">{{statistics.terms.failRate | number:2}}%</span>
                             </div>
                             <div class="col-sm-9">
-                                <div class="chart-container statiscis"></div>
+                                <div class="chart-container statiscis">
+                                    <stacked-bar-chart data="statistics.statuses"></stacked-bar-chart>
+                                </div>
                             </div>
                         </div>
 
@@ -244,7 +264,7 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    <stacked-bar-chart data="bytesTransferred[0].dataset" data-unit="ms"></stacked-bar-chart>
+                                    <!-- stacked-bar-chart data="[1,2,3,4,5]" data-unit="ms"></stacked-bar-chart -->
                                 </div>
                             </div>
                         </div>

@@ -1,95 +1,223 @@
 var charts = charts || {};
 
 charts.stacked = function module() {
-    var margin = {top: 5, right: 5, bottom: 0, left: 5},
+    var margin = {top: 5, right: 20, bottom: 16, left: 50},
         width = 500,
         height = 500,
         gap = 0,
         ease = 'cubic-in-out';
-    var svg, duration = 650;
-
+    var svg, container = null, duration = 650;
+    var stack = d3.layout.stack();
     var dispatch = d3.dispatch('customHover');
     function exports(_selection) {
         _selection.each(function(_data) {
-            _data = {
-                startDate: new Date(2014, 1, 1).getTime(),
-                interval: 60000,
-                dataset: [330,275,275,275,330,275,275,275,330,275,275,275,275,330,275,605,275,275,385,330,275,385,330,660,605,275,550,550,605,275,550,275,275,330,330,275,550,605,330,550,550,660,550,275,330,605,605,605,605,275,495,660,550,275,275,605,385,495,275,275]
-            };
-
             if(!_data) {
                 return;
             }
-            var chartW = width - margin.left - margin.right,
-                chartH = height - margin.top - margin.bottom;
+            var graph = this;
 
-            var stack = d3.layout.stack();
+            function draw(dataset) {
+                var size = {
+                    'width': width - margin.left - margin.right,
+                    'height': height - margin.top - margin.bottom
+                };
+                function normalize(data) {
+                    var lengths = data.map(function(d){return d.length;});
+                    var max = d3.max(lengths);
+                    var who = lengths.indexOf(max);
 
-            var x1 = d3.time.scale()
-                //.domain([new Date(data.startDate), d3.time.minute.offset(new Date(data.startDate), data.dataset.length -1)])
-                .domain(d3.extent(_data.dataset, function(d, i) { return new Date(_data.startDate + (i * _data.interval)); }))
-                .range([margin.left + margin.right, chartW]);
+                    var startDate = d3.min(data.map(function(d){
+                        return d[0] ? d[0].time : null;
+                    }));
+                    var endDate = d3.max(data.map(function(d){
+                        return d[d.length -1] ? d[d.length -1].time : null;
+                    }));
 
-            var y1 = d3.scale.linear()
-                .domain([0, d3.max(_data.dataset, function(d, i){ return d; })])
-                .range([chartH, 0]);
+                    var allTimes = (function(data){
+                        var array = [];
+                        data.forEach(function(item) {
+                            var arr = item.map(function(d){
+                                return d.time;
+                            });
+                            array = array.concat(arr);
+                        });
+                        return array;
+                    })(data);
+                    // Extract unique industries from my vendors
+                    timeSpan = (function getIndustries(times){
+                        return times.reduce(function(prev, curr) {
+                            if (prev.indexOf(curr) < 0) {
+                                prev.push(curr);
+                            }
+                            return prev;
+                        }, []);
+                    })(allTimes);
 
-            var xAxis = d3.svg.axis()
-                .scale(x1)
-                .orient("bottom")
-                .tickFormat(d3.time.format(("%H:%M")));
+                    timeSpan.sort(function(a, b){
+                        return a - b;
+                    });
 
-            var yAxis = d3.svg.axis()
-                .scale(y1)
-                .orient('left');
+                    window.timeSpan = timeSpan;
 
-            var barW = chartW / _data.length;
+                    //var interval = (endDate - startDate) / (max - 1);
+                    var interval = ( timeSpan[timeSpan.length -1] - timeSpan[0] ) / ( timeSpan.length - 1);
+                    interval = 60000;
+                    var dateSpan = (function(start, end, interval){
+                        var array = [];
+                        for(var i = start; i <= end; i+=interval) {
+                            array.push(i);
+                        }
+                        return array;
+                    })(startDate, endDate, interval);
 
-            if(!svg) {
-                svg = d3.select(this)
-                    .append('svg')
-                    .classed('chart', true);
-                var container = svg.append('g').classed('container-group', true);
-                container.append('g').classed('chart-group', true);
-                container.append('g').classed('x-axis-group axis', true);
-                container.append('g').classed('y-axis-group axis', true);
+                    //console.log("start: ", startDate, " end: ", endDate, " interval: ", interval, " dateSpan: ", dateSpan);
+
+                    // fix missing intervals
+                    data.forEach(function(item, index) {
+                        for (var i = 0; i < timeSpan.length; i++) {
+                            if(!item[i] || item[i].time > timeSpan[i]) {
+                                item.splice(i, 0, {
+                                    time: timeSpan[i],
+                                    count: 0
+                                });
+                            }
+                            item[i].y = item[i].count;
+                        }
+                    });
+                }
+                normalize(dataset);
+
+                var dateStart = dataset[0][0].time;
+                var dateEnd = dataset[0][dataset[0].length - 1].time;
+                var daySpan = Math.round((dateEnd - dateStart) / (1000 * 60 * 60 * 24));
+                var ticks, subs;
+
+                if (daySpan === 1) {
+                    ticks = 3;
+                    subs = 6;
+                } else if (daySpan === 7) {
+                    ticks = 4;
+                    subs = 1;
+                } else {
+                    ticks = 4;
+                    subs = 6;
+                }
+                //Data, stacked
+                stack(dataset);
+
+                var color_hash = {
+                    0: ["Success", "#49c5b1"],
+                    1: ["Fail", "#f35757"],
+                    2: ["Redirect", "#F3C857"]
+                };
+                var dates = dataset[0].map(function(d) {
+                    return d.time;
+                });
+
+                //Set up scales
+                var xScale = d3.time.scale()
+                    //.domain([new Date(dataset[0][0].time), d3.time.minute.offset(new Date(dataset[0][dataset[0].length - 1].time), 8)])
+                    .domain(d3.extent(dates))
+                    .rangeRound([0, size.width]);
+
+                var yScale = d3.scale.linear()
+                    .domain([0,
+                        d3.max(dataset, function(d) {
+                            return d3.max(d, function(d) {
+                                return d.y0 + d.y;
+                            });
+                        })
+                    ])
+                    .range([size.height, 0]);
+
+                var xAxis = d3.svg.axis()
+                    .scale(xScale)
+                    .tickSize(5)
+                    //.tickSubdivide(subs)
+                    //.ticks(ticks)
+                    .orient("bottom")
+                    .tickFormat(function(d) {
+                        if (daySpan <= 1) {
+                            return d3.time.format('%H:%M')(d).replace(/\s/, '').replace(/^0/, '');
+                        } else {
+                            return d3.time.format('%m/%d')(d).replace(/\s/, '').replace(/^0/, '').replace(/\/0/, '/');
+                        }
+                    });
+
+                var yAxis = d3.svg.axis()
+                    .scale(yScale)
+                    .orient("left")
+                    .tickPadding(5)
+                    .ticks(2);
+
+                var barWidth = d3.scale.ordinal()
+                    .domain(dates)
+                    .rangeRoundBands(xScale.range(), 0.1)
+                    .rangeBand();
+                //Easy colors accessible via a 10-step ordinal scale
+                var colors = d3.scale.category10();
+
+                //Create SVG element
+                if(!svg) {
+                    svg = d3.select(graph)
+                        .append("svg")
+                        .attr("width", "100%")
+                        .attr("height", "100%");
+                } else {
+                    return;
+                }
+                // Add a group for each row of data
+                var groups = svg.selectAll("g")
+                    .data(dataset)
+                    .enter()
+                    .append("g")
+                    .attr("class", "rgroups")
+                    .attr("transform", "translate(" + margin.left + "," + (size.height) + ")")
+                    .style("fill", function(d, i) {
+                        return color_hash[dataset.indexOf(d)][1];
+                    });
+
+                // Add a rect for each data value
+                var rects = groups.selectAll("rect")
+                    .data(function(d) {
+                        return d;
+                    })
+                    .enter()
+                    .append("rect")
+                    .attr("width", barWidth)
+                    .attr("y", -(size.height * 2))
+                    .style("fill-opacity", 0.5);
+
+                rects.transition()
+                    .duration(function(d, i) {
+                        return 750;
+                    })
+                    .ease(ease)
+                    .attr("x", function(d) {
+                        return xScale(new Date(d.time));
+                    })
+                    .attr("y", function(d) {
+                        return -(-yScale(d.y0) - yScale(d.y) + (size.height) * 2);
+                    })
+                    .attr("height", function(d) {
+                        return -yScale(d.y) + (size.height);
+                    })
+                    .attr("width", barWidth)
+                    .style("fill-opacity", 1);
+
+                svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(50," + size.height + ")")
+                    .call(xAxis);
+
+                svg.append("g")
+                    .attr("class", "y axis")
+                    .attr("transform", "translate(" + margin.left + ",0)")
+                    .call(yAxis);
+
             }
 
-            svg.transition().duration(duration).attr({width: width, height: height});
-            svg.select('.container-group')
-                .attr({transform: 'translate(' + margin.left + ',' + margin.top + ')'});
-
-            svg.select('.x-axis-group.axis')
-                .attr({transform: 'translate(0,' + (chartH) + ')'})
-                .call(xAxis);
-
-            svg.select('.y-axis-group.axis')
-                .call(yAxis);
-
-            var bars = svg.selectAll("rect")
-                .data(_data.dataset)
-                .enter();
-
-            bars.append("rect")
-                .attr("x", function(d, i) { 
-                    var date = new Date(_data.startDate + (i * _data.interval));
-                    console.log("date: ", date, "v: ", d, " x: ", x1(date), " y: ", y1(d));
-                    return x1(date); 
-                })
-                .attr("y", function(d) { 
-                    return chartH - y1(d); 
-                })
-                .attr("width", 7)
-                .attr("height", function(d) { return y1(d); })
-                .style("fill", "#49c5b1");
-            /*bars.append("rect")
-                .attr("x", function(d) { return x1(new Date(d.timestamp)); })
-                .attr("y", function(d) { return y1(d.out.bytes); })
-                .attr("width", 5)
-                .attr("height", function(d) { return chartH - y1(d.out.bytes); })
-                .style("fill", "green");
-                */
-
+            draw(_data);
         });
     }
     exports.width = function(_x) {

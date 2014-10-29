@@ -4,16 +4,16 @@
             <div class="col-md-12 resource-group">
                 <div class="btn-toolbar" role="toolbar">
                     <div class="btn-group">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa icon-network"></i> {{selectedApi.name}} <span class="fa fa-angle-down"></span></button>
+                        <div class="btn-group" dropdown>
+                            <button type="button" class="btn btn-default dropdown-toggle"><i class="fa icon-network"></i> {{selectedApi.name}} <span class="fa fa-angle-down"></span></button>
                             <ul class="dropdown-menu" role="menu">
                                 <li ng-repeat="api in apis"><a href="" ng-click="selectApi(api)"><i class="icon-network"></i> {{api.name}}</a></li>
                                 <li class="divider"></li>
                                 <li><a href=""><i class="icon-network"></i> {{ 'DASHBOARD.TOOLBAR.FULL-SUMMARY' | translate }}</a></li>
                             </ul>
                         </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cloud-download"></i> {{ 'DASHBOARD.TOOLBAR.EXPORT' | translate }} <span class="fa fa-angle-down"></span></button>
+                        <div class="btn-group" dropdown>
+                            <button type="button" class="btn btn-default dropdown-toggle" ><i class="fa fa-cloud-download"></i> {{ 'DASHBOARD.TOOLBAR.EXPORT' | translate }} <span class="fa fa-angle-down"></span></button>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href=""><i class="icon-network"></i> .csv</a></li>
                                 <li><a href=""><i class="icon-network"></i> .tsv</a></li>

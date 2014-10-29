@@ -4,8 +4,8 @@
 
 /*jshint loopfunc: true */
 
-angular.module('stackedBarChart', ['D3Service'])
-.directive('stackedBarChart', ['$timeout', '$window', 'D3Service', function($timeout, $window, D3Service) {
+angular.module('bivariateBarChart', ['D3Service'])
+.directive('bivariateBarChart', ['$timeout', '$window', 'D3Service', function($timeout, $window, D3Service) {
     return {
         restrict: 'E',
         scope:{
@@ -40,7 +40,7 @@ angular.module('stackedBarChart', ['D3Service'])
             };
 
             D3Service.d3().then(function(d3) {
-                chart = charts.stacked();
+                chart = charts.bivariate();
                 chartEl = d3.select(element[0]);
 
                 var panel = $(element).closest('.tab-pane')[0];

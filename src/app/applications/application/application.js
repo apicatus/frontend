@@ -245,7 +245,7 @@ angular.module( 'apicatus.application', [
         });
     };
     $scope.updateMethod = function(method, $index) {
-        console.log(method);
+        console.log("updateMethod: ", method);
         $scope.api.put();
     };
     $scope.deleteMethod = function(methods, $index) {
@@ -356,7 +356,6 @@ angular.module( 'apicatus.application', [
         var from = (logs.currentPage - 1) * logs.maxSize;
         if(logs.currentPage > 1 && (logs.currentPage * logs.maxSize > logs.totalItems)) {
             limit = (logs.totalItems - (logs.currentPage - 1) * logs.maxSize);
-            console.log("limit: ", limit, " from: ", from);
         }
         Restangular.one('logs').get({method: method._id, limit: limit, from: from}).then(function(records) {
             logs.totalItems = records.total;
@@ -365,18 +364,33 @@ angular.module( 'apicatus.application', [
             console.log("error getting logs: ", error);
         });
     };
+
     this.pageChanged = function(page) {
         logs.load(logs.method);
-        console.log("pageChanged: ", page, logs.currentPage);
     };
 
-
+    this.init = function(method) {
+        console.log("CALL INIT LogsCtrl: ", method._id);
+        logs.method = method;
+        logs.load(logs.method);
+    };
 
 }])
 .controller( 'StatisticsCtrl', ['$timeout', 'Restangular', function StatisticsController($timeout, Restangular) {
 
     var statistics = this;
 
+    function percetage(a, b) {
+        console.log("a: %s b: %s", a, b);
+        if(a > 0 && b > 0) {
+            console.log("availability: ", a / b * 100);
+            return a / b * 100;
+        } else if (a <= 0) {
+            return 100;
+        } else if (b <= 0) {
+            return 0;
+        } 
+    }
     statistics.load = function(method) {
         Restangular.one('metrics', method._id).get().then(function(records) {
             statistics.percentiles = records.percentiles;
@@ -385,6 +399,56 @@ angular.module( 'apicatus.application', [
         }, function(error) {
             console.log("error getting logs: ", error);
         });
+        ///analitics/:entity/:id
+        Restangular.one('analitics/method', method._id).get().then(function(records) {
+            statistics.statuses = [records.statuses['200'], records.statuses['400'], records.statuses['500']];
+            statistics.availability = [records.statuses['200']];
+        }, function(error) {
+            console.log("error getting analitics: ", error);
+        });
+        // terms
+        Restangular.one('terms/method', method._id).getList().then(function(records) {
+            console.log("records: ", records);
+            
+            statistics.terms = {
+                success: 0,
+                fail: 0,
+                error: 0
+            };
+
+            records.forEach(function(record){
+                if(record.term == 200) {
+                    statistics.terms.success = record.count;
+                } else if (record.term == 400) {
+                    statistics.terms.fail = record.count;
+                } else {
+                    statistics.terms.error = record.count;
+                }
+            });
+
+            statistics.terms.availability = percetage( (statistics.terms.fail + statistics.terms.error), statistics.terms.success  );
+            statistics.terms.failRate =  100 - statistics.terms.availability;
+            console.log("terms: ", statistics.terms);
+
+            /*
+                http://www.percentagecalculator.net/javascripts/percentagecalculator.js
+                var totalValue = a / b * 100;
+                      break;
+                    case "f3":
+                var totalValue = (b - a) / a  * 100;
+            */
+
+        }, function(error) {
+            console.log("error getting terms: ", error);
+        });
+
+        ///analitics/:entity/:id
+        Restangular.one('timestatistics/method', method._id).getList().then(function(records) {
+            console.log("timestatistics: ", records);
+        }, function(error) {
+            console.log("error getting analitics: ", error);
+        });
+
         // Auto Update 
         /*
         $timeout(function(){
@@ -393,6 +457,7 @@ angular.module( 'apicatus.application', [
         */
     };
     statistics.init = function(method) {
+        console.log("CALL INIT StatisticsCtrl: ", method._id);
         statistics.method = method;
         statistics.load(statistics.method);
     };
