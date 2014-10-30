@@ -25,7 +25,8 @@ angular.module( 'apicatus', [
     'httpSettings',
     'ngSocket'
 ])
-
+// Global constans
+.constant('$moment', moment)
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider, $locationProvider, $translateProvider, $documentProvider, RestangularProvider, localStorageServiceProvider ) {
     $urlRouterProvider.otherwise( '/main/applications/list' );
     //$locationProvider.html5Mode(true);
@@ -58,7 +59,7 @@ angular.module( 'apicatus', [
                 $state.transitionTo("main.login");
                 break;
             case 404:
-                $state.transitionTo("main.error.404", {data: "response.data"});
+                //$state.transitionTo("main.error.404", {data: "response.data"});
                 break;
             case 500:
                 $state.transitionTo("main.error.500", {data: "response.data"});

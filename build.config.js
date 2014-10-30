@@ -80,7 +80,8 @@ module.exports = {
       'lib/ace-builds/src-min-noconflict/theme-monokai.js',
       'lib//angular-ui-ace/ui-ace.js',
       'lib/angular-translate/angular-translate.js',
-      'lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js'
+      'lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
+      'lib/moment/moment.js'
     ],
     css: [
     ],

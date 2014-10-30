@@ -69,19 +69,6 @@ angular.module( 'apicatus.application', [
 })
 .controller( 'ApplicationCtrl', function ApplicationController( $scope, $timeout, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings, api) {
 
-    $scope.worldMap = {
-        "AF": 16.63,
-        "AL": 11.58,
-        "DZ": 158.97,
-        "AO": 85.81,
-        "AG": 1.1,
-        "AR": 351.02,
-        "AM": 8.83,
-        "AU": 1219.72,
-        "AT": 366.26,
-        "AZ": 52.17,
-        "BS": 7.54
-    };
     $scope.httpSettings = httpSettings.settings();
     $scope.api = api;
     /*
@@ -118,30 +105,21 @@ angular.module( 'apicatus.application', [
             })
         )};
     });*/
-    /*
-    $scope.applications = Restangular.one('digestors', $stateParams.id).get().then(function(digestor) {
-        $scope.api = digestor;
-        $scope.apiModel = JSON.stringify(angular.copy($scope.api), null, 4);
-        // If empty fill out
-        if(!$scope.api.endpoints) {
-            $scope.api.endpoints = [];
-            return;
-        }
-        Restangular.one('logs').get({digestor: digestor._id, limit: 0}).then(function(logs) {
-            $scope.api.logs = logs;
-            for(var i = 0; i < $scope.api.endpoints.length; i++) {
-                var endpoint = $scope.api.endpoints[i];
-                for(var j = 0; j < endpoint.methods.length; j++) {
-                    var method = endpoint.methods[j];
-                    // Pair methods and logs
-                    method.logs = _.filter(logs, {'method': method._id });
-                    //method.tableParams = makeTableParmas(method.logs);
-                    $scope.createDemo(method);
-                }
-            }
-        });
-    });
-    */
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // Query template                                                        //
+    ///////////////////////////////////////////////////////////////////////////
+    $scope.datePicker = {
+        show: false,
+        range: 60
+    };
+    $scope.customQueryParams = function () {
+        return {
+            since: new Date().setMinutes(new Date().getMinutes() - 60),
+            until: new Date().getTime()
+        };
+    };
+
     $scope.save = function(api) {
         $scope.api.put();
     };
@@ -334,9 +312,7 @@ angular.module( 'apicatus.application', [
     };
 })
 .controller( 'SourceCtrl', function SourceController() {
-
     var source = this;
-
     this.create = function(api) {
         return JSON.stringify(api, null, 4);
     };
@@ -377,9 +353,11 @@ angular.module( 'apicatus.application', [
     };
 
 }])
-.controller( 'StatisticsCtrl', ['$timeout', 'Restangular', function StatisticsController($timeout, Restangular) {
+.controller( 'StatisticsCtrl', ['$timeout', '$scope', '$moment', 'Restangular', function StatisticsController($timeout, $scope, $moment, Restangular) {
 
     var statistics = this;
+    var since = new Date().setMinutes(new Date().getMinutes() - 60);
+    var until = new Date().getTime();
 
     function percetage(a, b) {
         console.log("a: %s b: %s", a, b);
@@ -444,8 +422,10 @@ angular.module( 'apicatus.application', [
         });
 
         ///analitics/:entity/:id
-        Restangular.one('timestatistics/method', method._id).getList().then(function(records) {
-            statistics.timestatistics = records;
+        Restangular.one('timestatistics/method', method._id).get({since: since, until: until}).then(function(records) {
+        //Restangular.one('timestatistics/method', method._id).getList().then(function(records) {
+            statistics.timestatistics = records.buckets;
+            statistics.stats = records.sum;
         }, function(error) {
             console.log("error getting analitics: ", error);
         });
@@ -462,7 +442,62 @@ angular.module( 'apicatus.application', [
         statistics.method = method;
         statistics.load(statistics.method);
     };
+}])
+.controller( 'TransferStatisticsCtrl', ['$timeout', '$scope', '$moment', 'Restangular', function TransferStatisticsController($timeout, $scope, $moment, Restangular) {
+
+    var statistics = this;
+    var since = new Date().setMinutes(new Date().getMinutes() - 60);
+    var until = new Date().getTime();
+
+    statistics.load = function(method) {
+        Restangular.one('transferstatistics/method', method._id).get({since: since, until: until}).then(function(records) {
+            statistics.transferstatistics = records.buckets;
+            statistics.stats = records.sum;
+        }, function(error) {
+            console.log("error getting analitics: ", error);
+        });
+    };
+    statistics.init = function(method) {
+        console.log("CALL INIT TransferStatisticsCtrl: ", method._id);
+        statistics.method = method;
+        statistics.load(statistics.method);
+    };
+}])
+.controller( 'MapCtrl', ['$timeout', 'Restangular', function TransferStatisticsController($timeout, Restangular) {
+
+    var map = this;
+    var since = new Date().setMinutes(new Date().getMinutes() - 60);
+    var until = new Date().getTime();
+
+    map.worldMap = {
+        "AF": 16.63,
+        "AL": 11.58,
+        "DZ": 158.97,
+        "AO": 85.81,
+        "AG": 1.1,
+        "AR": 351.02,
+        "AM": 8.83,
+        "AU": 1219.72,
+        "AT": 366.26,
+        "AZ": 52.17,
+        "BS": 7.54
+    };
+    map.load = function(method) {
+        Restangular.one('countrystatistics/method').getList(method._id, {since: since, until: until}).then(function(records) {
+            map.data = records;
+            console.log("COUNTRY LIST: ", map.data);
+        }, function(error) {
+            console.log("error getting analitics: ", error);
+        });
+    };
+    map.init = function(method) {
+        console.log("CALL INIT TransferStatisticsCtrl: ", method._id);
+        map.method = method;
+        map.load(map.method);
+    };
 }]);
+
+
 
 
 

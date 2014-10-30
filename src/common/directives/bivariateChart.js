@@ -11,8 +11,8 @@ angular.module('bivariateChart', ['D3Service'])
         scope:{
             title: '@',
             data: '=',
-            validMetrics: '=',
-            competitors: '=',
+            propertyKey: '@',
+            timestampKey: '@',
             hovered: '&hovered'
         },
         link: function(scope, element, attrs) {
@@ -34,6 +34,9 @@ angular.module('bivariateChart', ['D3Service'])
                     var height = canvas[0].offsetHeight;
                     chartEl.call(chart.height(height));
                     chartEl.call(chart.width(width));
+                    if(scope.propertyKey) {
+                        chartEl.call(chart.propertyKey(scope.propertyKey));
+                    }
                     chartEl.datum(newVal).call(chart);
                 }, true);
             };

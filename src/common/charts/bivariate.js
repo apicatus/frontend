@@ -10,7 +10,8 @@ charts.bivariate = function module() {
     var stack = d3.layout.stack();
     var dispatch = d3.dispatch('customHover');
     var keys = {
-        timestamp: 'key'
+        timestamp: 'key',
+        property: 'time_stats'
     };
     function exports(_selection) {
         _selection.each(function(_data) {
@@ -50,7 +51,7 @@ charts.bivariate = function module() {
                     .rangeRound([0, size.width]);
 
                 var yScale = d3.scale.linear()
-                    .domain([d3.min(data, function(d) { return d.time_stats.min; }), d3.max(data, function(d) { return d.time_stats.max; })])
+                    .domain([d3.min(data, function(d) { return d[keys.property].min; }), d3.max(data, function(d) { return d[keys.property].max; })])
                     .range([size.height, 0]);
 
                 var xAxis = d3.svg.axis()
@@ -75,8 +76,8 @@ charts.bivariate = function module() {
 
                 var area = d3.svg.area()
                     .x(function(d) { return xScale(d[keys.timestamp]); })
-                    .y0(function(d) { return yScale(d.time_stats.min); })
-                    .y1(function(d) { return yScale(d.time_stats.max); });
+                    .y0(function(d) { return yScale(d[keys.property].min); })
+                    .y1(function(d) { return yScale(d[keys.property].max); });
                 
                 //Create SVG element
                 if(!svg) {
@@ -141,7 +142,6 @@ charts.bivariate = function module() {
             return height;
         }
         height = parseInt(_x, 10);
-        console.log("set chart height: ", height);
         return this;
     };
     exports.gap = function(_x) {
@@ -156,6 +156,14 @@ charts.bivariate = function module() {
             return keys.timestamp;
         }
         keys.timestamp = _x;
+        return this;
+    };
+    exports.propertyKey = function(key) {
+        if (!arguments.length) {
+            return keys.property;
+        }
+        keys.property = key;
+        console.log("set chart keys.property: ", keys.property);
         return this;
     };
     exports.axis = function(_xAxis, _yAxis) {

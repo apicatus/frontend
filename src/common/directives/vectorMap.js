@@ -4,35 +4,43 @@ angular.module('vectorMap', [])
     'use strict';
     return {
         restrict: 'EAC',
-        require: 'ngModel',
-        link: function (scope, element, attrs, ngModel) {
+        scope:{
+            series: '=',
+            markers: '='
+        },
+        link: function (scope, element, attrs) {
             var map = null;
-
-            console.log("VECTORMAP");
-
-            scope.$watch(attrs.ngModel, function () {
+            scope.$watch('series', function(newVal, oldVal, scope) {
+                if(newVal === oldVal || newVal.length <= 0) {
+                    return;
+                }
+                var series = newVal.reduce(function(obj, key) {
+                    obj[key.term.toUpperCase()] = key.count;
+                    return obj;
+                }, {});
                 $timeout(function() {
-                    render();
+                    render(series, []);
+                }, 0);
+            });
+            scope.$watch('markers', function(newVal, oldVal, scope) {
+                if(newVal === oldVal || newVal.length <= 0) {
+                    return;
+                }
+                $timeout(function() {
+                    render({}, markers);
                 }, 0);
             });
             scope.$watch(attrs.opts, function() {
                 //render();
             });
-            var render = function () {
-                var model = ngModel.$viewValue;
-                if(!model) {
-                    return;
-                }
+            var render = function (series, markers) {
                 if(!map) {
                     map = $(element).vectorMap({
                         map: 'world_mill_en',
-                        markers: [{
-                            latLng: [40.71, -74],
-                            name: "New York"
-                        }],
+                        markers: markers,
                         series: {
                             regions: [{
-                                values: model,
+                                values: series,
                                 scale: ['#C8EEFF', '#49c5b1']
                             }]
                         },
@@ -59,12 +67,16 @@ angular.module('vectorMap', [])
                         },
                         normalizeFunction: 'polynomial',
                         zoomOnScroll: !1,
-                        backgroundColor: null
+                        backgroundColor: null,
+                        onRegionTipShow: function(e, el, code){
+                            el.html(el.html()+': '+ (series[code] || 0));
+                        }
                     });
                 } else {
                     var mapObject = map.vectorMap('get', 'mapObject');
                     mapObject.reset();
-                    mapObject.series.regions[0].setValues(model);
+                    mapObject.series.regions[0].setValues(series);
+                    mapObject.series.regions[0].setValues(markers);
                     mapObject.series.regions[0].setScale(['#C8EEFF','#0071A4']);
                     mapObject.series.regions[0].setNormalizeFunction('polynomial');
                 }

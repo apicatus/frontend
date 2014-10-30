@@ -164,7 +164,7 @@
 
                         </div>
                     </tab>
-                    <tab ng-controller="LogsCtrl as logs" select="logs.init(method)">
+                    <tab ng-controller="LogsCtrl as logs" ng-click="logs.init(method)">
                         <tab-heading>
                             <i class="fa fa-puzzle-piece"></i> Logs
                         </tab-heading>
@@ -191,7 +191,7 @@
                         <pagination ng-change="logs.pageChanged(logs.currentPage)" total-items="logs.totalItems" ng-model="logs.currentPage" max-size="logs.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="logs.numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
                         <!-- pagination ng-model="method" total-items="method.logs.length" items-per-page="10" page="currentPage" max-size="10" on-select-page="setPage(page)"></pagination -->
                     </tab>
-                    <tab ng-controller="StatisticsCtrl as statistics" select="statistics.init(method)"> <!-- ng-init=" = (metrics | filter:{_id: method._id})" -->
+                    <tab ng-controller="StatisticsCtrl as statistics" ng-click="statistics.init(method)" select="datePicker.show=true" deselect="datePicker.show=false"> <!-- ng-init=" = (metrics | filter:{_id: method._id})" -->
                         <tab-heading>
                             <i class="fa fa-bar-chart-o"></i> Statistics
                         </tab-heading>
@@ -211,7 +211,7 @@
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>AVG. API RESPONSE TIME</h2>
-                                <span class="number" title="Updated about 14 seconds ago">{{ statistics.average | number:0 }}ms</span>
+                                <span class="number" title="Updated about 14 seconds ago">{{statistics.stats.avg | number:0}}ms</span>
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
@@ -227,7 +227,7 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    <bivariate-chart data="statistics.timestatistics" timestamp-key="key" data-unit="ms"></bivariate-chart>
+                                    <bivariate-chart data="statistics.timestatistics" property-key="time_stats" timestamp-key="key" data-unit="ms"></bivariate-chart>
                                 </div>
 
                             </div>
@@ -255,7 +255,7 @@
                             </div>
                         </div>
                     </tab>
-                    <tab ng-init="bytesTransferred = (getBytesTransferred | filter:{_id: method._id})">
+                    <tab ng-controller="TransferStatisticsCtrl as statistics" ng-click="statistics.init(method)" select="datePicker.show=true" deselect="datePicker.show=false">
                         <tab-heading>
                             <i class="fa fa-line-chart"></i> Summary
                         </tab-heading>
@@ -263,7 +263,7 @@
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>TOTAL. BYTES OUT</h2>
-                                <span class="number">{{bytesTransferred[0].summary.out.total}}b</span>
+                                <span class="number">{{statistics.stats.sum | humanize}}b</span>
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
@@ -274,43 +274,55 @@
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>AVG. BYTES OUT</h2>
-                                <span class="number">{{bytesTransferred[0].summary.out.avg | number:0}}b</span>
+                                <span class="number">{{statistics.stats.avg | number:0 | humanize}}b</span>
                             </div>
                             <div class="col-sm-9">
-                                <div class="chart-container statiscis"></div>
+                                <div class="chart-container statiscis">
+                                    <bivariate-chart data="statistics.transferstatistics" property-key="transfer_stats" timestamp-key="key" data-unit="b"></bivariate-chart>
+                                </div>
                             </div>
                         </div>
 
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>MAX. BYTES OUT</h2>
-                                <span class="number">{{bytesTransferred[0].summary.out.max}}b</span>
+                                <span class="number">{{statistics.stats.max | humanize}}b</span>
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis"></div>
                             </div>
                         </div>
-
 
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>MIN. BYTES OUT</h2>
-                                <span class="number">{{bytesTransferred[0].summary.out.min}}b</span>
+                                <span class="number">{{statistics.stats.min | humanize}}b</span>
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis"></div>
                             </div>
                         </div>
                     </tab>
-                    <tab select="locationsTabActive = true">
+                    <tab ng-controller="MapCtrl as map" ng-click="map.init(method)" select="locationsTabActive = true" select="datePicker.show=true" deselect="datePicker.show=false">
                         <tab-heading>
                             <i class="fa fa-globe"></i> Locations
                         </tab-heading>
                         <div ng-if="locationsTabActive">
-                            <vector-map style="width: 100%; height: 400px;display: block;" ng-model="worldMap"></vector-map>
+                            <vector-map series="map.data"></vector-map>
                         </div>
                     </tab>
-                    <button class="btn btn-default pull-right" tooltip="Refresh"><i class="fa fa-refresh"></i></button>
+                    <li class="pull-right">
+                        <div class="btn-toolbar" role="toolbar">
+                            <div class="btn-group" ng-show="datePicker.show">
+                                <label class="btn btn-sm btn-default" ng-model="datePicker.range" btn-radio="10080" uncheckable>week</label>
+                                <label class="btn btn-sm btn-default" ng-model="datePicker.range" btn-radio="1440" uncheckable>day</label>
+                                <label class="btn btn-sm btn-default" ng-model="datePicker.range" btn-radio="60" uncheckable>hour</label>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-default" tooltip="Refresh"><i class="fa fa-refresh"></i></button>
+                            </div>
+                        </div>
+                    <li>
                 </tabset>
             </div>
         </div>
