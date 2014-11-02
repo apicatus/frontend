@@ -6,7 +6,8 @@ angular.module( 'apicatus.application', [
     'vectorMap',
     'myGraph',
     'stackedBarChart',
-    'bivariateChart'
+    'bivariateChart',
+    'worldMap'
 ])
 .factory('MetricsService', ['$cacheFactory', 'Restangular', function($cacheFactory, Restangular) {
     var route = 'metrics';
@@ -45,21 +46,7 @@ angular.module( 'apicatus.application', [
         resolve: {
             api: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
                 return Restangular.one('digestors', $stateParams.id).get();
-            }],
-            logs: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
-                return [];//Restangular.all('logs').getList({digestor: $stateParams.id, limit: 10});
-            }],
-            /*metrics: ['$stateParams', 'Restangular', 'MetricsService', function ($stateParams, Restangular, MetricsService) {
-                return Restangular.one('metrics').getList($stateParams.id, {limit: 10});
-            }],*/
-            getBytesTransferred: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
-                return Restangular.one('getBytesTransferred').getList($stateParams.id, {limit: 10});
             }]
-
-            /*,
-            performance: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
-                return Restangular.one('metrics', $stateParams.id).all('performance').getList({digestor: $stateParams.id, limit: 0});
-            }]*/
         },
         data: { pageTitle: 'Resource editor'},
         onEnter: function(){
@@ -71,41 +58,7 @@ angular.module( 'apicatus.application', [
 
     $scope.httpSettings = httpSettings.settings();
     $scope.api = api;
-    /*
-    $scope.logs = logs;
-    $scope.metrics = metrics;
-    $scope.getBytesTransferred = getBytesTransferred;
-    $scope.percentiles = metrics.percentiles;
-    */
 
-    /*
-    $scope.percentiles = metrics.map(function(metric, index) {
-        return {_id: metric._id, percentiles: (function(arr) {
-            function getPercentile(percentile, array) {
-                var index = percentile * arr.length;
-                var nearest = Math.floor(index);
-                if(index % 1 === 0) {
-                    return (array[nearest-1] + array[nearest]) / 2;
-                } else {
-                    return array[nearest];
-                }
-            }
-            var percentiles = [];
-            percentiles[98] = getPercentile(0.98, arr);
-            percentiles[90] = getPercentile(0.90, arr);
-
-            return percentiles;
-        })
-        (
-            metric.dataset.map(function(set){
-                return set.data;
-            })
-            .sort(function(a, b){
-                return a-b;
-            })
-        )};
-    });*/
-    
     ///////////////////////////////////////////////////////////////////////////
     // Query template                                                        //
     ///////////////////////////////////////////////////////////////////////////
@@ -130,7 +83,6 @@ angular.module( 'apicatus.application', [
         // Please note that $modalInstance represents a modal window (instance) dependency.
         // It is not the same as the $modal service used above.
         var modalCtl = function ($scope, $modalInstance, endpoint) {
-            console.log("aqui hay controler");
             $scope.endpoint = {
                 name: '',
                 synopsis: ''
@@ -298,7 +250,7 @@ angular.module( 'apicatus.application', [
         var serviceUrl = parseURL.parse(Restangular.configuration.baseUrl);
         var options = {
             type: method.method.toUpperCase(),
-            url: serviceUrl.protocol + "://" + $scope.api.name + "." + serviceUrl.host + ":" + serviceUrl.port + method.URI,
+            url: serviceUrl.protocol + "://" + $scope.api.subdomain + "." + serviceUrl.host + ":" + serviceUrl.port + method.URI,
             data: {}
         };
         return "$.ajax(" + JSON.stringify(options) + ")\n.then(function(response){\n\talert(JSON.stringify(response, null, 4));\n});";
@@ -324,6 +276,9 @@ angular.module( 'apicatus.application', [
 .controller( 'LogsCtrl', ['Restangular', function LogsController(Restangular) {
 
     var logs = this;
+    var since = new Date().setMinutes(new Date().getMinutes() - 60);
+    var until = new Date().getTime();
+
     logs.currentPage = 1;
     logs.maxSize = 10;
     logs.totalItems = 0;
@@ -340,6 +295,11 @@ angular.module( 'apicatus.application', [
         }, function(error) {
             console.log("error getting logs: ", error);
         });
+    };
+
+    this.keys = function(object) {
+        console.log("get keys: ", Object.keys(object));
+        return Object.keys(object);
     };
 
     this.pageChanged = function(page) {
@@ -374,7 +334,7 @@ angular.module( 'apicatus.application', [
         Restangular.one('metrics', method._id).get().then(function(records) {
             statistics.percentiles = records.percentiles;
             statistics.average = records.average;
-            statistics.latency = records.letancy;
+            //statistics.latency = records.letancy;
         }, function(error) {
             console.log("error getting logs: ", error);
         });
@@ -408,14 +368,6 @@ angular.module( 'apicatus.application', [
             statistics.terms.availability = percetage( (statistics.terms.fail + statistics.terms.error), statistics.terms.success  );
             statistics.terms.failRate =  100 - statistics.terms.availability;
             console.log("terms: ", statistics.terms);
-
-            /*
-                http://www.percentagecalculator.net/javascripts/percentagecalculator.js
-                var totalValue = a / b * 100;
-                      break;
-                    case "f3":
-                var totalValue = (b - a) / a  * 100;
-            */
 
         }, function(error) {
             console.log("error getting terms: ", error);
@@ -468,22 +420,21 @@ angular.module( 'apicatus.application', [
     var map = this;
     var since = new Date().setMinutes(new Date().getMinutes() - 60);
     var until = new Date().getTime();
-
-    map.worldMap = {
-        "AF": 16.63,
-        "AL": 11.58,
-        "DZ": 158.97,
-        "AO": 85.81,
-        "AG": 1.1,
-        "AR": 351.02,
-        "AM": 8.83,
-        "AU": 1219.72,
-        "AT": 366.26,
-        "AZ": 52.17,
-        "BS": 7.54
-    };
+    map.worldMap = [{
+        latLng: [40.71, -74],
+        name: "New York"
+    }, {
+        latLng: [39.9, 116.4],
+        name: "Beijing"
+    }, {
+        latLng: [31.23, 121.47],
+        name: "Shanghai"
+    }, {
+        latLng: [-33.86, 151.2],
+        name: "Sydney"
+    }];
     map.load = function(method) {
-        Restangular.one('countrystatistics/method').getList(method._id, {since: since, until: until}).then(function(records) {
+        Restangular.one('geo/method').getList(method._id, {since: since, until: until}).then(function(records) {
             map.data = records;
             console.log("COUNTRY LIST: ", map.data);
         }, function(error) {

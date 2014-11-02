@@ -9,7 +9,8 @@ angular.module( 'apicatus.applications', [
     'lineChart',
     'fileReader',
     'fileInput',
-    'fileDrop'
+    'fileDrop',
+    'ng-peity'
 ])
 
 /**
@@ -18,6 +19,10 @@ angular.module( 'apicatus.applications', [
  * this way makes each module more "self-contained".
  */
 .config(function config( $stateProvider ) {
+    var since = new Date().setDate(new Date().getDate() - 2);
+    var until = new Date().getTime();
+    var interval = '2h';
+
     $stateProvider.state( 'main.applications', {
         url: '/applications',
         abstract: true,
@@ -30,8 +35,8 @@ angular.module( 'apicatus.applications', [
                     apis: ['Restangular', function (Restangular) {
                         return Restangular.all('digestors').getList();
                     }],
-                    summary: ['Restangular', function (Restangular) {
-                        return Restangular.all('summary').getList();
+                    summaries: ['Restangular', function (Restangular) {
+                        return Restangular.one('summary').get({since: since, until: until, interval: interval});
                     }]
                 }
             }
@@ -49,14 +54,14 @@ angular.module( 'apicatus.applications', [
 })
 
 // Applications controller
-.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $modal, fileReader, Restangular, apis, summary ) {
+.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $interval, $modal, fileReader, Restangular, apis, summaries ) {
 
     //$scope.apis = Restangular.all('digestors').getList().$object;
 
     var applications = this.apis = apis;
     $scope.apis = apis;
-    $scope.summary = summary;
-    console.log("summary: ", summary);
+    $scope.summaries = summaries;
+    console.log("summaries: ", summaries);
 
     $scope.sort = {
         property: 'name',
@@ -70,40 +75,23 @@ angular.module( 'apicatus.applications', [
         };
         console.log("sortBy", $scope.sort);
     };
-    /*$scope.applications = Restangular.one('digestors').getList().then(function(digestors) {
-        $scope.apis = digestors;
-
-        Restangular.one('summary').getList().then(function(data) {
-            var summary = angular.copy(data);
-            $scope.apis.forEach(function(api){
-                var apiSummary = summary.filter(function(summary){
-                    return summary._id == api._id;
-                });
-                api.summary = apiSummary[0];
-                console.log("apiSummary: ", $scope.apis);
-            });
-        });
-
-        Restangular.one('logs').getList().then(function(logs){
-            $scope.logs = logs;
-            $scope.apis.map(function(api) {
-                var digestorLogs = $scope.logs.filter(function(log) {
-                    return log.digestor == api._id;
-                });
-                //_.filter($scope.logs, {'digestor': api._id });
-                if(digestorLogs.length <= 0) {
-                    return;
-                }
-                digestorLogs = _.sortBy(digestorLogs, 'date');
-                var mean = 1;
-                //d3.mean(digestorLogs, function(d) { return d.time; });
-                api.meanTime = parseInt(mean, 10);
-                api.logs = angular.copy(digestorLogs);
-            });
-        });
-    });
-    */
     this.data = [1, 4, 2, 4, 7, 2, 9, 5, 6, 4, 1, 6, 8, 2];
+
+    $scope.BarChart = {
+        data: [1, 4, 2, 4, 7, 2, 9, 5, 6, 4, 1, 6, 8, 2],
+        options: {
+            width: '100%',
+            height: 10,
+            fill: ['#f00']
+        }
+    };
+
+    $interval(function() {
+        var random = Math.round(Math.random() * 10);
+        $scope.BarChart.data.shift();
+        $scope.BarChart.data.push(random);
+        $scope.BarChart.options.fill[0] = '#'+Math.floor(Math.random()*16777215).toString(16);
+    }, 1000);
 
     this.weekdays = moment.weekdaysMin();
 
@@ -222,6 +210,88 @@ angular.module( 'apicatus.applications', [
             function () {
                 console.info('Modal dismissed at: ' + new Date());
         });
+    };
+})
+.controller( 'CardCtrl', function CardController( $scope, $filter ) {
+
+    var card = this;
+
+    card.percent = function(a, b) {
+        if(a > 0 && b > 0) {
+            return a / b * 100;
+        } else if (a <= 0) {
+            return 100;
+        } else if (b <= 0) {
+            return 0;
+        } 
+    };
+    card.init = function(api, summaries) {
+        if(card.api) {
+            return;
+        }
+        card.api = api;
+        card.summary = {
+            current: ($filter('filter')(summaries.current, {key: api._id}))[0],
+            previous: ($filter('filter')(summaries.previous, {key: api._id}))[0]
+        };
+        card.barChart = {
+            data: [],
+            options: { height: '80%', width: '100%', fill: ['#49c5b1'] }
+        };
+        try {
+            card.summary.current.data = card.summary.current.dataset.buckets.map(function(bucket){
+                return {
+                    timestamp: bucket.key,
+                    stats: bucket.time_stats
+                };
+            });
+            card.barChart.data = card.summary.current.data.map(function(data){
+                return data.stats.avg || 0;
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+})
+.controller( 'TableCtrl', function TableController( $scope, $filter ) {
+
+    var table = this;
+
+    table.percent = function(a, b) {
+        if(a > 0 && b > 0) {
+            return a / b * 100;
+        } else if (a <= 0) {
+            return 100;
+        } else if (b <= 0) {
+            return 0;
+        } 
+    };
+    table.init = function(api, summaries) {
+        if(table.api) {
+            return;
+        }
+        table.api = api;
+        table.summary = {
+            current: ($filter('filter')(summaries.current, {key: api._id}))[0],
+            previous: ($filter('filter')(summaries.previous, {key: api._id}))[0]
+        };
+        table.barChart = {
+            data: [],
+            options: { height: '80%', width: '100%', fill: ['#49c5b1'] }
+        };
+        try {
+            table.summary.current.data = table.summary.current.dataset.buckets.map(function(bucket){
+                return {
+                    timestamp: bucket.key,
+                    stats: bucket.time_stats
+                };
+            });
+            table.barChart.data = table.summary.current.data.map(function(data){
+                return data.stats.avg || 0;
+            });
+        } catch (error) {
+            console.log(error);
+        }
     };
 })
 .filter('listToMatrix', function() {

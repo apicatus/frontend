@@ -89,9 +89,28 @@ applications {
                     background-color: rgba(0, 0, 0, 0.5);
                 }
             }
+            .api-heartbeat {
+                position: absolute;
+                background-color: transparent;
+                color: #fff;
+                opacity: 0;
+                left: 0;
+                top: 0;
+                transition: all 0.25s ease-in-out;
+                outline: none;
+                margin: 5px;
+                padding: 2px 6px;
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.5);
+                }
+            }
             .stock-chart {
                 border-top-left-radius: 0.3rem;
                 border-top-right-radius: 0.3rem;
+                background-image: url('http://kate.ilona-andrews.com/wp-content/uploads/2010/12/mongoose.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position-y: 50%;
                 &.enabled {
                     background-color: #00c5de;
                 }
@@ -110,13 +129,19 @@ applications {
                 background: #1d2122;
                 padding: 1em;
                 width: 100%;
-                .info abbr {
-                    display: block;
+                .info a {
                     color: #f8f8f8;
-                    font-size: 1.5em;
-                    font-weight: 600;
-                    margin-top: 0.18em;
-                    white-space: nowrap;
+                    &:hover {
+                        color: @brand-primary;
+                        text-decoration: none;
+                    }
+                    span {
+                        display: block;
+                        font-size: 1.5em;
+                        font-weight: 600;
+                        margin-top: 0.18em;
+                        white-space: nowrap;
+                    }
                 }
                 .changes {
                     text-align: right;
@@ -145,6 +170,7 @@ applications {
                             color: #e76646;
                             &:before {
                                 border-color: #e76646 transparent transparent;
+                                vertical-align: bottom;
                             }
                         }
                     }
@@ -173,13 +199,9 @@ applications {
                     display: inline-block;
                     vertical-align: middle;
                 }
-                div {
-                    padding-left: 5px !important;
-                    padding-right: 5px !important;
-                }
                 .year-all, .year-chart {
-                    display: inline-block;
-                    vertical-align: middle;
+                    //display: inline-block;
+                    //vertical-align: middle;
                 }
                 .year-chart, .chart-bars {
                     height: 100%;
@@ -192,13 +214,14 @@ applications {
                     padding-left: 5px !important;
                     padding-right: 5px !important;
                 }
-                a {
+                .box {
                     color: #46494c;
                     display: block;
                     background: rgba(0, 0, 0, 0.05);
                     padding: 1em 0.5em;
                     border-radius: 0.3rem;
                     text-decoration: none;
+                    cursor: default;
                     &:hover {
                         color: #1c84d4;
                         span {
@@ -221,18 +244,18 @@ applications {
             .year-chart .chart-bars {
                 list-style: none;
                 padding: 0;
-                padding-bottom: 1.5em;
+                padding-bottom: 1em;
                 margin: 0;
                 text-align: justify;
                 &:after {
-                    content: "";
-                    display: inline-block;
-                    width: 100%;
+                    //content: "";
+                    //display: inline-block;
+                    //width: 100%;
                 }
                 li {
                     position: relative;
                     font-size: 0.9em;
-                    width: 10px;
+                    width: 11.5%;
                     height: 100%;
                     background: rgba(0, 0, 0, 0.1);
                     display: inline-block;

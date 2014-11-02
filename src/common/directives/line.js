@@ -43,7 +43,7 @@ angular.module('myGraph', ['D3Service'])
 
                 
                 data = data.map(function(d, i) {
-                    return [new Date(d.time), d.mean];
+                    return [new Date(d.key), d.time_stats.avg || 0];
                 }).sort(function(a, b) {
                     return d3.ascending(a[0], b[0]);
                 });

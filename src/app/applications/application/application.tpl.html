@@ -10,12 +10,12 @@
                     <button type="button" class="btn btn-default" ng-click="showSource=!showSource" ng-class="{active: showSource}">
                         <i class="fa fa-code"></i> source
                     </button>
-                    <div class="btn-group">
+                    <div class="btn-group" dropdown>
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sort-alpha-asc"></i> Sort <span class="fa fa-angle-down"></span></button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="" ng-click="settings.application.orderBy='name'"><i class="fa fa-fw" ng-class="settings.application.orderBy == 'name' ? 'fa-check-circle' : 'fa-circle-o'"></i> Name</a></li>
-                            <li><a href="" ng-click="settings.application.orderBy='methods'"><i class="fa fa-fw" ng-class="settings.application.orderBy == 'messageCount' ? 'fa-check-circle' : 'fa-circle-o'"></i> Activity</a></li>
-                            <li><a href="" ng-click="settings.application.orderBy='lastAccess'"><i class="fa fa-fw" ng-class="settings.application.orderBy == 'lastAccess' ? 'fa-check-circle' : 'fa-circle-o'"></i> Date</a></li>
+                            <li><a href="" ><i class="fa fa-fw" ng-class="settings.application.orderBy == 'name' ? 'fa-check-circle' : 'fa-circle-thin'"></i> Name</a></li>
+                            <li><a href="" ><i class="fa fa-fw" ng-class="settings.application.orderBy == 'messageCount' ? 'fa-check-circle' : 'fa-circle-thin'"></i> Activity</a></li>
+                            <li><a href="" ><i class="fa fa-fw" ng-class="settings.application.orderBy == 'lastAccess' ? 'fa-check-circle' : 'fa-circle-thin'"></i> Date</a></li>
                         </ul>
                     </div>
                 </div>

@@ -22,12 +22,17 @@ angular.module( 'apicatus.logout', [])
 .config(function config( $stateProvider ) {
     $stateProvider.state( 'main.logout', {
         url: '/logout',
-            views: {
-                "main": {
-                    controller: 'LogoutCtrl',
-                    templateUrl: 'logout/logout.tpl.html'
-                }
-            },
+        views: {
+            "main": {
+                controller: 'LogoutCtrl as logout',
+                templateUrl: 'logout/logout.tpl.html'
+            }
+        },
+        resolve: {
+            signout: ['Restangular', function (Restangular) {
+                return Restangular.one('user/signout').get();
+            }]
+        },
         data:{ pageTitle: 'Logout' }
     });
 })
@@ -35,12 +40,8 @@ angular.module( 'apicatus.logout', [])
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'LogoutCtrl', function LogoutController( $scope, $state, AuthService ) {
-
-    AuthService.logout().then(function() {
-        $scope.isAuthenticated = false;
-        $state.transitionTo("main.logout");
-    });
-
+.controller( 'LogoutCtrl', function LogoutController( $scope, $moment, signout ) {
+    var logout = this;
+    logout.date = $moment().format('MMMM DD, YYYY [at] HH:MM A');
 });
 

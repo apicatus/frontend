@@ -1,6 +1,6 @@
 var charts = charts || {};
 
-charts.bivariate = function module() {
+charts.multiline = function module() {
     var margin = {top: 5, right: 20, bottom: 16, left: 50},
         width = 500,
         height = 500,
@@ -72,7 +72,7 @@ charts.bivariate = function module() {
                     .scale(yScale)
                     .orient("left")
                     .tickPadding(5)
-                    .ticks(3);
+                    .ticks(2);
 
                 var area = d3.svg.area()
                     .x(function(d) { return xScale(d[keys.timestamp]); })
@@ -110,16 +110,7 @@ charts.bivariate = function module() {
                 var g = svg.append("g")
                     .attr("class", "y axis")
                     .attr("transform", "translate(" + margin.left + ",0)")
-                    .call(yAxis)
-                    /*.insert("g", ".bars")         
-                    .attr("class", "grid horizontal")
-                    .call(d3.svg.axis().scale(yScale)
-                        .orient("left")
-                        .tickPadding(5)
-                        .ticks(2)
-                        .tickSize(-(size.width), 0, 0)
-                        .tickFormat("")
-                    )*/;
+                    .call(yAxis);
 
                 pathContainer.append("path")
                     .datum(data)

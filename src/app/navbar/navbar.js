@@ -17,12 +17,20 @@ angular.module( 'apicatus.navbar', ['dateRange'])
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'NavBarCtrl', function NavBarController($scope) {
+.controller( 'NavBarCtrl', function NavBarController($scope, $state, Restangular) {
     $scope.sideBarOpened = false;
     $scope.oneAtATime = true;
     $scope.addItem = function() {
         var newItemNo = $scope.items.length + 1;
         $scope.items.push('Item ' + newItemNo);
+    };
+    $scope.logOut = function(user) {
+        $state.transitionTo("main.home");
+        /*
+        Restangular.one('user/signout').get().then(function() {
+            $state.transitionTo("main.home");
+            console.log("user logged out !");
+        });*/
     };
 })
 .directive("menuToggle", function () {

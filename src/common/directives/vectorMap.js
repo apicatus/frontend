@@ -77,8 +77,8 @@ angular.module('vectorMap', [])
                     mapObject.reset();
                     mapObject.series.regions[0].setValues(series);
                     mapObject.series.regions[0].setValues(markers);
-                    mapObject.series.regions[0].setScale(['#C8EEFF','#0071A4']);
-                    mapObject.series.regions[0].setNormalizeFunction('polynomial');
+                    //mapObject.series.regions[0].setScale(['#C8EEFF','#0071A4']);
+                    //mapObject.series.regions[0].setNormalizeFunction('polynomial');
                 }
             };
         }

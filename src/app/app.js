@@ -4,6 +4,7 @@ angular.module( 'apicatus', [
     'apicatus.main',
     'apicatus.home',
     'apicatus.login',
+    'apicatus.logout',
     'apicatus.applications',
     'apicatus.application',
     'apicatus.dashboard',

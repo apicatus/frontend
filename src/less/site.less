@@ -230,8 +230,30 @@ table {
     .progress {
         margin-bottom: 0px;
     }
+    .table-fixed {
+        table-layout: fixed;
+    }
+    .primary-table {
+        > thead, > tbody, > tfoot {
+            > tr {
+                > th, > td {
+                    padding: @table-cell-padding;
+                    line-height: @line-height-base;
+                    vertical-align: middle;
+                    border-top: 1px solid lighten(@table-border-color, 20%);
+                }
+            }
+        }
+        > thead > tr > th {
+            border-bottom: 1px solid @brand-primary; /*@table-border-color;*/
+        }
+    }
+    .valign-middle {
+        td { 
+            vertical-align: middle;
+        }
+    }
 }
-
 .jvectormap-label {
     position: absolute;
     display: none;

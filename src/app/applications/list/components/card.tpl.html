@@ -1,39 +1,42 @@
-<div ng-repeat="api in applications.apis | orderBy:sort.property:sort.reverse" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+<div ng-repeat="api in applications.apis | orderBy:sort.property:sort.reverse" ng-controller="CardCtrl as card" ng-init="card.init(api, summaries)" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
     <div class="stock card" ng-class="{flip: flipped, public: api.public}">
         <div class="front">
             <div class="stock-chart" ng-class="api.enabled ? 'enabled' : 'disabled'">
-                <bar-chart title="{{title}}" data="applications.data"></bar-chart>
-                <line-chart title="{{title}}" data="api.logs" key="time"></line-chart>
+                <!-- bar-chart title="{{title}}" data="applications.data"></bar-chart -->
+                <!-- inline-bar-chart data="BarChart.data" options="{height: '100%', width: '100%', fill: ['rgba(255,255,255,0.25)'], stroke: ['rgba(255,255,255,0.5)']}"></inline-bar-chart -->
+                <inline-line-chart data="card.barChart.data" options="{height: '100%', width: '100%', fill: ['rgba(255,255,255,0.25)'], stroke: ['rgba(255,255,255,0.5)']}"></inline-line-chart>
+                <!-- line-chart title="{{title}}" data="[1,20,30,4,5,66,44,33,22,1,2,4,55]" key="time"></line-chart -->
                 <button class="btn api-setup pull-right" ng-click="flipped=!flipped"><i class="fa fa-cogs"></i></button>
+                <div class="api-heartbeat"><i class="fa fa-heart"></i></div>
             </div>
             <div class="current-price container">
-                <div class="info col-sm-6"><a ui-sref="main.applications.application({id: api._id})"><abbr>{{api.name}}</abbr></a>
+                <div class="info col-sm-6">
+                    <a ui-sref="main.applications.application({id: api._id})" class="title">
+                        <span>{{api.name}}</span>
+                    </a>
                     <time><i class="fa fa-clock-o"></i> <span>{{api.lastAccess | timeago}}</span></time>
                 </div>
                 <div class="changes col-sm-6">
-                    <div class="value down">{{api.logs[api.logs.length-1].time}}ms</div>
-                    <div class="change">{{api.logs[api.logs.length-1].time - api.logs[api.logs.length-2].time}}ms ({{api.logs[api.logs.length-1].time / api.logs[api.logs.length-2].time * 100 | number:0}}%)</div>
+                    <div class="value" ng-class="card.summary.current.stats.avg > card.summary.previous.stats.avg ? 'down' : 'up'">{{ card.summary.current.stats.avg - card.summary.previous.stats.avg | number:0}}ms</div>
+                    <div class="change"><strong>{{card.percent(card.summary.current.stats.avg, card.summary.previous.stats.avg) | number:0}}</strong><span class="sub">%</span> change</div>
                 </div>
             </div>
             <div class="yearly-changes container" ng-show="api.enabled">
-                <div class="year-all col-lg-6 col-sm-6"><strong ng-init="cosa=1000000">{{cosa | humanize}}</strong><span>Weekly change</span>
+                <div class="year-all col-xs-6 col-sm-6">
+                    <strong ng-init="cosa=1000000">{{card.summary.current.doc_count - card.summary.previous.doc_count | humanize}}</strong><span>Weekly change</span>
                 </div>
-                <div class="year-chart col-lg-6 col-sm-6">
-                    <ul class="chart-bars">
-                        <li ng-repeat="weekday in applications.weekdays">
-                            <div class="value"></div>
-                            <label>{{weekday}}</label>
-                        </li>
-                    </ul>
+                <div class="year-chart col-xs-6">
+                    <inline-bar-chart data="card.barChart.data" options="{height: '80%', width: '100%', fill: ['#49c5b1']}"></inline-bar-chart>
                 </div>
             </div>
             <div class="summary container">
                 <div class="col-lg-6 col-sm-6">
-                    <a href="">
-                        <strong>{{ (summary | filter:{_id: api._id})[0].total || 0 }}</strong><span>requests</span>
-                    </a>
+                    <div class="box">
+                        <strong>{{ card.summary.current.doc_count | humanize }}</strong><span>requests</span>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-sm-6"><a><strong>{{ (summary | filter:{_id: api._id})[0].avg_time | number:1 }} ms</strong><span>Average</span></a>
+                <div class="col-lg-6 col-sm-6">
+                    <div class="box"><strong>{{ card.summary.current.stats.avg | number:0 }}ms</strong><span>Average</span></div>
                 </div>
             </div>
         </div>

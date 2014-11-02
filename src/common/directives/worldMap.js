@@ -30,7 +30,7 @@ angular.module('worldMap', ['D3Service', 'ProjectionService', 'TopoJsonService']
                 //console.log(width, ",", height, $element[0]);
 
                 $scope.$watchCollection('data', function (newVal, oldVal) {
-                    //console.log($scope.data);
+                    console.log("data for map: ", $scope.data);
                     el.datum(newVal).call(worldmap);
                 }, true);
 

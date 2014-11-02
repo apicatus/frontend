@@ -2,11 +2,11 @@
 /*jshint newcap: false */
 
 angular.module( 'apicatus.dashboard.geo', [
-    'D3Service',
-    'd3Service',
-    'budgetDonut',
-    'barChart',
-    'lineChart'
+    'vectorMap',
+    'myGraph',
+    'stackedBarChart',
+    'bivariateChart',
+    'worldMap'
 ])
 .controller( 'DashboardGeoCtrl', function DashboardGeoController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings ) {
     $scope.worldMap = [{
@@ -23,7 +23,7 @@ angular.module( 'apicatus.dashboard.geo', [
         name: "Sydney"
     }];
 
-    Restangular.all('geo').getList().then(function(data) {
+    /*Restangular.all('geo').getList().then(function(data) {
         //console.log("geo: ", angular.copy(geo));
         $scope.geoRaw = data.map(function(data, index) {
             var flag = 'https://cdn.rawgit.com/koppi/iso-country-flags-svg-collection/master/svg/country-4x3/' + data._id.toLowerCase() + '.svg';
@@ -47,19 +47,25 @@ angular.module( 'apicatus.dashboard.geo', [
 
     }, function() {
         console.log("There was an error");
-    });
-
-    Restangular.all('languages').getList().then(function(data) {
-        $scope.languages = data;
-    }, function() {
-        console.log("There was an error");
-    });
+    });*/
 })
-// We already have a limitTo filter built-in to angular,
-// let's make a startFrom filter
-.filter('startFrom', function() {
-    return function(input, start) {
-        start = +start; //parse to int
-        return input.slice(start);
+.controller( 'MapCtrl', ['$timeout', 'Restangular', function TransferStatisticsController($timeout, Restangular) {
+
+    var map = this;
+    var since = new Date().setMinutes(new Date().getMinutes() - 60);
+    var until = new Date().getTime();
+    var interval = '1d';
+
+    map.load = function(method) {
+        Restangular.one('geo/method').getList(method._id, {since: since, until: until}).then(function(records) {
+            map.data = records;
+        }, function(error) {
+            console.log("error getting analitics: ", error);
+        });
     };
-});
+    
+    map.init = function(method) {
+        map.method = method;
+        map.load(map.method);
+    };
+}]);

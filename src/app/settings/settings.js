@@ -25,8 +25,16 @@ angular.module( 'apicatus.settings', [])
         url: '/settings',
         views: {
             "main": {
-                controller: 'SettingsCtrl',
-                templateUrl: 'settings/settings.tpl.html'
+                controller: 'SettingsCtrl as settings',
+                templateUrl: 'settings/settings.tpl.html',
+                resolve: {
+                    user: ['Restangular', function (Restangular) {
+                        return Restangular.one('user').get();
+                    }],
+                    apis: ['Restangular', function (Restangular) {
+                        return Restangular.all('digestors').getList();
+                    }]
+                }
             }
         },
         data: { pageTitle: 'Settings' },
@@ -37,10 +45,13 @@ angular.module( 'apicatus.settings', [])
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'SettingsCtrl', function SettingsController( $scope, $modal, Restangular  ) {
-    var baseDigestors = Restangular.all('digestors');
-    $scope.applications = Restangular.one('digestors').getList().then(function(digestors) {
-        $scope.apis = digestors;
-    });
-});
+.controller( 'SettingsCtrl', ['$modal', 'Restangular', 'user', 'apis', function SettingsController( $modal, Restangular, user, apis ) {
+    var settings = this;
+    settings.apis = apis;
+    settings.user = user;
+    this.save = function(user) {
+        console.log("user.name: ", user.name);
+        user.put();
+    };
+}]);
 
