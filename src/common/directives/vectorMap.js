@@ -10,12 +10,12 @@ angular.module('vectorMap', [])
         },
         link: function (scope, element, attrs) {
             var map = null;
-            scope.$watch('series', function(newVal, oldVal, scope) {
-                if(newVal === oldVal || newVal.length <= 0) {
+            scope.$watchCollection('series', function(newVal, oldVal, scope) {
+                if(!newVal || newVal.length <= 0) {
                     return;
                 }
                 var series = newVal.reduce(function(obj, key) {
-                    obj[key.term.toUpperCase()] = key.count;
+                    obj[key.key.toUpperCase()] = key.doc_count;
                     return obj;
                 }, {});
                 $timeout(function() {

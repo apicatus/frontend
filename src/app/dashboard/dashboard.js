@@ -27,6 +27,7 @@ angular.module( 'apicatus.dashboard', [
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state( 'main.dashboard', {
         url: '/dashboard',
+        reloadOnSearch : false,
         abstract: true,
         template: '<ui-view/>',
         views: {
@@ -44,21 +45,19 @@ angular.module( 'apicatus.dashboard', [
         authenticate: true
     })
     .state('main.dashboard.traffic', {
-        url: '/traffic',
+        url: '/traffic/:id',
         templateUrl: 'dashboard/traffic/traffic.tpl.html',
-        controller: 'DashboardTrafficCtrl',
-        data: { pageTitle: 'Traffic' },
-        //authenticate: true,
+        controller: 'DashboardTrafficCtrl as traffic',
         resolve: {
-            projects: function($stateParams, $timeout, $q) {
-                var deferred = $q.defer();
-                //console.log("scope", $scope);
-                $timeout(function(){
-                    deferred.resolve([{ id: 0, name: "Alice" }, { id: 1, name: "Bob" }]);
-                }, 1500);
-                return deferred.promise;
-            }
+            transferStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
+                if($stateParams.id) {
+                    return Restangular.one('transfer/digestor', $stateParams.id).get();
+                } else {
+                    return Restangular.one('transfer').get();
+                }
+            }]
         },
+        data: { pageTitle: 'Traffic' },
         onEnter: function(){
             console.log("enter Traffic");
         }
@@ -66,16 +65,25 @@ angular.module( 'apicatus.dashboard', [
     .state('main.dashboard.geo', {
         url: '/geo/:id',
         templateUrl: 'dashboard/geo/geo.tpl.html',
-        controller: 'DashboardGeoCtrl',
-        data: { pageTitle: 'Geo' },
+        controller: 'DashboardGeoCtrl as geo',
         resolve: {
-            apis: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
-                console.log("scope", apis);
-                console.log("$stateParams", $stateParams);
-                return Restangular.one('geo').getList();
+            geoStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
+                if($stateParams.id) {
+                    return Restangular.one('geo/digestor', $stateParams.id).get();
+                } else {
+                    return Restangular.one('geo').get();
+                }
+            }],
+            languageStatistics: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
+                if($stateParams.id) {
+                    return Restangular.one('lang/digestor', $stateParams.id).get();
+                } else {
+                    return Restangular.one('lang').get();
+                }
             }]
         },
-        onEnter: function(){
+        data: { pageTitle: 'Geo' },
+        onEnter: function() {
             console.log("enter geo");
         }
     })
@@ -98,11 +106,19 @@ angular.module( 'apicatus.dashboard', [
         }
     })
     .state('main.dashboard.technology', {
-        url: '/technology',
+        url: '/technology/:id',
         templateUrl: 'dashboard/technology/technology.tpl.html',
-        controller: 'DashboardTechnologyCtrl',
+        controller: 'DashboardTechnologyCtrl as technology',
+        resolve: {
+            agentStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
+                if($stateParams.id) {
+                    return Restangular.one('agent/digestor', $stateParams.id).get();
+                } else {
+                    return Restangular.one('agent').get();
+                }
+            }]
+        },
         data: { pageTitle: 'Technology' },
-        //authenticate: true,
         onEnter: function(){
             console.log("enter technology");
         }
@@ -112,25 +128,15 @@ angular.module( 'apicatus.dashboard', [
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'DashboardCtrl', function DashboardController( $scope, $modal, Restangular, apis ) {
-    var baseDigestors = Restangular.all('digestors');
-    $scope.potatoes = 55;
-    $scope.selectedApi = {};
-    
-    $scope.apis = apis;
-    $scope.selectedApi = apis[0];
+.controller( 'DashboardCtrl', function DashboardController( $scope, $state, $location, $stateParams, $filter, Restangular, apis ) {
 
-    $scope.$watch('selectedApi', function(newVal, oldVal, scope) {
-        if(newVal === oldVal || newVal.length <= 0) {
-            return;
-        }
-        console.log("selectedApi: ", $scope.selectedApi);
-    }, true);
-    $scope.$watch('dateRange', function(newVal, oldVal, scope) {
-        if(newVal === oldVal || newVal.length <= 0) {
-            return;
-        }
-        console.log("dateRange: ", $scope.dateRange);
-    }, false);
+    $scope.selectedApi = ($filter('filter')(apis, {_id: $state.params.id || null}))[0] || null;
+    console.log("selectedApi: ", $state.params.id);
+    $scope.apis = apis;
+
+    $scope.selectApi = function(api) {
+        $scope.selectedApi = api;
+        $state.transitionTo($state.current.name, {id: api ? api._id : ''});
+    };
 });
 

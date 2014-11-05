@@ -1,3 +1,5 @@
+/*jshint newcap: false */
+
 angular.module( 'apicatus', [
     'templates-app',
     'templates-common',
@@ -84,10 +86,35 @@ angular.module( 'apicatus', [
     mySocket.forward('error');
     return mySocket;
 })
-.controller( 'AppCtrl', function AppCtrl ( $scope, $location, localStorageService, $cookies, Restangular, mySocket ) {
+.constant('Messenger', Messenger)
+.provider('messanger', ['Messenger', function messanger(Messenger) {
+
+    this.defaults = {
+        extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+        theme: 'flat',
+        showCloseButton: true
+    };
+
+    Messenger.options = this.defaults;
+
+    this.options = function(options) {
+        Messenger.options = angular.extend(this.defaults, options);
+    };
+
+    this.$get = ["$timeout", function messangerFactory($timeout) {
+        return {
+            post: function(options) {
+                return Messenger().post(options);
+            },
+            run: function(options) {
+                return Messenger().run(options);
+            }
+        };
+    }];
+}])
+.controller( 'AppCtrl', function AppCtrl ( $scope, $location, localStorageService, $cookies, Restangular, mySocket, messanger ) {
     var token = localStorageService.get('token');
     if(token) {
-        console.log("I got a local storage token", token);
         Restangular.configuration.defaultHeaders.token = token.token;
         Restangular.one('user').get().then(function(user) {
             $scope.user = user;
@@ -110,6 +137,10 @@ angular.module( 'apicatus', [
     mySocket.emit('angularMessage', {data: "myMessage"});
     mySocket.on('message', function(result){
         console.log("socket message: ", result);
+        messanger.post({
+            message: result.hello,
+            showCloseButton: true
+        });
     });
 
     $scope.$on('userLoggedIn', function(event, user){

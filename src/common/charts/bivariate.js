@@ -1,10 +1,11 @@
 var charts = charts || {};
 
 charts.bivariate = function module() {
-    var margin = {top: 5, right: 20, bottom: 16, left: 50},
+    var margin = {top: 6, right: 2, bottom: 16, left: 50},
         width = 500,
         height = 500,
         gap = 0,
+        axes = null,
         ease = 'cubic-in-out';
     var svg, container = null, duration = 650;
     var stack = d3.layout.stack();
@@ -25,7 +26,6 @@ charts.bivariate = function module() {
                     'width': width - margin.left - margin.right,
                     'height': height - margin.top - margin.bottom
                 };
-                console.log("data: ", data);
                 var pathContainer = null;
                 var dateStart = data[0][keys.timestamp];
                 var dateEnd = data[data.length - 1][keys.timestamp];
@@ -42,8 +42,6 @@ charts.bivariate = function module() {
                     ticks = 4;
                     subs = 6;
                 }
-
-                console.log("data: ", daySpan);
                 //Set up scales
                 var xScale = d3.time.scale()
                     //.domain([new Date(dataset[0][0].time), d3.time.minute.offset(new Date(dataset[0][dataset[0].length - 1].time), 8)])
@@ -72,7 +70,8 @@ charts.bivariate = function module() {
                     .scale(yScale)
                     .orient("left")
                     .tickPadding(5)
-                    .ticks(3);
+                    .tickSize(size.width)
+                    .ticks(2);
 
                 var area = d3.svg.area()
                     .x(function(d) { return xScale(d[keys.timestamp]); })
@@ -90,27 +89,38 @@ charts.bivariate = function module() {
                         .attr("width", "100%")
                         .attr("height", "100%");
                     
+                    axes = svg.append("g")
+                        .attr("transform", "translate(0,0)");
                     pathContainer = svg.append("g")
                         .attr("transform", "translate(" + margin.left + ",0)");
-                } else {
-                    svg.select(".area")
-                        .datum(data)
-                        .attr("class", "area")
-                        .style("fill", "#49c5b1")
-                        .style("fill-opacity", 0.5)
-                        .attr("d", area);
-                    return;
+
                 }
 
-                svg.append("g")
+                axes.append("g")
                     .attr("class", "x axis")
                     .attr("transform", "translate(50," + size.height + ")")
                     .call(xAxis);
 
-                var g = svg.append("g")
+                var yax = axes.append("g")
                     .attr("class", "y axis")
-                    .attr("transform", "translate(" + margin.left + ",0)")
-                    .call(yAxis)
+                    .attr("transform", "translate(" + width + ",0)")
+                    .call(yAxis);
+
+                yax.call(yAxis)
+                    .selectAll('.y.axis g')
+                    .classed('zero', function(d, i) {
+                        return d === 0;
+                    })
+                    .classed('add', function(d, i) {
+                        return d > 0;
+                    })
+                    .classed('del', function(d, i) {
+                        return d < 0;
+                    });
+                    //.selectAll("text")
+                    //.attr("x", 4)
+                    //.attr("dy", -4)
+
                     /*.insert("g", ".bars")         
                     .attr("class", "grid horizontal")
                     .call(d3.svg.axis().scale(yScale)
@@ -119,7 +129,7 @@ charts.bivariate = function module() {
                         .ticks(2)
                         .tickSize(-(size.width), 0, 0)
                         .tickFormat("")
-                    )*/;
+                    )*/
 
                 pathContainer.append("path")
                     .datum(data)
@@ -128,7 +138,6 @@ charts.bivariate = function module() {
                     .style("fill", "#49c5b1")
                     .style("fill-opacity", 0.5)
                     .attr("d", area);
-
             }
 
             draw(_data);

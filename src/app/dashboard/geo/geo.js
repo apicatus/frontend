@@ -8,64 +8,72 @@ angular.module( 'apicatus.dashboard.geo', [
     'bivariateChart',
     'worldMap'
 ])
-.controller( 'DashboardGeoCtrl', function DashboardGeoController( $scope, $location, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings ) {
-    $scope.worldMap = [{
-        latLng: [40.71, -74],
-        name: "New York"
-    }, {
-        latLng: [39.9, 116.4],
-        name: "Beijing"
-    }, {
-        latLng: [31.23, 121.47],
-        name: "Shanghai"
-    }, {
-        latLng: [-33.86, 151.2],
-        name: "Sydney"
-    }];
+.controller( 'DashboardGeoCtrl', function DashboardGeoController( $scope, $filter, $stateParams, Restangular, apis, geoStatistics, languageStatistics ) {
+    
+    var geo = this;
+    var data = null;
+    var parseLangRange = function(lang_range) {
+        var extractPartsReg = /^([\w\*]*)(-(\w*))?.*$/i;
 
-    /*Restangular.all('geo').getList().then(function(data) {
-        //console.log("geo: ", angular.copy(geo));
-        $scope.geoRaw = data.map(function(data, index) {
-            var flag = 'https://cdn.rawgit.com/koppi/iso-country-flags-svg-collection/master/svg/country-4x3/' + data._id.toLowerCase() + '.svg';
-            return [
-                data._id,
-                data.total,
-                data.minTime,
-                data.maxTime,
-                data.avgTime,
-                flag
-            ];
-        });
-        $scope.totalSessions = data.reduce(function(previousValue, currentValue) {
-            return currentValue.total + previousValue;
-        }, 0);
+        var match = lang_range.trim().match(extractPartsReg);
 
-        var country = data.map(function(data, index){
-            return [data._id, data.total, data.minTime];
-        });
-        country.unshift(['Country', 'Hits', 'Min Response Time']);
+        if (!match) {
+            return undefined;
+        }
+        
+        // we will store the result in here to be returned later
+        var result = {};
 
-    }, function() {
-        console.log("There was an error");
-    });*/
-})
-.controller( 'MapCtrl', ['$timeout', 'Restangular', function TransferStatisticsController($timeout, Restangular) {
+        // parse language
+        var parseLangReg = /^([a-z]{2}|\*)$/i;
+        var lang = match[1];
+        if (lang) {
+            var langMatch = lang.match(parseLangReg);
+            if (langMatch) {
+                result.language = langMatch[0].toLowerCase();
+            }
+        }
 
-    var map = this;
-    var since = new Date().setMinutes(new Date().getMinutes() - 60);
-    var until = new Date().getTime();
-    var interval = '1d';
+        // parse locale
+        var parseLocaleReg = /[a-z]{2}/i;
+        var locale = match[3];
+        if (locale) {
+            var localeMatch = locale.match(parseLocaleReg);
+            if (localeMatch) {
+                result.locale = localeMatch[0].toUpperCase();
+            }
+        }
 
-    map.load = function(method) {
-        Restangular.one('geo/method').getList(method._id, {since: since, until: until}).then(function(records) {
-            map.data = records;
-        }, function(error) {
-            console.log("error getting analitics: ", error);
-        });
+        // if we havn't found anything return undefined
+        if (result.language || result.locale) {
+            return result;
+        }
+
+        return undefined;
     };
     
-    map.init = function(method) {
-        map.method = method;
-        map.load(map.method);
-    };
-}]);
+    if(!geoStatistics.summary.buckets.length) {
+        geo.hasData = false;
+    } else {
+        geo.statistics = geoStatistics.summary.buckets;
+        geo.map = geo.statistics;
+        geo.maxCountries = geo.statistics.reduce(function(pv, cv) { 
+            return pv + cv.doc_count; 
+        }, 0);
+
+        geo.languages = languageStatistics.summary.buckets;
+
+        geo.hasData = true;
+    }
+    geo.maxLanguages = 0;
+    if(geo.languages) {
+        geo.languages = geo.languages.map(function(lang) {
+            geo.maxLanguages += lang.doc_count;
+            return {
+                doc_count: lang.doc_count,
+                language: parseLangRange(lang.key.split(",")[0]).language,
+                locale: parseLangRange(lang.key.split(",")[0]).locale
+            };
+        });
+    }
+});

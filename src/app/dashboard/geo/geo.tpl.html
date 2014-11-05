@@ -1,20 +1,12 @@
-<geo>
+<geo ng-if="geo.hasData">
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-globe"></i> Map</h3>
+                    <h3 class="panel-title"><i class="fa fa-globe"></i> World Map</h3>
                 </div>
-                <div class="panel-body" ng-controller="MapCtrl as map" ng-click="map.init(method)">
-                    <!-- tab ng-controller="MapCtrl as map" ng-click="map.init(method)" select="locationsTabActive = true" select="datePicker.show=true" deselect="datePicker.show=false">
-                        <tab-heading>
-                            <i class="fa fa-globe"></i> Locations
-                        </tab-heading>
-                        <div ng-if="locationsTabActive">
-                            <vector-map series="map.data"></vector-map>
-                        </div>
-                    </tab -->
-                    <vector-map series="map.data" style="width:100%;height:400px;"></vector-map>
+                <div class="panel-body">
+                    <vector-map series="geo.map"></vector-map>
                 </div>
             </div>
         </div>
@@ -22,31 +14,29 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading"><i class="fa fa-globe"></i> Region</div>
+                <div class="panel-heading"><i class="fa fa-flag-o"></i> Regions</div>
                     <table class="table table-bordered table-striped table-hover table-responsive">
                         <thead>
                             <tr>
                                 <th>Country</th>
-                                <th>Sessions</th>
-                                <th>Sessions %</th>
-                                <th>Min Response Time</th>
-                                <th>Max Response Time</th>
-                                <th>Avg Response Time</th>
+                                <th class="text-right">Calls</th>
+                                <th class="text-center">Sessions %</th>
+                                <th class="text-right">Avg Response Time</th>
+                                <th class="text-right">Min Response Time</th>
+                                <th class="text-right">Max Response Time</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="geo in geoRaw">
-                                <td><img class="flag" ng-src="{{geo[5]}}" /> {{geo[0]}}</td>
-                                <td>{{geo[1]}}</td>
-                                <td><progressbar class="progress-striped" max="totalSessions" value="geo[1]" type="warning"></progressbar></td>
-                                <td>{{geo[2]}}ms</td>
-                                <td>{{geo[3]}}ms</td>
-                                <td>{{geo[4]}}ms</td>
-                                <!-- td>{{geo._id}}</td>
-                                <td>{{geo.total}}</td>
-                                <td>{{geo.minTime}}ms</td>
-                                <td>{{geo.maxTime}}ms</td>
-                                <td>{{geo.avgTime}}ms</td -->
+                            <tr ng-repeat="region in geo.statistics">
+                                <td><img ng-src="https://cdn.rawgit.com/maggiben/iso-country-flags/master/svg/country-4x3/{{region.key}}.svg" class="flag"> {{region.key | uppercase}}</td>
+                                <td class="text-right">{{region.doc_count}}</td>
+                                <td>
+                                    <progressbar class="progress-flat" max="geo.maxCountries" value="region.doc_count" type="primary"></progressbar>
+                                    <!-- inline-pie-chart data="[region.doc_count, geo.maxCountries]" options="{height: '16px'}"></inline-pie-chart -->
+                                </td>
+                                <td class="text-right">{{region.stats.avg | number:0}}ms</td>
+                                <td class="text-right">{{region.stats.max | number:0}}ms</td>
+                                <td class="text-right">{{region.stats.min | number:0}}ms</td>
                             </tr>
                         </tbody>
                     </table>
@@ -57,25 +47,32 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading"><i class="fa fa-flag"></i> Languages</div>
+                <div class="panel-heading"><i class="fa fa-language"></i> Languages</div>
                     <table class="table table-bordered table-striped table-hover table-responsive">
                         <thead>
                             <tr>
                                 <th>Language</th>
-                                <th>Sessions</th>
+                                <th>Locale</th>
+                                <th>Calls</th>
                                 <th>Sessions %</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="language in languages">
-                                <td>{{language._id}}</td>
-                                <td>{{language.total}}</td>
-                                <td><progressbar class="progress-striped" max="totalSessions" value="language.total" type="warning"></progressbar></td>
+                            <tr ng-repeat="language in geo.languages">
+                                <td>{{language.language}}</td>
+                                <td>{{language.locale}}</td>
+                                <td>{{language.doc_count}}</td>
+                                <td><progressbar class="progress-flat" max="geo.maxLanguages" value="language.doc_count" type="primary"></progressbar></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+    </div>
+</geo>
+<geo ng-if="!geo.hasData">
+    <div class="page-header">
+        <h1 ng-model="account"><i class="fa fa-exclamation-triangle"></i> No data for your API <small>{{selectedApi.name}}</small></h1>
     </div>
 </geo>

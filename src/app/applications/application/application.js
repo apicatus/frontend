@@ -3,10 +3,10 @@
 
 angular.module( 'apicatus.application', [
     'ui.ace',
-    'vectorMap',
+    /*'vectorMap',
     'myGraph',
     'stackedBarChart',
-    'bivariateChart',
+    'bivariateChart',*/
     'worldMap'
 ])
 .factory('MetricsService', ['$cacheFactory', 'Restangular', function($cacheFactory, Restangular) {
@@ -299,7 +299,8 @@ angular.module( 'apicatus.application', [
 
     this.keys = function(object) {
         console.log("get keys: ", Object.keys(object));
-        return Object.keys(object);
+        return ["ip", "uri"];
+        //return Object.keys(object);
     };
 
     this.pageChanged = function(page) {
@@ -434,8 +435,8 @@ angular.module( 'apicatus.application', [
         name: "Sydney"
     }];
     map.load = function(method) {
-        Restangular.one('geo/method').getList(method._id, {since: since, until: until}).then(function(records) {
-            map.data = records;
+        Restangular.one('geo/method', method._id).get({since: since, until: until}).then(function(records) {
+            map.data = records.summary.buckets;
             console.log("COUNTRY LIST: ", map.data);
         }, function(error) {
             console.log("error getting analitics: ", error);

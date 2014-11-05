@@ -32,7 +32,8 @@
     "angular-local-storage": "*",
     "angular-translate": "~2.4",
     "angular-translate-loader-static-files": "~2.4",
-    "angular-cookies": "~1.3"
+    "angular-cookies": "~1.3",
+    "messenger": "~1.4.1"
   },
   "resolutions": {
     "angular": "~1.2"

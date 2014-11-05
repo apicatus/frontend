@@ -8,7 +8,13 @@ For more info and more free Bootstrap 3 HTML themes, visit http://startbootstrap
 
 /* ATTN: This is mobile first CSS - to update 786px and up screen width use the media query near the bottom of the document! */
 
-/* Global Styles */
+@import url(http://weloveiconfonts.com/api/?family=zocial);
+
+/* zocial */
+[class*="zocial-"]:before {
+  font-family: 'zocial', sans-serif;
+}
+
 
 /* Global Styles */
 @side-nav-width: 230px;
@@ -233,7 +239,7 @@ table {
     .table-fixed {
         table-layout: fixed;
     }
-    .primary-table {
+    &.primary-table {
         > thead, > tbody, > tfoot {
             > tr {
                 > th, > td {
@@ -243,6 +249,31 @@ table {
                     border-top: 1px solid lighten(@table-border-color, 20%);
                 }
             }
+        }
+        > thead > tr > th {
+            border-bottom: 1px solid @brand-primary; /*@table-border-color;*/
+        }
+    }
+    /* LOG TABLE */
+    &.log-table {
+        > thead, > tbody, > tfoot {
+            > tr {
+                > th, > td {
+                    padding: @table-cell-padding;
+                    line-height: @line-height-base;
+                    vertical-align: top;
+                    //border-top: 1px solid lighten(@table-border-color, 20%);
+                }
+            }
+        }
+        td.expandable {
+            padding: 0px;
+            > table {
+                margin: 0px;
+            }
+        }
+        > tbody + tbody {
+            border-width: 1px;
         }
         > thead > tr > th {
             border-bottom: 1px solid @brand-primary; /*@table-border-color;*/
@@ -289,4 +320,18 @@ table {
 
 .jvectormap-zoomout {
     top: 30px
+}
+
+.progress-flat{
+    .progress-bar-primary {
+        .progress-bar-variant(@brand-primary);
+    }
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    background-color: #fff;
+    border: 1px solid darken(@brand-primary, 15%);
+    .progress-bar {
+        -webkit-box-shadow: none;
+                box-shadow: none;
+    }
 }

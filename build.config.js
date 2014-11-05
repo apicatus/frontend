@@ -81,7 +81,9 @@ module.exports = {
       'lib//angular-ui-ace/ui-ace.js',
       'lib/angular-translate/angular-translate.js',
       'lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-      'lib/moment/moment.js'
+      'lib/moment/moment.js',
+      'lib/messenger/build/js/messenger.js',
+      'lib/messenger/build/js/messenger-theme-flat.js'
     ],
     css: [
     ],

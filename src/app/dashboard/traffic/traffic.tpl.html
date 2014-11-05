@@ -1,92 +1,54 @@
 <traffic>
-    <!-- div class="row">
-        <div class="col-md-3 col-sm-6">
-            <div class="metric-tile tile-default" >
-                <div class="content">
-                    <h1 class="metric">180</h1>
-                    <h2 class="description">Avg Response Time</h2>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="metric-tile tile-default" >
-                <div class="content">
-                    <h1 class="metric">180</h1>
-                    <h2 class="description">Avg Response Time</h2>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="metric-tile tile-default" >
-                <div class="content">
-                    <h1 class="metric">180</h1>
-                    <h2 class="description">Avg Response Time</h2>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="metric-tile tile-default" >
-                <div class="content">
-                    <h1 class="metric">180</h1>
-                    <h2 class="description">Avg Response Time</h2>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
-                </div>
-            </div>
-        </div>
-    </div -->
     <div class="row">
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-red sm">
-                <div class="content">
-                    <h1 class="text-left timer">180</h1>
-                    <p>Avg Response Time</p>
+            <div class="widget widget-stats bg-green">
+                <div class="stats-icon"><i class="fa fa-area-chart"></i>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
+                <div class="stats-info">
+                    <h4>AVG. API RESPONSE TIME</h4>
+                    <p>{{traffic.timeStats.avg | number:0 }}ms</p>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-turquoise sm">
-                <div class="content">
-                    <h1 class="text-left timer">56</h1>
-                    <p>Max Response Time</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-comments"></i>
+                <div class="stats-link">
+                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-blue sm">
-                <div class="content">
-                    <h1 class="text-left timer">32</h1>
-                    <p>Network Request</p>
+            <div class="widget widget-stats bg-blue">
+                <div class="stats-icon"><i class="fa fa-line-chart"></i>
                 </div>
-                <div class="icon">
-                    <i class="fa fa fa-envelope"></i>
+                <div class="stats-info">
+                    <h4>MAX API RESPONSE TIME</h4>
+                    <p>{{traffic.timeStats.max | number:0 }}ms</p>
+                </div>
+                <div class="stats-link">
+                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-purple sm">
-                <div class="content">
-                    <h1 class="text-left timer">105</h1>
-                    <p>Network Errors</p>
+            <div class="widget widget-stats bg-aqua">
+                <div class="stats-icon"><i class="fa fa-bar-chart"></i>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-bar-chart-o"></i>
+                <div class="stats-info">
+                    <h4>MIN API RESPONSE TIME</h4>
+                    <p>{{traffic.timeStats.min | number:0 }}ms</p>
+                </div>
+                <div class="stats-link">
+                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="widget widget-stats bg-black">
+                <div class="stats-icon"><i class="fa fa-pie-chart"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>Errors</h4>
+                    <p>3,291,922</p>
+                </div>
+                <div class="stats-link">
+                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
                 </div>
             </div>
         </div>
@@ -95,19 +57,13 @@
     <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="panel panel-default">
-
-                <div class="panel-heading clearfix">
-                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;"><i class="fa fa-sitemap"></i> Bytes In / Out</h4>
-                    <div class="btn-group pull-right">
-                        <button class="btn btn-sm btn-default"><i class="fa fa-question-circle"></i>X</button>
-                        <button class="btn btn-sm btn-default" ng-click="flipped=!flipped"><i class="fa fa-share"></i>X</button>
-                    </div>
-                </div>
-                <!-- div class="panel-heading">
-                    <h3 class="panel-title">Bytes In / Out</h3>
-                </div -->
-                <div class="panel-body">
-                    <div google-chart chart="traffic.inVsOut.chart"></div>
+                <div class="panel-body widget-chart-donut">
+                    <donut-chart data="traffic.codeStats" style="width:100%;display:block;"></donut-chart>
+                    <ul class="chart-legend">
+                        <li ng-repeat="code in traffic.codeStats">
+                            <i class="fa fa-fw fa-circle-o"></i> {{code.value}} <span>{{code.name}}</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -117,58 +73,11 @@
                     <h3 class="panel-title">Total bytes transferred</h3>
                 </div>
                 <div class="panel-body">
-                    <div google-chart chart="traffic.performance.chart"></div>
                 </div>
             </div>
         </div>
     </div>
     <!-- CHARTS -->
-    <div class="row">
-        <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-default sm">
-                <div class="content">
-                    <h1 class="text-left timer">{{contentlength.value.in.sum}}</h1>
-                    <p>Total bytes in</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-sign-in"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-default sm">
-                <div class="content">
-                    <h1 class="text-left timer">{{contentlength.value.out.sum}}</h1>
-                    <p>Total bytes out</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-sign-out"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-default sm">
-                <div class="content">
-                    <h1 class="text-left timer">{{contentlength.value.in.avg}}</h1>
-                    <p>Average bytes in</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa fa-sign-in"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-default sm">
-                <div class="content">
-                    <h1 class="text-left timer">{{contentlength.value.out.avg}}</h1>
-                    <p>Average bytes out</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-sign-out"></i>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="row">
         <div class="col-lg-12 col-md-12">
             <tabset ng-model="mytabs">
@@ -176,7 +85,6 @@
                     <tab-heading>
                         <i class="fa fa-gears"></i> By API
                     </tab-heading>
-                    <div google-chart chart="widgets[0].chart"></div>
                 </tab>
                 <tab>
                     <tab-heading>
@@ -184,7 +92,6 @@
                     </tab-heading>
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
-                            <div google-chart chart="traffic.performance.chart"></div>
                         </div>
                     </div>
                 </tab>
@@ -192,19 +99,16 @@
                     <tab-heading>
                         <i class="fa fa-gears"></i> By Target URL
                     </tab-heading>
-                    <div google-chart chart="widgets[1].chart"></div>
                 </tab>
                 <tab>
                     <tab-heading>
                         <i class="fa fa-gears"></i> By User Agent
                     </tab-heading>
-                    <div google-chart chart="widgets[2].chart"></div>
                 </tab>
                 <tab>
                     <tab-heading>
                         <i class="fa fa-gears"></i> By Verb
                     </tab-heading>
-                    <div google-chart chart="traffic.performance.chart"></div>
                 </tab>
             </tabset>
         </div>
@@ -218,7 +122,6 @@
                     <h3 class="panel-title">Error Rate</h3>
                 </div>
                 <div class="panel-body">
-                    <budget-donut data="[1,2,3,4,5]" chart="traffic.inVsOut.chart"></budget-donut>
                 </div>
             </div>
         </div>
@@ -228,7 +131,6 @@
                     <h3 class="panel-title">Total Errors</h3>
                 </div>
                 <div class="panel-body">
-                    <div google-chart chart="traffic.performance.chart"></div>
                 </div>
             </div>
         </div>

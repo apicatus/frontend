@@ -2,11 +2,6 @@
 /*jshint newcap: false */
 
 angular.module( 'apicatus.applications', [
-    'D3Service',
-    'worldMap',
-    'budgetDonut',
-    'barChart',
-    'lineChart',
     'fileReader',
     'fileInput',
     'fileDrop',
@@ -75,23 +70,6 @@ angular.module( 'apicatus.applications', [
         };
         console.log("sortBy", $scope.sort);
     };
-    this.data = [1, 4, 2, 4, 7, 2, 9, 5, 6, 4, 1, 6, 8, 2];
-
-    $scope.BarChart = {
-        data: [1, 4, 2, 4, 7, 2, 9, 5, 6, 4, 1, 6, 8, 2],
-        options: {
-            width: '100%',
-            height: 10,
-            fill: ['#f00']
-        }
-    };
-
-    $interval(function() {
-        var random = Math.round(Math.random() * 10);
-        $scope.BarChart.data.shift();
-        $scope.BarChart.data.push(random);
-        $scope.BarChart.options.fill[0] = '#'+Math.floor(Math.random()*16777215).toString(16);
-    }, 1000);
 
     this.weekdays = moment.weekdaysMin();
 
@@ -238,16 +216,20 @@ angular.module( 'apicatus.applications', [
             data: [],
             options: { height: '80%', width: '100%', fill: ['#49c5b1'] }
         };
+        console.log("card summary: ", card.summary);
+        window.summary = card.summary;
         try {
             card.summary.current.data = card.summary.current.dataset.buckets.map(function(bucket){
                 return {
                     timestamp: bucket.key,
-                    stats: bucket.time_stats
+                    stats: bucket.time_stats,
+                    count: bucket.doc_count
                 };
             });
             card.barChart.data = card.summary.current.data.map(function(data){
                 return data.stats.avg || 0;
             });
+            console.log(card.summary.current.data);
         } catch (error) {
             console.log(error);
         }
@@ -283,7 +265,8 @@ angular.module( 'apicatus.applications', [
             table.summary.current.data = table.summary.current.dataset.buckets.map(function(bucket){
                 return {
                     timestamp: bucket.key,
-                    stats: bucket.time_stats
+                    stats: bucket.time_stats,
+                    count: bucket.doc_count
                 };
             });
             table.barChart.data = table.summary.current.data.map(function(data){

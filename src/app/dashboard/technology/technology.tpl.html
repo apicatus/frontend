@@ -1,75 +1,152 @@
 <technology>
     <div class="row">
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-red">
-                <div class="content">
-                    <h1 class="text-left">1800</h1>
-                    <p>Mobile Sessions</p>
+            <div class="widget widget-stats bg-blue">
+                <div class="stats-icon stats-icon-lg">
+                    <i class="fa fa-fw fa-mobile"></i>
                 </div>
-                <div class="icon"><i class="fa fa-mobile"></i>
-                </div>
+                <div class="stats-title">MOBILE SESSIONS</div>
+                <div class="stats-number">{{technology.platforms.mobile | number}}</div>
+                <progressbar class="stats-progress" max="technology.maxPlatforms" value="technology.platforms.mobile"></progressbar>
+                <div class="stats-desc">Better than last week {{(technology.platforms.mobile / technology.maxPlatforms) * 100 | number:0}}%</div>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-blue">
-                <div class="content">
-                    <h1 class="text-left timer" data-from="0" data-to="56" data-speed="2500">56</h1>
-                    <p>Tablet Sessions</p>
+            <div class="widget widget-stats bg-aqua">
+                <div class="stats-icon stats-icon-lg">
+                    <i class="fa fa-fw fa-tablet"></i>
                 </div>
-                <div class="icon"><i class="fa fa-tablet"></i>
-                </div>
+                <div class="stats-title">TABLET SESSIONS</div>
+                <div class="stats-number">{{technology.platforms.tablet | number}}</div>
+                <progressbar class="stats-progress" max="technology.maxPlatforms" value="technology.platforms.tablet"></progressbar>
+                <div class="stats-desc">Better than last week: {{(technology.platforms.tablet / technology.maxPlatforms) * 100 | number:0}}%</div>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-purple">
-                <div class="content">
-                    <h1 class="text-left timer" data-from="0" data-to="56" data-speed="2500">56</h1>
-                    <p>Desktop Sessions</p>
+            <div class="widget widget-stats bg-purple">
+                <div class="stats-icon stats-icon-lg">
+                    <i class="fa fa-fw fa-laptop"></i>
                 </div>
-                <div class="icon"><i class="fa fa-desktop"></i>
+                <div class="stats-title">DESKTOP SESSIONS</div>
+                <div class="stats-number">{{technology.platforms.other | number}}</div>
+                <progressbar class="stats-progress" max="technology.maxPlatforms" value="technology.platforms.other"></progressbar>
+                <div class="stats-desc">Better than last week {{(technology.platforms.other / technology.maxPlatforms) * 100 | number:0}}%</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="widget widget-stats bg-black">
+                <div class="stats-icon stats-icon-lg">
+                    <i class="fa fa-fw fa-desktop"></i>
                 </div>
+                <div class="stats-title">SMART-TV SESSIONS</div>
+                <div class="stats-number">{{technology.platforms.smarttv | number}}</div>
+                <progressbar class="stats-progress" max="technology.maxPlatforms" value="technology.platforms.smarttv"></progressbar>
+                <div class="stats-desc">Better than last week (40.5%)</div>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Explorer</h3>
-                </div>
-                <div class="panel-body">
-                    <!-- world-map data="[1,2,3,4,5,6]"></world-map -->
-                    <div google-chart chart="widgets[0].chart"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">Technology overview</div>
-                    <table class="table table-bordered table-striped table-hover table-responsive">
+            <tabset>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-fw fa-gears"></i> Agents
+                    </tab-heading>
+                    <!-- table log-table table-striped table-condensed table-hover -->
+                    <table class="table primary-table table-striped table-hover table-responsive">
                         <thead>
                             <tr>
-                                <th>Device</th>
                                 <th>Browser</th>
-                                <th>Sessions</th>
-                                <th>Avg. Session Duration</th>
+                                <th>Calls</th>
+                                <th class="text-center">Sessions %</th>
+                                <th class="text-right">Avg Response Time</th>
+                                <th class="text-right">Max Response Time</th>
+                                <th class="text-right">Min Response Time</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="platform in platforms">
-                                <td>{{platform.ua.device.type || 'desktop'}}</td>
-                                <td>{{platform.ua.browser.name}}</td>
-                                <td>{{platform.total}}</td>
-                                <td><progressbar class="progress-striped" max="totalSessions" value="geo[1]" type="warning"></progressbar></td>
-                                <td>{{geo[2]}}ms</td>
-                                <td>{{geo[3]}}ms</td>
+                            <tr ng-repeat="agent in technology.agents">
+                                <td><i class="fa fa-fw zocial-ie"></i> {{agent.key}}</td>
+                                <td class="text-right">{{agent.doc_count}}</td>
+                                <td>
+                                    <progressbar class="progress-flat" max="technology.maxAgents" value="agent.doc_count" type="primary"></progressbar>
+
+                                </td>
+                                <td class="text-right">{{agent.stats.avg | number:0}}ms</td>
+                                <td class="text-right">{{agent.stats.max | number:0}}ms</td>
+                                <td class="text-right">{{agent.stats.min | number:0}}ms</td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
+                    <pagination ng-change="logs.pageChanged(logs.currentPage)" total-items="logs.totalItems" ng-model="logs.currentPage" max-size="logs.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="logs.numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-fw fa-laptop"></i> Devices
+                    </tab-heading>
+                    <!-- table log-table table-striped table-condensed table-hover -->
+                    <table class="table primary-table table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Device</th>
+                                <th>Type</th>
+                                <th>Vendor</th>
+                                <th>Calls</th>
+                                <th class="text-center">Sessions %</th>
+                                <th class="text-right">Avg Response Time</th>
+                                <th class="text-right">Max Response Time</th>
+                                <th class="text-right">Min Response Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="devices in technology.devices">
+                                <td><i class="fa fa-fw fa-laptop"></i> {{devices.key}}</td>
+                                <td>{{devices.type}}</td>
+                                <td>{{devices.vendor}}</td>
+                                <td class="text-right">{{devices.doc_count}}</td>
+                                <td>
+                                    <progressbar class="progress-flat" max="technology.maxDevices" value="devices.doc_count" type="primary"></progressbar>
+                                </td>
+                                <td class="text-right">{{devices.stats.avg | number:0}}ms</td>
+                                <td class="text-right">{{devices.stats.max | number:0}}ms</td>
+                                <td class="text-right">{{devices.stats.min | number:0}}ms</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination ng-change="logs.pageChanged(logs.currentPage)" total-items="logs.totalItems" ng-model="logs.currentPage" max-size="logs.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="logs.numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-fw fa-linux"></i> Operating systems
+                    </tab-heading>
+                    <!-- table log-table table-striped table-condensed table-hover -->
+                    <table class="table primary-table table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Devices</th>
+                                <th>Calls</th>
+                                <th class="text-center">Sessions %</th>
+                                <th class="text-right">Avg Response Time</th>
+                                <th class="text-right">Max Response Time</th>
+                                <th class="text-right">Min Response Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="os in technology.oess">
+                                <td><i class="fa fa-fw" ng-class="technology.getOsIcon(os.key)"></i> {{os.key}}</td>
+                                <td class="text-right">{{os.doc_count}}</td>
+                                <td>
+                                    <progressbar class="progress-flat" max="technology.maxOess" value="os.doc_count" type="primary"></progressbar>
+                                </td>
+                                <td class="text-right">{{os.stats.avg | number:0}}ms</td>
+                                <td class="text-right">{{os.stats.max | number:0}}ms</td>
+                                <td class="text-right">{{os.stats.min | number:0}}ms</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination ng-change="logs.pageChanged(logs.currentPage)" total-items="logs.totalItems" ng-model="logs.currentPage" max-size="logs.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="logs.numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+                </tab>
+            </tabset>
         </div>
     </div>
 </technology>

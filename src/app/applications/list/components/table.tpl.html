@@ -19,7 +19,7 @@
                 <td class="text-right">{{ table.summary.current.stats.avg | number:0 }}ms</td>
                 <td class="text-right">{{api.lastAccess | timeago}}</td>
                 <td class="text-right">
-                    <inline-bar-chart data="table.barChart.data" options="{height: '16px'}"></inline-bar-chart>
+                    <inline-bar-chart data="table.barChart.data" options="{height: '16px', fill: ['#49c5b1']}"></inline-bar-chart>
                 </td>
                 <td>
                     <div class="btn-group pull-right" dropdown>

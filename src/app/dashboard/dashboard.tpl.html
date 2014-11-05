@@ -5,40 +5,36 @@
                 <div class="btn-toolbar" role="toolbar">
                     <div class="btn-group">
                         <div class="btn-group" dropdown>
-                            <button type="button" class="btn btn-default dropdown-toggle"><i class="fa icon-network"></i> {{selectedApi.name}} <span class="fa fa-angle-down"></span></button>
+                            <button type="button" class="btn btn-default dropdown-toggle"><i class="fa icon-network"></i> {{selectedApi ? selectedApi.name : 'DASHBOARD.TOOLBAR.FULL-SUMMARY' | translate}} <span class="fa fa-angle-down"></span></button>
                             <ul class="dropdown-menu" role="menu">
-                                <li ng-repeat="api in apis"><a href="" ng-click="selectApi(api)"><i class="icon-network"></i> {{api.name}}</a></li>
+                                <li ng-repeat="api in apis"><a href="" ng-click="selectApi(api)"><i class="fa fa-fw" ng-class="selectedApi._id == api._id ? 'fa-check-circle' : 'fa-circle-thin'"></i> {{api.name}}</a></li>
                                 <li class="divider"></li>
-                                <li><a href=""><i class="icon-network"></i> {{ 'DASHBOARD.TOOLBAR.FULL-SUMMARY' | translate }}</a></li>
+                                <li><a href="" ng-click="selectApi()"><i class="fa fa-cubes"></i> {{ 'DASHBOARD.TOOLBAR.FULL-SUMMARY' | translate }}</a></li>
                             </ul>
                         </div>
                         <div class="btn-group" dropdown>
                             <button type="button" class="btn btn-default dropdown-toggle" ><i class="fa fa-cloud-download"></i> {{ 'DASHBOARD.TOOLBAR.EXPORT' | translate }} <span class="fa fa-angle-down"></span></button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href=""><i class="icon-network"></i> .csv</a></li>
-                                <li><a href=""><i class="icon-network"></i> .tsv</a></li>
-                                <li><a href=""><i class="icon-network"></i> .xml</a></li>
+                                <li><a href=""><i class="fa fa-fw fa-file-excel-o"></i> .csv</a></li>
+                                <li><a href=""><i class="fa fa-fw fa-file-pdf-o"></i> .pdf</a></li>
                                 <li class="divider"></li>
                                 <li><a href=""><i class="icon-network"></i> {{ 'DASHBOARD.TOOLBAR.FULL-SUMMARY' | translate }}</a></li>
                             </ul>
                         </div>
                     </div>
-                    <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default">
-                            <!-- date-range id="reportrange" class="reportrange" type="daterange" ng-model="dateRange" format="D/M/YYYY">
-                                <i class="fa fa-calendar"></i>
-                                <span class="date">00/00/0000 - 00/00/0000</span> <i class="fa fa-angle-down"></i>
-                            </date-range -->
+                    <div class="btn-group pull-right" dropdown>
+                        <button type="button" class="btn btn-default dropdown-toggle">
+                            <i class="fa fa-clock-o"></i> Time
+                            <span class="fa fa-angle-down"></span>
                         </button>
-                        <!-- button type="button" class="btn btn-default">
-                            <i class="fa fa-code"></i> Today
-                        </button>
-                        <button type="button" class="btn btn-default">
-                            <i class="fa fa-code"></i> Week
-                        </button>
-                        <button type="button" class="btn btn-default">
-                            <i class="fa fa-code"></i> Month
-                        </button -->
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href=""><i class="fa fa-fw fa-circle-thin"></i> Last 1h</a></li>
+                            <li><a href=""><i class="fa fa-fw fa-circle-thin"></i> Last 12h</a></li>
+                            <li><a href=""><i class="fa fa-fw fa-circle-thin"></i> Last 24h</a></li>
+                            <li><a href=""><i class="fa fa-fw fa-circle-thin"></i> Last 7d</a></li>
+                            <li class="divider"></li>
+                            <li><a href="" ng-click="selectApi()"><i class="fa fa-fw fa-edit"></i> Custom</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -46,39 +42,3 @@
     </div>
     <div ui-view></div>
 </dashboard>
-<!-- dashboard>
-    <div class="row">
-        <div class="col-md-12 resource-group">
-            <div class="btn-toolbar" role="toolbar">
-                <div class="btn-group">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa icon-network"></i> APIS <span class="fa fa-angle-down"></span></button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li ng-repeat="api in apis"><a href=""><i class="icon-api"></i> {{api.name}}</a></li>
-                            <li class="divider"></li>
-                            <li><a href=""><i class="icon-network"></i> Full summary</a></li>
-                        </ul>
-                    </div>
-                    <button type="button" class="btn btn-default" ng-click="newApi()">
-                        <i class="icon-stats"></i> Stats
-                    </button>
-                    <button type="button" class="btn btn-default">
-                        <i class="fa fa-cloud-upload"></i> Import
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Panel title</h3>
-                </div>
-                <div class="panel-body">
-                    <world-map data="[1,2,3,4,5,6]"></world-map>
-                </div>
-            </div>
-        </div>
-    </div>
-</dashboard -->
