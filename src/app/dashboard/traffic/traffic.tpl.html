@@ -2,7 +2,8 @@
     <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats bg-green">
-                <div class="stats-icon"><i class="fa fa-area-chart"></i>
+                <div class="stats-icon">
+                    <inline-bar-chart data="traffic.timeStatsByDate.avg" options="{height: 35, width: '100%', fill: ['#fff']}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
                 </div>
                 <div class="stats-info">
                     <h4>AVG. API RESPONSE TIME</h4>
@@ -11,11 +12,13 @@
                 <div class="stats-link">
                     <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
                 </div>
+                
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats bg-blue">
-                <div class="stats-icon"><i class="fa fa-line-chart"></i>
+                <div class="stats-icon">
+                    <inline-bar-chart data="traffic.timeStatsByDate.max" options="{height: 35, width: '100%', fill: ['#fff']}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
                 </div>
                 <div class="stats-info">
                     <h4>MAX API RESPONSE TIME</h4>
@@ -28,11 +31,12 @@
         </div>
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats bg-aqua">
-                <div class="stats-icon"><i class="fa fa-bar-chart"></i>
+                <div class="stats-icon">
+                    <inline-bar-chart data="traffic.dataStatsByDate.avg" options="{height: 35, width: '100%', fill: ['#fff']}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
                 </div>
                 <div class="stats-info">
-                    <h4>MIN API RESPONSE TIME</h4>
-                    <p>{{traffic.timeStats.min | number:0 }}ms</p>
+                    <h4>AVG. RECV. BYTES</h4>
+                    <p>{{traffic.dataStats.min | number:0 | humanize}}b</p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
@@ -41,7 +45,8 @@
         </div>
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats bg-black">
-                <div class="stats-icon"><i class="fa fa-pie-chart"></i>
+                <div class="stats-icon">
+                    <inline-bar-chart data="traffic.codeStatsByDate['500']" options="{height: 35, width: '100%', fill: ['#fff']}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
                 </div>
                 <div class="stats-info">
                     <h4>Errors</h4>
@@ -55,28 +60,19 @@
     </div>
     <!-- CHARTS -->
     <div class="row">
-        <div class="col-md-3 col-sm-6">
-            <div class="panel panel-default">
-                <div class="panel-body widget-chart-donut">
-                    <donut-chart data="traffic.codeStats" style="width:100%;display:block;"></donut-chart>
-                    <ul class="chart-legend">
-                        <li ng-repeat="code in traffic.codeStats">
-                            <i class="fa fa-fw fa-circle-o"></i> {{code.value}} <span>{{code.name}}</span>
-                        </li>
-                    </ul>
+        <div class="col-md-12">
+            <div class="row splited">
+                <div class="left">
+                    <vector-map series="worldMap" style="width:100%;height:350px;display:block;"></vector-map>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-9 col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Total bytes transferred</h3>
-                </div>
-                <div class="panel-body">
+                <div class="right">
+                    <donut-chart data="traffic.codeStats" style="width:100%;height:350px;display:block;"></donut-chart>
                 </div>
             </div>
         </div>
     </div>
+
+
     <!-- CHARTS -->
     <div class="row">
         <div class="col-lg-12 col-md-12">
@@ -85,6 +81,20 @@
                     <tab-heading>
                         <i class="fa fa-gears"></i> By API
                     </tab-heading>
+                    <table class="table primary-table table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Browser</th>
+                                <th>Calls</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Hasdfasdf</td>
+                                <td>Hasdfasdf</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </tab>
                 <tab>
                     <tab-heading>
@@ -97,7 +107,7 @@
                 </tab>
                 <tab>
                     <tab-heading>
-                        <i class="fa fa-gears"></i> By Target URL
+                        <i class="fa fa-paper-plane"></i> By Target URL
                     </tab-heading>
                 </tab>
                 <tab>

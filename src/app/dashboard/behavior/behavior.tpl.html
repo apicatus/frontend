@@ -1,50 +1,60 @@
 <geo>
     <div class="row">
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-default">
-                <div class="content">
-                    <h1 class="text-left timer">180</h1>
-                    <p>Most Traffic</p>
+            <div class="widget widget-stats bg-green">
+                <div class="stats-icon"><i class="fa fa-area-chart"></i>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
+                <div class="stats-info">
+                    <h4>AVG. API RESPONSE TIME</h4>
+                    <p>{{traffic.timeStats.avg | number:0 }}ms</p>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-default">
-                <div class="content">
-                    <h1 class="text-left timer">56</h1>
-                    <p>Least Traffic</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-comments"></i>
+                <div class="stats-link">
+                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-default">
-                <div class="content">
-                    <h1 class="text-left timer">32</h1>
-                    <p>Most Errors</p>
+            <div class="widget widget-stats bg-blue">
+                <div class="stats-icon"><i class="fa fa-line-chart"></i>
                 </div>
-                <div class="icon">
-                    <i class="fa fa fa-envelope"></i>
+                <div class="stats-info">
+                    <h4>MAX API RESPONSE TIME</h4>
+                    <p>{{traffic.timeStats.max | number:0 }}ms</p>
+                </div>
+                <div class="stats-link">
+                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="dashboard-tile detail tile-default">
-                <div class="content">
-                    <h1 class="text-left timer">105</h1>
-                    <p>Least Errors</p>
+            <div class="widget widget-stats bg-aqua">
+                <div class="stats-icon"><i class="fa fa-bar-chart"></i>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-bar-chart-o"></i>
+                <div class="stats-info">
+                    <h4>MIN API RESPONSE TIME</h4>
+                    <p>{{traffic.timeStats.min | number:0 }}ms</p>
+                </div>
+                <div class="stats-link">
+                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="widget widget-stats bg-black">
+                <div class="stats-icon"><i class="fa fa-pie-chart"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>Errors</h4>
+                    <p>3,291,922</p>
+                </div>
+                <div class="stats-link">
+                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
                 </div>
             </div>
         </div>
     </div>
+
+    
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -58,6 +68,7 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <table class="table table-bordered">

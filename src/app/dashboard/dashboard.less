@@ -37,11 +37,15 @@ world-map {
     height: 320px;
     background-color: transparent;
     .country {
-        fill: @brand-primary;
+        fill: #F1F1F1;
+        stroke: #FFF;
+        stroke-width: 0.5px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        vector-effect: non-scaling-stroke;
         &:hover {
-            stroke: darken(@brand-primary, 10%);
-            stroke-width: 0.5px;
-            fill: lighten(@brand-primary, 10%)
+            stroke-width: 1px;
+            fill: @brand-primary;
         }
     }
     .point {
@@ -54,6 +58,21 @@ world-map {
         stroke: steelblue;
         fill: steelblue;
         fill-opacity: .3;
+        pointer-events: none;
+    }
+    .route {
+        fill: none;
+        stroke: darken(@brand-primary, 15%);
+    }
+    .zoom-buttons {
+        g {
+            fill: #A1A1A1;
+            cursor: pointer;
+            .transition(all 0.25s ease);
+            &:hover {
+                fill: @brand-primary;
+            }
+        }
     }
 }
 vector-map {
@@ -368,7 +387,7 @@ vector-map {
 
 }
 .widget {
-    border-radius: 3px;
+    border-radius: @border-radius-base;
     margin-bottom: 20px;
     color: #fff;
     padding: 15px;
@@ -414,11 +433,14 @@ vector-map {
                 background: rgba(0,0,0,.4);
                 text-align: right;
                 color: #ddd;
-                font-weight: 300;
+                font-weight: lighter;
                 text-decoration: none;
                 &:hover, &:focus {
                     background: url(../img/transparent/black-0.6.png);
                     background: rgba(0,0,0,.6);
+                    color: #fff;
+                }
+                i {
                     color: #fff;
                 }
             }

@@ -77,7 +77,13 @@ var angularPeity = angular.module( 'ng-peity', [] )
                     var peity = chart.data().peity;
                     peity.draw();
                 }, 300);
+
                 angular.element($window).bind('resize', delayedResize);
+
+                // On $destory unbind() window resize handler
+                scope.$on('$destroy', function() {
+                    angular.element($window).unbind('resize', delayedResize);
+                });
 
                 // Update chart values
                 scope.$watchCollection('data', function (newVal, oldVal) {

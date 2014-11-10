@@ -273,7 +273,7 @@ angular.module( 'apicatus.application', [
         console.log(api);
     };
 })
-.controller( 'LogsCtrl', ['Restangular', function LogsController(Restangular) {
+.controller( 'LogsCtrl', ['$modal', 'Restangular', function LogsController($modal, Restangular) {
 
     var logs = this;
     var since = new Date().setMinutes(new Date().getMinutes() - 60);
@@ -299,12 +299,43 @@ angular.module( 'apicatus.application', [
 
     this.keys = function(object) {
         console.log("get keys: ", Object.keys(object));
-        return ["ip", "uri"];
-        //return Object.keys(object);
+        //return ["ip", "uri"];
+        return Object.keys(object);
     };
 
     this.pageChanged = function(page) {
         logs.load(logs.method);
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Endpoints [ Create, Read, Update, Delete ]                             //
+    ////////////////////////////////////////////////////////////////////////////
+    this.viewResponse = function (response) {
+        // Please note that $modalInstance represents a modal window (instance) dependency.
+        // It is not the same as the $modal service used above.
+        var modalCtl = function ($scope, $modalInstance, response) {
+            $scope.body = JSON.stringify(response, null, 4);
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+        var modalInstance = $modal.open({
+            templateUrl: 'view_response.html',
+            controller: modalCtl,
+            windowClass: 'ace-editor',
+            resolve: {
+                response: function () {
+                    return response;
+                }
+            }
+        });
+        modalInstance.result.then(
+            function () {
+                console.log("modal ok");
+            },
+            function () {
+                console.info('Modal dismissed at: ' + new Date());
+        });
     };
 
     this.init = function(method) {

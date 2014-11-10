@@ -16,7 +16,8 @@
 angular.module( 'apicatus.dashboard', [
     'apicatus.dashboard.geo',
     'apicatus.dashboard.technology',
-    'apicatus.dashboard.traffic'
+    'apicatus.dashboard.traffic',
+    'apicatus.dashboard.realtime'
 ])
 
 /**
@@ -50,11 +51,15 @@ angular.module( 'apicatus.dashboard', [
         controller: 'DashboardTrafficCtrl as traffic',
         resolve: {
             transferStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
+                console.log("ask for: ", $stateParams, window.location.hash);
                 if($stateParams.id) {
                     return Restangular.one('transfer/digestor', $stateParams.id).get();
                 } else {
                     return Restangular.one('transfer').get();
                 }
+            }],
+            geo2stats: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
+                return Restangular.one('geo2stats').get();
             }]
         },
         data: { pageTitle: 'Traffic' },
@@ -94,6 +99,16 @@ angular.module( 'apicatus.dashboard', [
         //authenticate: true,
         onEnter: function(){
             console.log("enter behavior");
+        }
+    })
+    .state('main.dashboard.realtime', {
+        url: '/realtime/:id',
+        templateUrl: 'dashboard/realtime/realtime.tpl.html',
+        controller: 'DashboardRealTimeCtrl as realtime',
+        data: { pageTitle: 'RealTime Monitor' },
+        //authenticate: true,
+        onEnter: function(){
+            console.log("enter realtime");
         }
     })
     .state('main.dashboard.timeline', {
