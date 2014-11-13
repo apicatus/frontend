@@ -1,3 +1,14 @@
+/* Methods Colors */
+@METHOD-GET-COLOR: #0064cd;
+@METHOD-POST-COLOR: #46a546;
+@METHOD-PUT-COLOR: #ff7d00;
+@METHOD-DELETE-COLOR: #BD2C00;
+@METHOD-OPTIONS-COLOR: #9C1ACA;
+@METHOD-HEAD-COLOR: #3BD9EC;
+@METHOD-CONNECT-COLOR: #A9304F;
+@METHOD-PATCH-COLOR: #E7CA29;
+@METHOD-TRACE-COLOR: #F577CD;
+
 traffic {
     .widget-chart-donut {
         padding: 0px;
@@ -72,5 +83,35 @@ traffic {
         border: 1px solid;
         border-top: none;
         border-color: @nav-tabs-border-color;
+    }
+
+    .label {
+        &[type="GET"] {
+            background-color: @METHOD-GET-COLOR;
+        }
+        &[type="POST"] {
+            background-color: @METHOD-POST-COLOR;
+        }
+        &[type="PUT"] {
+            background-color: @METHOD-PUT-COLOR;
+        }
+        &[type="DELETE"] {
+            background-color: @METHOD-DELETE-COLOR;
+        }
+        &[type="OPTIONS"] {
+            background-color: @METHOD-OPTIONS-COLOR;
+        }
+        &[type="HEAD"] {
+            background-color: @METHOD-HEAD-COLOR;
+        }
+        &[type="CONNECT"] {
+            background-color: @METHOD-CONNECT-COLOR;
+        }
+        &[type="PATCH"] {
+            background-color: @METHOD-PATCH-COLOR;
+        }
+        &[type="TRACE"] {
+            background-color: @METHOD-TRACE-COLOR;
+        }
     }
 }

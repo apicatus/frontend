@@ -49,8 +49,8 @@
                     <inline-bar-chart data="traffic.codeStatsByDate['500']" options="{height: 35, width: '100%', fill: ['#fff']}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
                 </div>
                 <div class="stats-info">
-                    <h4>Errors</h4>
-                    <p>3,291,922</p>
+                    <h4>4XX And 5XX Errors</h4>
+                    <p>{{traffic.totalErrors | humanize}}</p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
@@ -59,16 +59,81 @@
         </div>
     </div>
     <!-- CHARTS -->
+
     <div class="row">
         <div class="col-md-12">
-            <div class="row splited">
-                <div class="left">
-                    <vector-map series="worldMap" style="width:100%;height:350px;display:block;"></vector-map>
-                </div>
-                <div class="right">
-                    <donut-chart data="traffic.codeStats" style="width:100%;height:350px;display:block;"></donut-chart>
-                </div>
-            </div>
+
+            <tabset ng-model="mytabs">
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-globe"></i> GeoMap
+                    </tab-heading>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <vector-map series="traffic.worldMap" style="width:100%;height:350px;display:block;"></vector-map>
+                        </div>
+                        <div class="col-md-4">
+                            <donut-chart data="traffic.codeStats" style="width:100%;height:350px;display:block;"></donut-chart>
+                        </div>
+                    </div>
+
+                    <!-- div class="row splited">
+                        <div class="left">
+                            <vector-map series="worldMap" style="width:100%;height:350px;display:block;"></vector-map>
+                        </div>
+                        <div class="right">
+                            <donut-chart data="traffic.codeStats" style="width:100%;height:350px;display:block;"></donut-chart>
+                        </div>
+                    </div -->
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-area-chart"></i> Crashes
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <multiline-chart data="traffic.errorHistogram.series" options="traffic.timeChartOptions"></multiline-chart>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="label label-default" ng-repeat="series in traffic.errorHistogram.series" style="margin-right: 10px;" ng-style="{'background-color': series.stroke}"><i class="fa fa-exclamation-triangle"></i> {{series.name}}</span>
+                        </div>
+                    </div>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-area-chart"></i> Data
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <multiline-chart data="traffic.dataHistogram.series" options="traffic.timeChartOptions"></multiline-chart>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="label label-default" ng-repeat="serie in traffic.dataHistogram.series" style="margin-right: 10px;" ng-style="{'background-color': serie.stroke}"><i class="fa fa-database"></i> {{serie.name}}</span>
+                        </div>
+                    </div>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-area-chart"></i> Latency
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <multiline-chart data="traffic.latencyHistogram.series" options="traffic.timeChartOptions"></multiline-chart>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="label label-default" ng-repeat="serie in traffic.dataHistogram.series" style="margin-right: 10px;" ng-style="{'background-color': serie.stroke}" ng-click="serie.setVisible(true)"><i class="fa fa-clock-o"></i> {{serie.name}}</span>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+
         </div>
     </div>
 
@@ -79,19 +144,31 @@
             <tabset ng-model="mytabs">
                 <tab>
                     <tab-heading>
-                        <i class="fa fa-gears"></i> By API
+                        <i class="fa fa-gears"></i> By Target URL
                     </tab-heading>
-                    <table class="table primary-table table-striped table-hover table-responsive">
+                    <table class="table primary-table table-fixed table-striped table-hover table-responsive">
                         <thead>
                             <tr>
-                                <th>Browser</th>
-                                <th>Calls</th>
+                                <th class="col-md-2">API</th>
+                                <th class="col-md-4">Path</th>
+                                <th class="col-md-1">Verb</th>
+                                <th class="col-md-1 text-right">Calls</th>
+                                <th class="col-md-2 text-right">Avg. Response time</th>
+                                <th class="col-md-2 text-right">Avg. Bytes Out</th>
+                                <th class="col-md-1 text-right">Proxied</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Hasdfasdf</td>
-                                <td>Hasdfasdf</td>
+                            <tr ng-repeat="stat in traffic.methodStats">
+                                <td>{{stat.api}}</td>
+                                <td><span class="no-overflow">{{stat.method.URI}}</span></td>
+                                <td>
+                                    <span class="label label-default" type="{{stat.method.method}}">{{stat.method.method}}</span>
+                                </td>
+                                <td class="text-right">{{stat.doc_count | number}}</td>
+                                <td class="text-right">{{stat.time.avg | number:0}}ms</td>
+                                <td class="text-right">{{stat.data.avg | number:0}}b</td>
+                                <td class="text-right"><i class="fa" ng-class="stat.method.proxy.enabled ? 'fa-check-circle' : 'fa-circle-thin'"></i></td>
                             </tr>
                         </tbody>
                     </table>

@@ -7,6 +7,9 @@
                     <button type="button" class="btn btn-default" ng-click="createEndpoint()">
                         <i class="fa fa-file-o"></i> New
                     </button>
+                    <button ng-if="api.proxy.enabled" type="button" class="btn btn-default" ng-click="record()">
+                        <i class="fa fa-circle" ng-class="api.learn ? 'fg-red' : 'fg-green'"></i> Record
+                    </button>
                     <button type="button" class="btn btn-default" ng-click="showSource=!showSource" ng-class="{active: showSource}">
                         <i class="fa fa-code"></i> source
                     </button>

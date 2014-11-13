@@ -23,15 +23,16 @@
                         </div>
                     </div>
                     <div class="btn-group pull-right" dropdown>
-                        <button type="button" class="btn btn-default"><i class="fa fa-clock-o"></i> Today</button>
+                        <button type="button" class="btn btn-default"><i class="fa fa-clock-o"></i> {{selectedPeriod.name}}</button>
                         <button type="button" class="btn btn-default dropdown-toggle">
                             <span class="fa fa-angle-down"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href=""><i class="fa fa-fw fa-circle-thin"></i> Last 1h</a></li>
-                            <li><a href=""><i class="fa fa-fw fa-circle-thin"></i> Last 12h</a></li>
-                            <li><a href=""><i class="fa fa-fw fa-circle-thin"></i> Last 24h</a></li>
-                            <li><a href=""><i class="fa fa-fw fa-circle-thin"></i> Last 7d</a></li>
+                            <li ng-repeat="period in periods">
+                                <a href="" ng-click="selectPeriod(period)">
+                                    <i class="fa fa-fw" ng-class="selectedPeriod.name == period.name ? 'fa-check-circle' : 'fa-circle-thin'"></i>{{period.name}}
+                                </a>
+                            </li>
                             <li class="divider"></li>
                             <li><a href="" ng-click="selectApi()"><i class="fa fa-fw fa-edit"></i> Custom</a></li>
                         </ul>

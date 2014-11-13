@@ -1,5 +1,5 @@
 <accordion close-others="false">
-    <accordion-group class="panel" ng-class="{true: method.method}[true]" id="{{method._id}}" ng-repeat="method in endpoint.methods" is-open="status.open">
+    <accordion-group class="panel" ng-class="{true: method.method}[true]" id="{{method._id}}" ng-repeat="method in endpoint.methods | limitTo:8" is-open="status.open">
         <accordion-heading class="clearfix" style="padding-top: 7.5px;">
             <a href="">
                 <span class="method" ng-class="{true: method.method}[true]">{{method.method}}</span>
@@ -168,6 +168,28 @@
                         <tab-heading>
                             <i class="fa fa-list-alt"></i> Logs
                         </tab-heading>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="btn-toolbar" role="toolbar">
+                                    <div class="btn-group">
+                                        <div class="btn-group">
+                                            <button class="btn btn-default">
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                            <button class="btn btn-default" ng-click="logs.deleteLogs()">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 pull-right master-search">
+                                        <input type="text" name="search" autocomplete="off" id="searchLog" class="form-control" maxlength="200" placeholder="Search" name="searchLog">
+                                        <span class="icon input-group-btn">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <table class="table log-table table-striped table-condensed table-hover table-fixed">
                             <thead>
                                 <tr>
@@ -223,7 +245,6 @@
                             </tbody>
                         </table>
                         <pagination ng-change="logs.pageChanged(logs.currentPage)" total-items="logs.totalItems" ng-model="logs.currentPage" max-size="logs.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="logs.numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
-                        <!-- pagination ng-model="method" total-items="method.logs.length" items-per-page="10" page="currentPage" max-size="10" on-select-page="setPage(page)"></pagination -->
                     </tab>
                     <tab ng-controller="StatisticsCtrl as statistics" ng-click="statistics.init(method)" select="datePicker.show=true" deselect="datePicker.show=false"> <!-- ng-init=" = (metrics | filter:{_id: method._id})" -->
                         <tab-heading>
@@ -372,6 +393,11 @@
             </div>
         </div>
     </accordion-group>
+    <!-- div class="row">
+        <div class="col-lg-12 text-center">
+            <button class="btn btn-primary">Load More</button>
+        </div>
+    </div -->
 </accordion>
 
 

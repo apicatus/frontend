@@ -54,7 +54,7 @@ angular.module('stackedBarChart', ['D3Service'])
                 }
             });
             angular.element($window).bind('resize', function(){
-                render(scope.data, element);
+                //render(scope.data, element);
             });
         }
     };

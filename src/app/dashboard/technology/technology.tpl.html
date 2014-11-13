@@ -1,47 +1,14 @@
 <technology>
     <div class="row">
-        <div class="col-md-3 col-sm-6">
-            <div class="widget widget-stats bg-blue">
+        <div class="col-md-3 col-sm-6" ng-repeat="(key, value) in technology.platforms">
+            <div class="widget widget-stats" ng-class="value.class">
                 <div class="stats-icon stats-icon-lg">
-                    <i class="fa fa-fw fa-mobile"></i>
+                    <i class="fa fa-fw" ng-class="value.icon"></i>
                 </div>
-                <div class="stats-title">MOBILE SESSIONS</div>
-                <div class="stats-number">{{technology.platforms.mobile | number}}</div>
-                <progressbar class="stats-progress" max="technology.maxPlatforms" value="technology.platforms.mobile"></progressbar>
-                <div class="stats-desc">Better than last week {{(technology.platforms.mobile / technology.maxPlatforms) * 100 | number:0}}%</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="widget widget-stats bg-aqua">
-                <div class="stats-icon stats-icon-lg">
-                    <i class="fa fa-fw fa-tablet"></i>
-                </div>
-                <div class="stats-title">TABLET SESSIONS</div>
-                <div class="stats-number">{{technology.platforms.tablet | number}}</div>
-                <progressbar class="stats-progress" max="technology.maxPlatforms" value="technology.platforms.tablet"></progressbar>
-                <div class="stats-desc">Better than last week: {{(technology.platforms.tablet / technology.maxPlatforms) * 100 | number:0}}%</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="widget widget-stats bg-purple">
-                <div class="stats-icon stats-icon-lg">
-                    <i class="fa fa-fw fa-laptop"></i>
-                </div>
-                <div class="stats-title">DESKTOP SESSIONS</div>
-                <div class="stats-number">{{technology.platforms.other | number}}</div>
-                <progressbar class="stats-progress" max="technology.maxPlatforms" value="technology.platforms.other"></progressbar>
-                <div class="stats-desc">Better than last week {{(technology.platforms.other / technology.maxPlatforms) * 100 | number:0}}%</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="widget widget-stats bg-black">
-                <div class="stats-icon stats-icon-lg">
-                    <i class="fa fa-fw fa-desktop"></i>
-                </div>
-                <div class="stats-title">SMART-TV SESSIONS</div>
-                <div class="stats-number">{{technology.platforms.smarttv | number}}</div>
-                <progressbar class="stats-progress" max="technology.maxPlatforms" value="technology.platforms.smarttv"></progressbar>
-                <div class="stats-desc">Better than last week (40.5%)</div>
+                <div class="stats-title">{{key}} SESSIONS</div>
+                <div class="stats-number">{{value.value | number}}</div>
+                <progressbar class="stats-progress" max="technology.maxDeviceTypes" value="value.value"></progressbar>
+                <div class="stats-desc">Better than last week {{(value.value / technology.maxDeviceTypes) * 100 | number:0}}%</div>
             </div>
         </div>
     </div>
@@ -50,7 +17,25 @@
             <tabset>
                 <tab>
                     <tab-heading>
-                        <i class="fa fa-fw fa-gears"></i> Agents
+                        <i class="fa fa-globe"></i> GeoMap
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <vector-map series="technology.worldMap" style="width:100%;height:350px;display:block;"></vector-map>
+                        </div>
+                        <div class="col-md-4">
+                            <donut-chart data="technology.deviceTypeSplit" style="width:100%;height:350px;display:block;"></donut-chart>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-offset-8 col-md-4 text-center">
+                            <span class="label label-sm" ng-repeat="deviceType in technology.deviceTypeSplit" style="margin-right: 10px;" ng-style="{'background-color': deviceType.color}" ng-click="technology.setVisible(true)"><i class="fa fa-fw" ng-class="deviceType.icon"></i> {{deviceType.name}}</span>
+                        </div>
+                    </div>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-gears"></i> Agents
                     </tab-heading>
                     <!-- table log-table table-striped table-condensed table-hover -->
                     <table class="table primary-table table-striped table-hover table-responsive">
@@ -82,15 +67,13 @@
                 </tab>
                 <tab>
                     <tab-heading>
-                        <i class="fa fa-fw fa-laptop"></i> Devices
+                        <i class="fa fa-laptop"></i> Devices
                     </tab-heading>
                     <!-- table log-table table-striped table-condensed table-hover -->
                     <table class="table primary-table table-striped table-hover table-responsive">
                         <thead>
                             <tr>
                                 <th>Device</th>
-                                <th>Type</th>
-                                <th>Vendor</th>
                                 <th>Calls</th>
                                 <th class="text-center">Sessions %</th>
                                 <th class="text-right">Avg Response Time</th>
@@ -99,17 +82,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="devices in technology.devices">
-                                <td><i class="fa fa-fw fa-laptop"></i> {{devices.key}}</td>
-                                <td>{{devices.type}}</td>
-                                <td>{{devices.vendor}}</td>
-                                <td class="text-right">{{devices.doc_count}}</td>
+                            <tr ng-repeat="deviceFamily in technology.deviceFamilies">
+                                <td><i class="fa fa-fw fa-laptop"></i> {{deviceFamily.key}}</td>
+                                <td class="text-right">{{deviceFamily.doc_count}}</td>
                                 <td>
-                                    <progressbar class="progress-flat" max="technology.maxDevices" value="devices.doc_count" type="primary"></progressbar>
+                                    <progressbar class="progress-flat" max="technology.maxDeviceFamilies" value="deviceFamily.doc_count" type="primary"></progressbar>
                                 </td>
-                                <td class="text-right">{{devices.stats.avg | number:0}}ms</td>
-                                <td class="text-right">{{devices.stats.max | number:0}}ms</td>
-                                <td class="text-right">{{devices.stats.min | number:0}}ms</td>
+                                <td class="text-right">{{deviceFamily.stats.avg | number:0}}ms</td>
+                                <td class="text-right">{{deviceFamily.stats.max | number:0}}ms</td>
+                                <td class="text-right">{{deviceFamily.stats.min | number:0}}ms</td>
                             </tr>
                         </tbody>
                     </table>
@@ -117,7 +98,7 @@
                 </tab>
                 <tab>
                     <tab-heading>
-                        <i class="fa fa-fw fa-linux"></i> Operating systems
+                        <i class="fa fa-linux"></i> Operating systems
                     </tab-heading>
                     <!-- table log-table table-striped table-condensed table-hover -->
                     <table class="table primary-table table-striped table-hover table-responsive">

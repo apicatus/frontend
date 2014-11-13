@@ -13,6 +13,7 @@ angular.module('multilineChart', ['D3Service'])
             data: '=',
             propertyKey: '@',
             timestampKey: '@',
+            options: '=',
             hovered: '&hovered'
         },
         link: function(scope, element, attrs) {
@@ -22,21 +23,26 @@ angular.module('multilineChart', ['D3Service'])
                     if (mutation.type === 'attributes') {
                         var isActive = mutation.target.classList.contains('active');
                         if(isActive) {
-                            render(scope.data, element);
+                            render(element);
                         }
                     }
                 });
             });
 
-            var render = function(data, canvas) {
-                scope.$watchCollection('data', function (newVal, oldVal) {
-                    var width = canvas[0].offsetWidth;
-                    var height = canvas[0].offsetHeight;
-                    chartEl.call(chart.height(height));
-                    chartEl.call(chart.width(width));
-                    if(scope.propertyKey) {
-                        chartEl.call(chart.propertyKey(scope.propertyKey));
-                    }
+            var render = function(canvas) {
+
+                var width = canvas[0].offsetWidth;
+                var height = canvas[0].offsetHeight;
+                
+                console.log("directive: ", scope.data);
+
+                chartEl.call(chart.height(height));
+                chartEl.call(chart.width(width));
+                chartEl.call(chart.options(scope.options));
+                if(scope.data.length > 0 ) {
+                    chartEl.datum(scope.data).call(chart);
+                }
+                scope.$watchCollection('data', function (newVal, oldVal) {                    
                     chartEl.datum(newVal).call(chart);
                 }, true);
             };
@@ -45,7 +51,7 @@ angular.module('multilineChart', ['D3Service'])
                 chart = charts.multiline();
                 chartEl = d3.select(element[0]);
 
-                var panel = $(element).closest('.tab-pane')[0];
+                var panel = $(element).closest('.tab-pane:not(.active)')[0];
                 if(panel) {
                     observer.observe(panel, {
                         attributes: true, 
@@ -53,11 +59,11 @@ angular.module('multilineChart', ['D3Service'])
                         characterData: true 
                     });
                 } else {
-                    render(scope.data, element);
+                    render(element);
                 }
             });
             angular.element($window).bind('resize', function(){
-                render(scope.data, element);
+                render(element);
             });
         }
     };

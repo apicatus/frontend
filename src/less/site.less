@@ -250,8 +250,27 @@ table {
     .progress {
         margin-bottom: 0px;
     }
-    .table-fixed {
+    &.table-fixed {
         table-layout: fixed;
+        td {
+            position: relative;
+            .no-overflow {
+                position: relative;
+                overflow-x: scroll;
+                display: block;
+                white-space: nowrap;
+            }
+            /* nice but not so good on table-stripped */
+            /*&:after {
+                content: "";
+                position: absolute;
+                right: 0px;
+                top: 0px;
+                width: 30px;
+                height: 100%;
+                background-image: linear-gradient(90deg, rgba(255,255,255, 0) 10%, rgba(255,255,255, 1));
+            }*/
+        }
     }
     &.primary-table {
         > thead, > tbody, > tfoot {

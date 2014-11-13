@@ -2,12 +2,12 @@
 /*jshint newcap: false */
 
 angular.module( 'apicatus.application', [
-    'ui.ace',
+    //'ui.ace',
     /*'vectorMap',
     'myGraph',
     'stackedBarChart',
     'bivariateChart',*/
-    'worldMap'
+    //'worldMap'
 ])
 .factory('MetricsService', ['$cacheFactory', 'Restangular', function($cacheFactory, Restangular) {
     var route = 'metrics';
@@ -123,12 +123,15 @@ angular.module( 'apicatus.application', [
                 console.info('Modal dismissed at: ' + new Date());
         });
     };
-
     $scope.updateEndpoint = function(endpoint, $index) {
         $scope.api.put();
     };
     $scope.deleteEndpoint = function(endpoints, $index) {
         endpoints.splice($index, 1);
+        $scope.api.put();
+    };
+    $scope.record = function(toggle) {
+        $scope.api.learn = !$scope.api.learn;
         $scope.api.put();
     };
     ////////////////////////////////////////////////////////////////////////////
@@ -224,6 +227,7 @@ angular.module( 'apicatus.application', [
         });
     };
     // The modes
+    /* 
     $scope.editor = {
         modes: ['Scheme', 'XML', 'Javascript'],
         options: {
@@ -241,6 +245,7 @@ angular.module( 'apicatus.application', [
             }
         }
     };
+    */
 })
 .controller( 'DemoCtrl', function DemoController($scope, parseURL, Restangular) {
 
@@ -305,6 +310,12 @@ angular.module( 'apicatus.application', [
 
     this.pageChanged = function(page) {
         logs.load(logs.method);
+    };
+
+    logs.deleteLogs = function() {
+        Restangular.one('logs').remove().then(function(){
+            logs.init(logs.method);
+        });
     };
 
     ////////////////////////////////////////////////////////////////////////////

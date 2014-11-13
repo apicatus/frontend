@@ -43,7 +43,7 @@ angular.module('donutChart', ['D3Service'])
             D3Service.d3().then(function(d3) {
                 chart = charts.donut();
                 chartEl = d3.select(element[0]);
-                var panel = $(element).closest('.tab-pane')[0];
+                var panel = $(element).closest('.tab-pane:not(.active)')[0];
                 if(panel) {
                     observer.observe(panel, {
                         attributes: true, 
