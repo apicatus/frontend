@@ -33,7 +33,7 @@ angular.module( 'apicatus', [
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider, $locationProvider, $translateProvider, $documentProvider, RestangularProvider, localStorageServiceProvider ) {
     $urlRouterProvider.otherwise( '/main/applications/list' );
     //$locationProvider.html5Mode(true);
-    RestangularProvider.setBaseUrl(document.location.protocol + '//api.' + document.location.host);
+    RestangularProvider.setBaseUrl('http://api.apicat.us:8080');
     RestangularProvider.setRestangularFields({
         id: "_id"
     });
