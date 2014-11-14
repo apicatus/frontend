@@ -33,14 +33,12 @@ angular.module( 'apicatus', [
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider, $locationProvider, $translateProvider, $documentProvider, RestangularProvider, localStorageServiceProvider ) {
     $urlRouterProvider.otherwise( '/main/applications/list' );
     //$locationProvider.html5Mode(true);
-    RestangularProvider.setBaseUrl(document.location.origin);
+    RestangularProvider.setBaseUrl(document.location.protocol + '//api.' + document.location.host);
     RestangularProvider.setRestangularFields({
         id: "_id"
     });
     RestangularProvider.setDefaultHeaders({
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        "Access-Control-Allow-Headers": "x-requested-with"
+        "Content-Type": "application/json"
     });
     $translateProvider.useStaticFilesLoader({
         prefix: '/languages/',
