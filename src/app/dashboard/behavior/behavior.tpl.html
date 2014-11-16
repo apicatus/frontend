@@ -1,4 +1,4 @@
-<geo>
+<behavior ng-if="behavior.hasData">
     <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats bg-green">
@@ -6,7 +6,7 @@
                 </div>
                 <div class="stats-info">
                     <h4>AVG. API RESPONSE TIME</h4>
-                    <p>{{traffic.timeStats.avg | number:0 }}ms</p>
+                    <p>{{behavior.timeStats.avg | number:0 }}ms</p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
@@ -19,7 +19,7 @@
                 </div>
                 <div class="stats-info">
                     <h4>MAX API RESPONSE TIME</h4>
-                    <p>{{traffic.timeStats.max | number:0 }}ms</p>
+                    <p>{{behavior.timeStats.max | number:0 }}ms</p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="stats-info">
                     <h4>MIN API RESPONSE TIME</h4>
-                    <p>{{traffic.timeStats.min | number:0 }}ms</p>
+                    <p>{{behavior.timeStats.min | number:0 }}ms</p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
@@ -54,71 +54,27 @@
         </div>
     </div>
 
-    
-    <div class="row">
+    <div class="splited">
+        <div class="max">
+            <tree-map data="behavior.codeStats"></tree-map>
+        </div>
+    </div>
+    <!-- div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Map Overlay</h3>
                 </div>
                 <div class="panel-body">
-                    <!-- world-map data="[1,2,3,4,5,6]"></world-map -->
-                    <div google-chart chart="widgets[4].chart"></div>
+                    <tree-map data="behavior.codeStats"></tree-map>
                 </div>
             </div>
         </div>
-    </div>
+    </div -->
 
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Country / Territory</th>
-                        <th>Sessions</th>
-                        <th>Users</th>
-                        <th>Avg. Session Duration</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><img src="https://cdn.rawgit.com/titpetric/iso-country-flags-svg-collection/master/svg/country-squared/us.svg" class="flag"> United States</td>
-                        <td>Row 2</td>
-                        <td>Row 3</td>
-                        <td>Row 4</td>
-                    </tr>
-                    <tr>
-                        <td><img src="https://cdn.rawgit.com/titpetric/iso-country-flags-svg-collection/master/svg/country-squared/ar.svg" class="flag"> Argentina</td>
-                        <td>Row 2</td>
-                        <td>Row 3</td>
-                        <td>Row 4</td>
-                    </tr>
-                    <tr>
-                        <td>Row 1</td>
-                        <td>Row 2</td>
-                        <td>Row 3</td>
-                        <td>Row 4</td>
-                    </tr>
-                    <tr>
-                        <td>Row 1</td>
-                        <td>Row 2</td>
-                        <td>Row 3</td>
-                        <td>Row 4</td>
-                    </tr>
-                    <tr>
-                        <td>Row 1</td>
-                        <td>Row 2</td>
-                        <td>Row 3</td>
-                        <td>Row 4</td>
-                    </tr>
-                    <tr>
-                        <td>Row 1</td>
-                        <td>Row 2</td>
-                        <td>Row 3</td>
-                        <td>Row 4</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+</behavior>
+<behavior ng-if="!behavior.hasData">
+    <div class="page-header">
+        <h1 ng-model="account"><i class="fa fa-exclamation-triangle"></i> No data for your API <small>{{selectedApi.name}}</small></h1>
     </div>
-</geo>
+</behavior>

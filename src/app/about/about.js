@@ -1,29 +1,20 @@
-angular.module( 'ngBoilerplate.about', [
-  'ui.state',
-  'placeholders',
-  'ui.bootstrap'
+angular.module( 'apicatus.about', [
 ])
 
 .config(function config( $stateProvider ) {
-  $stateProvider.state( 'about', {
-    url: '/about',
-    views: {
-      "main": {
-        controller: 'AboutCtrl',
-        templateUrl: 'about/about.tpl.html'
-      }
-    },
-    data:{ pageTitle: 'What is It?' }
-  });
+    $stateProvider.state( 'main.about', {
+        url: '/about',
+        views: {
+            'main': {
+                controller: 'AboutCtrl as about',
+                templateUrl: 'about/about.tpl.html'
+            }
+        },
+        data:{ pageTitle: 'About' },
+        authenticate: false
+    });
 })
 
-.controller( 'AboutCtrl', function AboutCtrl( $scope ) {
-  // This is simple a demo for UI Boostrap.
-  $scope.dropdownDemoItems = [
-    "The first choice!",
-    "And another choice for you.",
-    "but wait! A third!"
-  ];
-})
+.controller( 'AboutCtrl', function AboutCtrl() {
 
-;
+});

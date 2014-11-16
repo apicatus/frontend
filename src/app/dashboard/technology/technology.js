@@ -7,7 +7,28 @@ angular.module( 'apicatus.dashboard.technology', [
     'bivariateChart',
     'worldMap'
 ])
+.config(function config( $stateProvider, $urlRouterProvider ) {
+    $stateProvider.state('main.dashboard.technology', {
+        url: '/technology/:id',
+        templateUrl: 'dashboard/technology/technology.tpl.html',
+        controller: 'DashboardTechnologyCtrl as technology',
+        resolve: {
+            agentStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
+                if($stateParams.id) {
+                    return Restangular.one('agent/digestor', $stateParams.id).get();
+                } else {
+                    return Restangular.one('agent').get();
+                }
+            }]
+        },
+        data: { pageTitle: 'Technology' },
+        onEnter: function(){
+            console.log("enter technology");
+        }
+    });
+})
 .controller( 'DashboardTechnologyCtrl', function DashboardTechnologyController( $scope, $filter, $stateParams, Restangular, apis, agentStatistics) {
+    console.log("run DashboardTechnologyController");
     var technology = this;
 
     technology.agents = agentStatistics.agents.buckets;
@@ -15,7 +36,7 @@ angular.module( 'apicatus.dashboard.technology', [
     technology.deviceTypes = agentStatistics.deviceTypes.buckets;
     technology.strings = agentStatistics.strings.buckets;
     technology.oess = agentStatistics.oess.buckets;
-    
+
     technology.platforms = {
         phone: {
             value: 0,
@@ -47,17 +68,17 @@ angular.module( 'apicatus.dashboard.technology', [
     if(!technology.deviceFamilies.length && !technology.agents.length && !technology.oess.length) {
         technology.hasData = false;
     } else {
-        technology.maxAgents = technology.deviceFamilies.reduce(function(pv, cv) { 
-            return pv + cv.doc_count; 
+        technology.maxAgents = technology.deviceFamilies.reduce(function(pv, cv) {
+            return pv + cv.doc_count;
         }, 0);
-        technology.maxDeviceFamilies = technology.agents.reduce(function(pv, cv) { 
-            return pv + cv.doc_count; 
+        technology.maxDeviceFamilies = technology.agents.reduce(function(pv, cv) {
+            return pv + cv.doc_count;
         }, 0);
-        technology.maxDeviceTypes = technology.deviceTypes.reduce(function(pv, cv) { 
-            return pv + cv.doc_count; 
+        technology.maxDeviceTypes = technology.deviceTypes.reduce(function(pv, cv) {
+            return pv + cv.doc_count;
         }, 0);
-        technology.maxOess = technology.oess.reduce(function(pv, cv) { 
-            return pv + cv.doc_count; 
+        technology.maxOess = technology.oess.reduce(function(pv, cv) {
+            return pv + cv.doc_count;
         }, 0);
 
 

@@ -4,8 +4,8 @@
 
 /*jshint loopfunc: true */
 
-angular.module('multilineChart', ['D3Service'])
-.directive('multilineChart', ['$timeout', '$window', 'D3Service', function($timeout, $window, D3Service) {
+angular.module('treeMap', ['D3Service'])
+.directive('treeMap', ['$timeout', '$window', 'D3Service', function($timeout, $window, D3Service) {
     return {
         restrict: 'E',
         scope:{
@@ -44,7 +44,7 @@ angular.module('multilineChart', ['D3Service'])
             };
 
             D3Service.d3().then(function(d3) {
-                chart = charts.multiline();
+                chart = charts.treemap();
                 chartEl = d3.select(element[0]);
 
                 var panel = $(element).closest('.tab-pane:not(.active)')[0];
@@ -59,11 +59,7 @@ angular.module('multilineChart', ['D3Service'])
                 }
             });
             angular.element($window).bind('resize', function(){
-                //render(element);
-            });
-            scope.$on('$destroy', function() {
-                //angular.element($window).unbind('resize', delayedResize);
-                console.log("DESTROY MULTILINE");
+                render(element);
             });
         }
     };

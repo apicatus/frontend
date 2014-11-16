@@ -1,3 +1,39 @@
+///////////////////////////////////////////////////////////////////////////////
+// @file         : applications.js                                           //
+// @summary      : API Digestors controller                                  //
+// @version      : 0.1                                                       //
+// @project      : apicat.us                                                 //
+// @description  : API Digestors controller                                  //
+// @author       : Benjamin Maggi                                            //
+// @email        : benjaminmaggi@gmail.com                                   //
+// @date         : 2013                                                      //
+// ------------------------------------------------------------------------- //
+//                                                                           //
+// Copyright 2013~2014 Benjamin Maggi <benjaminmaggi@gmail.com>              //
+//                                                                           //
+//                                                                           //
+// License:                                                                  //
+// Permission is hereby granted, free of charge, to any person obtaining a   //
+// copy of this software and associated documentation files                  //
+// (the "Software"), to deal in the Software without restriction, including  //
+// without limitation the rights to use, copy, modify, merge, publish,       //
+// distribute, sublicense, and/or sell copies of the Software, and to permit //
+// persons to whom the Software is furnished to do so, subject to the        //
+// following conditions:                                                     //
+//                                                                           //
+// The above copyright notice and this permission notice shall be included   //
+// in all copies or substantial portions of the Software.                    //
+//                                                                           //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS   //
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF                //
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.    //
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY      //
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,      //
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE         //
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                    //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
 /*jslint evil: true */
 /*jshint newcap: false */
 
@@ -14,9 +50,9 @@ angular.module( 'apicatus.applications', [
  * this way makes each module more "self-contained".
  */
 .config(function config( $stateProvider ) {
-    var since = new Date().setDate(new Date().getDate() - 2);
+    // Last 7 Days
+    var since = new Date().setDate(new Date().getDate() - 7);
     var until = new Date().getTime();
-    var interval = '2h';
 
     $stateProvider.state( 'main.applications', {
         url: '/applications',
@@ -31,7 +67,7 @@ angular.module( 'apicatus.applications', [
                         return Restangular.all('digestors').getList();
                     }],
                     summaries: ['Restangular', function (Restangular) {
-                        return Restangular.one('summary').get({since: since, until: until, interval: interval});
+                        return Restangular.one('summary').get({since: since, until: until});
                     }]
                 }
             }
@@ -48,36 +84,37 @@ angular.module( 'apicatus.applications', [
     });
 })
 
-// Applications controller
+///////////////////////////////////////////////////////////////////////////////
+// Applications controller                                                   //
+///////////////////////////////////////////////////////////////////////////////
 .controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $interval, $modal, fileReader, Restangular, apis, summaries ) {
-
-    //$scope.apis = Restangular.all('digestors').getList().$object;
 
     var applications = this.apis = apis;
     $scope.apis = apis;
     $scope.summaries = summaries;
-    console.log("summaries: ", summaries);
 
+    // Sort params
     $scope.sort = {
         property: 'name',
         reverse: false
     };
+
     // Change column sorting
     $scope.sortBy = function(property) {
         $scope.sort = {
             property: property,
             reverse: !$scope.sort.reverse
         };
-        console.log("sortBy", $scope.sort);
     };
 
-    this.weekdays = moment.weekdaysMin();
-
+    // Update API
     this.update = function(api) {
         api.put().then(function(result) {
             console.log("api updated", result);
         });
     };
+
+    // Remove API
     this.remove = function(api) {
         var that = this;
         api.remove().then(function() {
@@ -85,6 +122,7 @@ angular.module( 'apicatus.applications', [
         });
     };
 
+    // Create new API Modal
     $scope.newApi = function () {
         // Please note that $modalInstance represents a modal window (instance) dependency.
         // It is not the same as the $modal service used above.
@@ -110,9 +148,7 @@ angular.module( 'apicatus.applications', [
 
         modalInstance.result.then(
             function (api) {
-                console.log("modal ok: ", api);
                 Restangular.all('digestors').post(api).then(function(result) {
-                    console.log("api created ok: ", result);
                     $scope.apis.push(result);
                 }, function(error) {
 
@@ -123,16 +159,12 @@ angular.module( 'apicatus.applications', [
         });
     };
 
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Endpoints [ Create, Read, Update, Delete ]                             //
-    ////////////////////////////////////////////////////////////////////////////
+    // Import API Modal
     $scope.import = function () {
         // Please note that $modalInstance represents a modal window (instance) dependency.
         // It is not the same as the $modal service used above.
         var that = this;
         var modalCtl = function ($scope, $modalInstance, apiModel) {
-            console.log("aqui hay controler");
             $scope.apiModel = {};
             $scope.submit = function () {
                 $modalInstance.close($scope.apiModel);
@@ -182,14 +214,19 @@ angular.module( 'apicatus.applications', [
                         */
 
                     }, function(error) {
+                        console.log('Error: ', error);
                     });
                 });
             },
             function () {
                 console.info('Modal dismissed at: ' + new Date());
-        });
+            }
+        );
     };
 })
+///////////////////////////////////////////////////////////////////////////////
+// Single Card controller                                                    //
+///////////////////////////////////////////////////////////////////////////////
 .controller( 'CardCtrl', function CardController( $scope, $filter ) {
 
     var card = this;
@@ -201,24 +238,23 @@ angular.module( 'apicatus.applications', [
             return 100;
         } else if (b <= 0) {
             return 0;
-        } 
+        }
     };
     card.init = function(api, summaries) {
         if(card.api) {
             return;
         }
         card.api = api;
-        card.summary = {
-            current: ($filter('filter')(summaries.current, {key: api._id}))[0],
-            previous: ($filter('filter')(summaries.previous, {key: api._id}))[0]
-        };
+
         card.barChart = {
             data: [],
             options: { height: '80%', width: '100%', fill: ['#49c5b1'] }
         };
-        console.log("card summary: ", card.summary);
-        window.summary = card.summary;
         try {
+            card.summary = {
+                current: ($filter('filter')(summaries.current.digestors.buckets, {key: api._id}))[0],
+                previous: ($filter('filter')(summaries.previous.digestors.buckets, {key: api._id}))[0]
+            };
             card.summary.current.data = card.summary.current.dataset.buckets.map(function(bucket){
                 return {
                     timestamp: bucket.key,
@@ -229,12 +265,14 @@ angular.module( 'apicatus.applications', [
             card.barChart.data = card.summary.current.data.map(function(data){
                 return data.stats.avg || 0;
             });
-            console.log(card.summary.current.data);
         } catch (error) {
             console.log(error);
         }
     };
 })
+///////////////////////////////////////////////////////////////////////////////
+// API Lists as table controller                                             //
+///////////////////////////////////////////////////////////////////////////////
 .controller( 'TableCtrl', function TableController( $scope, $filter ) {
 
     var table = this;
@@ -246,22 +284,22 @@ angular.module( 'apicatus.applications', [
             return 100;
         } else if (b <= 0) {
             return 0;
-        } 
+        }
     };
     table.init = function(api, summaries) {
         if(table.api) {
             return;
         }
         table.api = api;
-        table.summary = {
-            current: ($filter('filter')(summaries.current, {key: api._id}))[0],
-            previous: ($filter('filter')(summaries.previous, {key: api._id}))[0]
-        };
         table.barChart = {
             data: [],
             options: { height: '80%', width: '100%', fill: ['#49c5b1'] }
         };
         try {
+            table.summary = {
+                current: ($filter('filter')(summaries.current.digestors.buckets, {key: api._id}))[0],
+                previous: ($filter('filter')(summaries.previous.digestors.buckets, {key: api._id}))[0]
+            };
             table.summary.current.data = table.summary.current.dataset.buckets.map(function(bucket){
                 return {
                     timestamp: bucket.key,
@@ -277,6 +315,9 @@ angular.module( 'apicatus.applications', [
         }
     };
 })
+///////////////////////////////////////////////////////////////////////////////
+// Object to Array filter                                                    //
+///////////////////////////////////////////////////////////////////////////////
 .filter('listToMatrix', function() {
     function listToMatrix(list, elementsPerSubArray) {
         var matrix = [], i, k;

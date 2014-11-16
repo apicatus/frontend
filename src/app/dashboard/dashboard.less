@@ -1,27 +1,6 @@
 dashboard {
-    .tabbable {
-        .tab-content {
-            padding: 10px;
-            border: 1px solid;
-            border-top: none;
-            border-color: @nav-tabs-border-color;
-        }
-    }
-    .row {
-        margin-bottom: 10px;
-    }
-    .table {
-        tbody {
-            tr {
-                td {
-                    vertical-align: middle;
-                }
-            }
-        }
-    }
-    .main {
-        height: 220px;
-        background-color: #000;
+    .dasboard-toolbar {
+        margin-bottom: 20px;
     }
 }
 table {
@@ -30,6 +9,13 @@ table {
         max-height: 16px;
         vertical-align: baseline;
     }
+}
+/* D3 Graphs */
+tree-map {
+    display: block;
+    width: 100%;
+    height: 320px;
+    background-color: transparent;
 }
 multiline-chart {
     display: block;
@@ -48,7 +34,7 @@ multiline-chart {
                 font-size: 0.80em;
                 fill: @gray;
                 font-weight: 100;
-                text-transform: uppercase;
+                text-transform: capitalize;
             }
         }
         &.y {
@@ -56,8 +42,7 @@ multiline-chart {
                 display: none;
             }
             line {
-                stroke: #777;
-                stroke-dasharray: 2,2;
+                stroke: #eee;
             }
         }
         &.x {
@@ -69,6 +54,55 @@ multiline-chart {
     .line {
       fill: none;
       stroke-width: 1.5px;
+    }
+    text {
+        font-size: 0.80em;
+        fill: @gray;
+        font-weight: 100;
+    }
+}
+normal-bar-chart {
+    display: block;
+    width: 100%;
+    height: 320px;
+    background-color: transparent;
+
+    .axis {
+        path, line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+        .tick {
+            text {
+                font-size: 0.80em;
+                fill: @gray;
+                font-weight: 100;
+                text-transform: capitalize;
+            }
+        }
+        &.y {
+            path {
+                display: none;
+            }
+            line {
+                stroke: #eee;
+            }
+        }
+        &.x {
+            path {
+                display: none;
+            }
+        }
+    }
+    .line {
+      fill: none;
+      stroke-width: 1.5px;
+    }
+    text {
+        font-size: 0.80em;
+        fill: @gray;
+        font-weight: 100;
     }
 }
 world-map {
@@ -336,96 +370,6 @@ vector-map {
     }
 }
 
-.dashboard-tilex {
-    background-color: #fff;
-    color: #555;
-    margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 3px;
-    &.tile-default {
-        border: 1px solid #ddd;
-        background-color: #fafafa;
-    }
-    &.tile-turquoise {
-        background-color: #1abc9c;
-        color: #fff;
-    }
-    &.tile-red {
-        background-color: #e84c3d;
-        border: 1px solid darken(#e84c3d, 15%);
-        color: #fff;
-    }
-    &.tile-blue {
-        background-color: #3598db;
-        border: 1px solid darken(#3598db, 15%);
-        color: #fff;
-    }
-    &.tile-purple {
-        background-color: #9a59b5;
-        border: 1px solid darken(#9a59b5, 15%);
-        color: #fff;
-    }
-    .header {
-        border-bottom: 2px solid rgba(255,255,255,.2);
-        .title {
-            display: inline-block;
-            font-size: 14px;
-            font-weight: 400;
-            padding: 5px;
-            position: absolute;
-            text-transform: uppercase;
-            top: 7px;
-        }
-    }
-    .content {
-        padding: 10px;
-        p {
-            margin-bottom: 0;
-            padding: 10px;
-            font-weight: 400;
-            font-size: 14px;
-            clear: both;
-        }
-        h1 {
-            margin: 0;
-            font-weight: 300;
-            font-size: 40px;
-            padding: 8px
-        }
-
-    }
-    &.detail {
-        position: relative;
-        overflow: hidden;
-        .icon {
-            position: absolute;
-            display: block;
-            float: right;
-            padding-left: 15px;
-            padding-top: 10px;
-            right: 15px;
-            bottom: 10px;
-            i {
-                color: rgba(0,0,0,.05);
-                font-size: 85px;
-                line-height: 65px;
-            }
-        }
-        .content {
-            background: 0 0;
-            padding: 10px 10px 13px;
-            display: inline-block;
-            position: relative;
-        }
-    }
-}
-
-.bg-blue {
-    background: #348fe2!important
-}
-.widget {
-
-}
 .widget {
     border-radius: @border-radius-base;
     margin-bottom: 20px;

@@ -13,6 +13,7 @@ angular.module( 'apicatus', [
     'apicatus.settings',
     'apicatus.error',
     'apicatus.help',
+    'apicatus.about',
     'AuthService',
     'timeago',
     'humanize',
@@ -33,7 +34,7 @@ angular.module( 'apicatus', [
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider, $locationProvider, $translateProvider, $documentProvider, RestangularProvider, localStorageServiceProvider ) {
     $urlRouterProvider.otherwise( '/main/applications/list' );
     //$locationProvider.html5Mode(true);
-    RestangularProvider.setBaseUrl('http://api.apicat.us:8080');
+    RestangularProvider.setBaseUrl('http://api.apicat.us:' + document.location.port);
     RestangularProvider.setRestangularFields({
         id: "_id"
     });
@@ -132,9 +133,10 @@ angular.module( 'apicatus', [
             $cookies.token = undefined;
         });
     }
+
+    // SocketIO notifications
     mySocket.emit('angularMessage', {data: "myMessage"});
     mySocket.on('message', function(result){
-        console.log("socket message: ", result);
         messanger.post({
             message: result.hello,
             showCloseButton: true
@@ -146,7 +148,8 @@ angular.module( 'apicatus', [
     });
 
     ///////////////////////////////////////////////////////////////////////////
-    // User settings
+    // User settings                                                         //
+    ///////////////////////////////////////////////////////////////////////////
     $scope.settings = localStorageService.get('settings') || {};
     $scope.$watch('settings', function(newVal, oldVal){
         console.log("settings changed: ", $scope.settings);
@@ -154,15 +157,7 @@ angular.module( 'apicatus', [
         localStorageService.add('settings', newVal);
     }, true);
 
-    // authenticate
-    //$scope.user = Restangular.one('user').customPOST({username: "admin", password: "admin"}, 'signin');
-    // Restangular returns promises
-    //$scope.baseApi = Restangular.one('user');
-    //$scope.baseApi.get().then(function(account) {
-        // returns a list of users
-    //    $scope.account = account;   // first Restangular obj in list: { id: 123 }
-    //});
-    $scope.getDate = function() {return new Date();};
+    // Page title
     $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
         if ( angular.isDefined( toState.data.pageTitle ) ) {
             $scope.pageTitle = toState.data.pageTitle;

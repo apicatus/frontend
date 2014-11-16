@@ -4,8 +4,8 @@
 
 /*jshint loopfunc: true */
 
-angular.module('multilineChart', ['D3Service'])
-.directive('multilineChart', ['$timeout', '$window', 'D3Service', function($timeout, $window, D3Service) {
+angular.module('normalBarChart', ['D3Service'])
+.directive('normalBarChart', ['$timeout', '$window', 'D3Service', function($timeout, $window, D3Service) {
     return {
         restrict: 'E',
         scope:{
@@ -21,33 +21,30 @@ angular.module('multilineChart', ['D3Service'])
                     if (mutation.type === 'attributes') {
                         var isActive = mutation.target.classList.contains('active');
                         if(isActive) {
-                            render(element);
+                            render(scope.data, element);
                         }
                     }
                 });
             });
 
-            var render = function(canvas) {
+            var render = function(data, canvas) {
 
                 var width = canvas[0].offsetWidth;
                 var height = canvas[0].offsetHeight;
-
                 chartEl.call(chart.height(height));
                 chartEl.call(chart.width(width));
                 chartEl.call(chart.options(scope.options));
-                if(scope.data && scope.data.length > 0 ) {
-                    chartEl.datum(scope.data).call(chart);
-                }
+
                 scope.$watchCollection('data', function (newVal, oldVal) {
                     chartEl.datum(newVal).call(chart);
                 }, true);
             };
 
             D3Service.d3().then(function(d3) {
-                chart = charts.multiline();
+                chart = charts.normalBarChart();
                 chartEl = d3.select(element[0]);
 
-                var panel = $(element).closest('.tab-pane:not(.active)')[0];
+                var panel = $(element).closest('.tab-pane')[0];
                 if(panel) {
                     observer.observe(panel, {
                         attributes: true,
@@ -55,11 +52,11 @@ angular.module('multilineChart', ['D3Service'])
                         characterData: true
                     });
                 } else {
-                    render(element);
+                    render(scope.data, element);
                 }
             });
             angular.element($window).bind('resize', function(){
-                //render(element);
+                //render(scope.data, element);
             });
             scope.$on('$destroy', function() {
                 //angular.element($window).unbind('resize', delayedResize);

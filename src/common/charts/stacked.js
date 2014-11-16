@@ -102,6 +102,7 @@ charts.stacked = function module() {
                     ticks = 4;
                     subs = 6;
                 }
+                console.log("dataset: !", angular.copy(dataset));
                 //Data, stacked
                 stack(dataset);
 

@@ -1,5 +1,5 @@
 <accordion close-others="false">
-    <accordion-group class="panel" ng-class="{true: method.method}[true]" id="{{method._id}}" ng-repeat="method in endpoint.methods | limitTo:8" is-open="status.open">
+    <accordion-group loading ng-class="{true: method.method}[true]" id="{{method._id}}" ng-repeat="method in endpoint.methods | limitTo:8" is-open="status.open">
         <accordion-heading class="clearfix" style="padding-top: 7.5px;">
             <a href="">
                 <span class="method" ng-class="{true: method.method}[true]">{{method.method}}</span>
@@ -201,7 +201,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody ng-repeat="log in logs.records">
+                            <tbody ng-repeat="log in logs.records" ng-class="details ? 'opened': 'closed'">
                                 <tr>
                                     <td>{{log._source.date | date:'MM/dd/yy hh:mm a'}}</td>
                                     <td>
@@ -254,11 +254,11 @@
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>APP SERVER AVAILABILITY</h2>
-                                <span class="number" title="Updated about 14 seconds ago">{{statistics.terms.availability | number:2}}%</span>
+                                <span class="number" title="Updated about 14 seconds ago">{{statistics.percetage(statistics.availability.success) | number:2}}%</span>
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    <stacked-bar-chart data="statistics.availability"></stacked-bar-chart>
+                                    <normal-bar-chart data="statistics.normalBars.series" options="statistics.statusClassesBarOptions"></multiline-chart>
                                 </div>
                             </div>
                         </div>
@@ -270,7 +270,7 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    <my-graph data="statistics.timestatistics" data-unit="ms"></my-graph>
+                                    <multiline-chart data="statistics.latencyHistogram.series" options="statistics.lineChartOptions"></multiline-chart>
                                 </div>
                             </div>
                         </div>
@@ -282,20 +282,19 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    <bivariate-chart data="statistics.timestatistics" property-key="time_stats" timestamp-key="key" data-unit="ms"></bivariate-chart>
+                                    <multiline-chart data="statistics.latencyRangeHistogram.series" options="statistics.rangeChartOptions"></multiline-chart>
                                 </div>
-
                             </div>
                         </div>
 
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>FAILURE RATE</h2>
-                                <span class="number" title="Updated about 14 seconds ago">{{statistics.terms.failRate | number:2}}%</span>
+                                <span class="number" title="Updated about 14 seconds ago">{{statistics.percetage(statistics.availability.exception) | number:2}}%</span>
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    <stacked-bar-chart data="statistics.statuses"></stacked-bar-chart>
+                                    <normal-bar-chart data="statistics.normalBars.series" options="statistics.statusClassesBarOptions"></multiline-chart>
                                 </div>
                             </div>
                         </div>
@@ -303,19 +302,11 @@
                         <div class="row graph">
                             <div class="col-sm-3 legend">
                                 <h2>EXCEPTION PERCENTAGE</h2>
-                                <span class="number" title="Updated about 14 seconds ago">1.035%</span>
+                                <span class="number" title="Updated about 14 seconds ago">{{statistics.percetage(statistics.availability.serverError) | number:2}}%</span>
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    <div class="col-md-4 text-center" style="height: 120px;max-height: 100%;">
-                                        <img style="max-width:100%;max-height:100%;" src="http://4.bp.blogspot.com/-TfLsO4uBgTw/Ua7UYsr23GI/AAAAAAAAAjQ/mIVH_z-Xj6k/s1600/donut-charts.png">
-                                    </div>
-                                    <div class="col-md-4 text-center" style="height: 120px;max-height: 100%;">
-                                        <img style="max-width:100%;max-height:100%;" src="http://4.bp.blogspot.com/-TfLsO4uBgTw/Ua7UYsr23GI/AAAAAAAAAjQ/mIVH_z-Xj6k/s1600/donut-charts.png">
-                                    </div>
-                                    <div class="col-md-4 text-center" style="height: 120px;max-height: 100%;">
-                                        <img style="max-width:100%;max-height:100%;" src="http://4.bp.blogspot.com/-TfLsO4uBgTw/Ua7UYsr23GI/AAAAAAAAAjQ/mIVH_z-Xj6k/s1600/donut-charts.png">
-                                    </div>
+                                    <tree-map data="statistics.codeStats"></tree-map>
                                 </div>
                             </div>
                         </div>
@@ -332,7 +323,7 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    <!-- stacked-bar-chart data="[1,2,3,4,5]" data-unit="ms"></stacked-bar-chart -->
+                                    <multiline-chart data="statistics.dataHistogram.series" options="statistics.lineChartOptions"></multiline-chart>
                                 </div>
                             </div>
                         </div>
@@ -343,7 +334,7 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="chart-container statiscis">
-                                    <bivariate-chart data="statistics.transferstatistics" property-key="transfer_stats" timestamp-key="key" data-unit="b"></bivariate-chart>
+                                    <multiline-chart data="statistics.dataRangeHistogram.series" options="statistics.rangeChartOptions"></multiline-chart>
                                 </div>
                             </div>
                         </div>

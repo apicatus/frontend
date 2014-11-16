@@ -8,8 +8,8 @@ angular.module( 'apicatus.dashboard.geo', [
     'bivariateChart',
     'worldMap'
 ])
-.controller( 'DashboardGeoCtrl', function DashboardGeoController( $scope, $filter, $stateParams, Restangular, apis, geoStatistics, languageStatistics ) {
-    
+.controller( 'DashboardGeoCtrl', function DashboardGeoController( $scope, $filter, $stateParams, Restangular, countryCode, apis, geoStatistics, languageStatistics ) {
+
     var geo = this;
     var data = null;
     var parseLangRange = function(lang_range) {
@@ -20,7 +20,7 @@ angular.module( 'apicatus.dashboard.geo', [
         if (!match) {
             return undefined;
         }
-        
+
         // we will store the result in here to be returned later
         var result = {};
 
@@ -51,14 +51,18 @@ angular.module( 'apicatus.dashboard.geo', [
 
         return undefined;
     };
-    
+
     if(!geoStatistics.summary.buckets.length) {
         geo.hasData = false;
     } else {
         geo.statistics = geoStatistics.summary.buckets;
+        // Put real country name
+        geo.statistics.forEach(function(country){
+            country.name = countryCode.convert(country.key);
+        });
         geo.map = geo.statistics;
-        geo.maxCountries = geo.statistics.reduce(function(pv, cv) { 
-            return pv + cv.doc_count; 
+        geo.maxCountries = geo.statistics.reduce(function(pv, cv) {
+            return pv + cv.doc_count;
         }, 0);
 
         geo.languages = languageStatistics.summary.buckets;

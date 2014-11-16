@@ -15,6 +15,8 @@ charts.bivariate = function module() {
         property: 'time_stats'
     };
     function exports(_selection) {
+        'use strict';
+
         _selection.each(function(_data) {
             if(!_data) {
                 return;
@@ -75,20 +77,20 @@ charts.bivariate = function module() {
 
                 var area = d3.svg.area()
                     .x(function(d) { return xScale(d[keys.timestamp]); })
-                    .y0(function(d) { 
-                        return yScale(d[keys.property].min || yScale.domain()[0]); 
+                    .y0(function(d) {
+                        return yScale(d[keys.property].min || yScale.domain()[0]);
                     })
-                    .y1(function(d) { 
+                    .y1(function(d) {
                         return yScale(d[keys.property].max || yScale.domain()[0]);
                     });
-                
-                //Create SVG element
+
+                // Create SVG element
                 if(!svg) {
                     svg = d3.select(graph)
                         .append("svg")
                         .attr("width", "100%")
                         .attr("height", "100%");
-                    
+
                     axes = svg.append("g")
                         .attr("transform", "translate(0,0)");
                     pathContainer = svg.append("g")
@@ -117,19 +119,6 @@ charts.bivariate = function module() {
                     .classed('del', function(d, i) {
                         return d < 0;
                     });
-                    //.selectAll("text")
-                    //.attr("x", 4)
-                    //.attr("dy", -4)
-
-                    /*.insert("g", ".bars")         
-                    .attr("class", "grid horizontal")
-                    .call(d3.svg.axis().scale(yScale)
-                        .orient("left")
-                        .tickPadding(5)
-                        .ticks(2)
-                        .tickSize(-(size.width), 0, 0)
-                        .tickFormat("")
-                    )*/
 
                 pathContainer.append("path")
                     .datum(data)
@@ -140,7 +129,11 @@ charts.bivariate = function module() {
                     .attr("d", area);
             }
 
-            draw(_data);
+            try {
+                draw(_data);
+            } catch (error) {
+                console.log("error: ", error);
+            }
         });
     }
     exports.width = function(_x) {
@@ -176,7 +169,6 @@ charts.bivariate = function module() {
             return keys.property;
         }
         keys.property = key;
-        console.log("set chart keys.property: ", keys.property);
         return this;
     };
     exports.axis = function(_xAxis, _yAxis) {

@@ -1,4 +1,4 @@
-<traffic>
+<traffic ng-if="traffic.hasData">
     <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats bg-green">
@@ -12,7 +12,7 @@
                 <div class="stats-link">
                     <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
                 </div>
-                
+
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
@@ -132,16 +132,6 @@
                         </div>
                     </div>
                 </tab>
-            </tabset>
-
-        </div>
-    </div>
-
-
-    <!-- CHARTS -->
-    <div class="row">
-        <div class="col-lg-12 col-md-12">
-            <tabset ng-model="mytabs">
                 <tab>
                     <tab-heading>
                         <i class="fa fa-gears"></i> By Target URL
@@ -173,54 +163,13 @@
                         </tbody>
                     </table>
                 </tab>
-                <tab>
-                    <tab-heading>
-                        <i class="fa fa-gears"></i> By IP
-                    </tab-heading>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12">
-                        </div>
-                    </div>
-                </tab>
-                <tab>
-                    <tab-heading>
-                        <i class="fa fa-paper-plane"></i> By Target URL
-                    </tab-heading>
-                </tab>
-                <tab>
-                    <tab-heading>
-                        <i class="fa fa-gears"></i> By User Agent
-                    </tab-heading>
-                </tab>
-                <tab>
-                    <tab-heading>
-                        <i class="fa fa-gears"></i> By Verb
-                    </tab-heading>
-                </tab>
             </tabset>
-        </div>
-    </div>
 
-    <!-- CHARTS -->
-    <div class="row">
-        <div class="col-md-3 col-sm-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Error Rate</h3>
-                </div>
-                <div class="panel-body">
-                </div>
-            </div>
-        </div>
-        <div class="col-md-9 col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Total Errors</h3>
-                </div>
-                <div class="panel-body">
-                </div>
-            </div>
         </div>
     </div>
-    <!-- CHARTS -->
+</traffic>
+<traffic ng-if="!traffic.hasData">
+    <div class="page-header">
+        <h1 ng-model="account"><i class="fa fa-exclamation-triangle"></i> No data for your API <small>{{selectedApi.name}}</small></h1>
+    </div>
 </traffic>

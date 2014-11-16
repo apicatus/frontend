@@ -5,23 +5,59 @@ angular.module( 'apicatus.dashboard.traffic', [
     'donutChart',
     'multilineChart'
 ])
+.config(function config( $stateProvider, $urlRouterProvider ) {
+    $stateProvider.state('main.dashboard.traffic', {
+        url: '/traffic/:id/?since&until',
+        templateUrl: 'dashboard/traffic/traffic.tpl.html',
+        controller: 'DashboardTrafficCtrl as traffic',
+        resolve: {
+            transferStatistics: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
+                if($stateParams.id) {
+                    return Restangular.one('transfer/digestor', $stateParams.id).get(queryFactory().get());
+                } else {
+                    return Restangular.one('transfer').get(queryFactory().get());
+                }
+            }],
+            geo2stats: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
+                if($stateParams.id) {
+                    return Restangular.one('geo2stats/digestor', $stateParams.id).get(queryFactory().get());
+                } else {
+                    return Restangular.one('geo2stats').get(queryFactory().get());
+                }
+            }],
+            methodstatsbydate: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
+                if($stateParams.id) {
+                    return Restangular.one('methodstatsbydate/digestor', $stateParams.id).get(queryFactory().get());
+                } else {
+                    return Restangular.one('methodstatsbydate').get(queryFactory().get());
+                }
+            }],
+            apis: ['apis', function(apis) {
+                return apis;
+            }]
+        },
+        data: { pageTitle: 'Traffic' },
+        onEnter: function(){
+            console.log("enter Traffic");
+        }
+    });
+})
 .controller( 'DashboardTrafficCtrl', function DashboardTrafficController( $scope, queryFactory, transferStatistics, geo2stats, methodstatsbydate, apis ) {
-    
+
     var traffic = this;
     traffic.apis = apis;
-    console.log("apis: ", apis);
-    console.log("methodstatsbydate: ", methodstatsbydate);
+    traffic.hasData = true;
 
     //_.findWhere(publicServicePulitzers, {newsroom: "The New York Times"});
     var getCodesFromBuckets = function(buckets) {
         var codeStats = [
-            { name: 100, value: 0 }, 
-            { name: 200, value: 0 }, 
-            { name: 300, value: 0 }, 
-            { name: 400, value: 0 }, 
+            { name: 100, value: 0 },
+            { name: 200, value: 0 },
+            { name: 300, value: 0 },
+            { name: 400, value: 0 },
             { name: 500, value: 0 }
         ];
-        
+
         buckets.forEach(function(code){
             var key = parseInt(code.key, 10);
             if(key >= 100 && key < 200) {
@@ -101,7 +137,7 @@ angular.module( 'apicatus.dashboard.traffic', [
         var sum = (key >= 400) ? currentValue.value + previousValue : previousValue;
         return sum;
     }, 0);
-    
+
     traffic.codeStatsByDate = {};
     [100, 200, 300, 400, 500].forEach(function(code){
         traffic.codeStatsByDate[code] = transferStatistics.aggregations.history.buckets.map(function(history) {
@@ -171,7 +207,7 @@ angular.module( 'apicatus.dashboard.traffic', [
             }
         ]
     };
-    
+
 
     traffic.methodStats = methodstatsbydate.aggregations.methods.buckets;
     traffic.methodStats.forEach(function(stat){

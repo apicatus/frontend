@@ -14,10 +14,12 @@
  */
 
 angular.module( 'apicatus.dashboard', [
+    'apicatus.dashboard.behavior',
     'apicatus.dashboard.geo',
     'apicatus.dashboard.technology',
     'apicatus.dashboard.traffic',
-    'apicatus.dashboard.realtime'
+    'apicatus.dashboard.realtime',
+    'countryCode'
 ])
 
 /**
@@ -45,41 +47,6 @@ angular.module( 'apicatus.dashboard', [
         data: { pageTitle: 'Dashboard' },
         authenticate: true
     })
-    .state('main.dashboard.traffic', {
-        url: '/traffic/:id/?since&until&interval',
-        templateUrl: 'dashboard/traffic/traffic.tpl.html',
-        controller: 'DashboardTrafficCtrl as traffic',
-        resolve: {
-            transferStatistics: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
-                if($stateParams.id) {
-                    return Restangular.one('transfer/digestor', $stateParams.id).get(queryFactory().get());
-                } else {
-                    return Restangular.one('transfer').get(queryFactory().get());
-                }
-            }],
-            geo2stats: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
-                if($stateParams.id) {
-                    return Restangular.one('geo2stats/digestor', $stateParams.id).get(queryFactory().get());
-                } else {
-                    return Restangular.one('geo2stats').get(queryFactory().get());    
-                }
-            }],
-            methodstatsbydate: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
-                if($stateParams.id) {
-                    return Restangular.one('methodstatsbydate/digestor', $stateParams.id).get(queryFactory().get());
-                } else {
-                    return Restangular.one('methodstatsbydate').get(queryFactory().get());
-                }
-            }],
-            apis: ['apis', function(apis) {
-                return apis;
-            }]
-        },
-        data: { pageTitle: 'Traffic' },
-        onEnter: function(){
-            console.log("enter Traffic");
-        }
-    })
     .state('main.dashboard.geo', {
         url: '/geo/:id',
         templateUrl: 'dashboard/geo/geo.tpl.html',
@@ -105,15 +72,6 @@ angular.module( 'apicatus.dashboard', [
             console.log("enter geo");
         }
     })
-    .state('main.dashboard.behavior', {
-        url: '/behavior',
-        templateUrl: 'dashboard/behavior/behavior.tpl.html',
-        data: { pageTitle: 'Behavior' },
-        //authenticate: true,
-        onEnter: function(){
-            console.log("enter behavior");
-        }
-    })
     .state('main.dashboard.realtime', {
         url: '/realtime/:id',
         templateUrl: 'dashboard/realtime/realtime.tpl.html',
@@ -132,38 +90,14 @@ angular.module( 'apicatus.dashboard', [
         onEnter: function(){
             console.log("enter timeline");
         }
-    })
-    .state('main.dashboard.technology', {
-        url: '/technology/:id',
-        templateUrl: 'dashboard/technology/technology.tpl.html',
-        controller: 'DashboardTechnologyCtrl as technology',
-        resolve: {
-            agentStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
-                if($stateParams.id) {
-                    return Restangular.one('agent/digestor', $stateParams.id).get();
-                } else {
-                    return Restangular.one('agent').get();
-                }
-            }]
-        },
-        data: { pageTitle: 'Technology' },
-        onEnter: function(){
-            console.log("enter technology");
-        }
     });
 })
+
+///////////////////////////////////////////////////////////////////////////////
+// Query Factory                                                             //
+///////////////////////////////////////////////////////////////////////////////
 .provider('queryFactory', function () {
     'use strict';
-
-    // Default query params
-    var query = {
-        size: 100,
-        skip: 100,
-        limit: 100,
-        since: new Date().setDate(new Date().getDate() - 1),
-        until: new Date().getTime(),
-        interval: 1800 * 1000 // one day '1d'
-    };
 
     var periods = [{
         name: '1 hour',
@@ -184,19 +118,25 @@ angular.module( 'apicatus.dashboard', [
         name: '30 days',
         value: 30 * 24 * 3600 * 1000
     }];
+
+    // Default period
+    var period = periods[3];
+
+    // Default query params
+    var query = {
+        size: 100,
+        skip: 100,
+        limit: 100,
+        since: new Date().setDate(new Date().getDate() - 1),    //
+        until: new Date().getTime(),
+        interval: 1800 * 1000                                   // one day '1d'
+    };
+
     // expose to provider
     this.$get = ['$rootScope', function ($rootScope) {
 
-        var asyncAngularify = function (socket, callback) {
-            return callback ? function () {
-                var args = arguments;
-                $timeout(function () {
-                    callback.apply(socket, args);
-                }, 0);
-            } : angular.noop;
-        };
-
         return function queryFactory (options) {
+
             angular.extend(query, options);
 
             var wrappedQuery = {
@@ -206,10 +146,12 @@ angular.module( 'apicatus.dashboard', [
                 },
                 set: function (options) {
                     query = angular.extend(query, options);
-                    console.log("SET: ", query);
                 },
                 periods: function() {
                     return periods;
+                },
+                period: function() {
+                    return period;
                 }
             };
             return wrappedQuery;
@@ -235,9 +177,11 @@ angular.module( 'apicatus.dashboard', [
     // Load preset periods
     $scope.periods = queryFactory().periods();
     // Default period
-    $scope.selectedPeriod = $scope.periods[0];
+    $scope.selectedPeriod = queryFactory().period();
+
     // Change Periods
     $scope.selectPeriod = function(period) {
+        console.log("change period: ", period);
         queryFactory().set({
             since: new Date().getTime() - period.value,
             until: new Date().getTime()

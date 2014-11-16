@@ -3,6 +3,7 @@
         <thead>
             <tr>
                 <th class="col-md-1 text-center">Enabled</th>
+                <th class="col-md-1 text-center">Proxied</th>
                 <th>Name</th>
                 <th class="text-right">Api Calls</th>
                 <th class="text-right">Avg. response time</th>
@@ -13,11 +14,12 @@
         </thead>
         <tbody>
             <tr ng-repeat="api in applications.apis | orderBy:sort.property:sort.reverse" ng-controller="TableCtrl as table" ng-init="table.init(api, summaries)">
-                <td class="text-center"><i class="fa" ng-class="api.enabled ? 'fa-toggle-on' : 'fa-toggle-off'"></i><!-- input type="checkbox" id="public" ng-model="api.enabled"--></td>
+                <td class="text-center"><i class="fa" ng-class="api.enabled ? 'fa-check-circle' : 'fa-circle-thin'"></i></td>
+                <td class="text-center"><i class="fa" ng-class="api.proxy.enabled ? 'fa-check-circle' : 'fa-circle-thin'"></i></td>
                 <td><a ui-sref="main.applications.application({id: api._id})">{{api.name}}</a></td>
                 <td class="text-right">{{ table.summary.current.doc_count | humanize }}</td>
                 <td class="text-right">{{ table.summary.current.stats.avg | number:0 }}ms</td>
-                <td class="text-right">{{api.lastAccess | timeago}}</td>
+                <td class="text-right">{{ api.lastAccess | timeago }}</td>
                 <td class="text-right">
                     <inline-bar-chart data="table.barChart.data" options="{height: '16px', fill: ['#49c5b1']}"></inline-bar-chart>
                 </td>

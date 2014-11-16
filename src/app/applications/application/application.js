@@ -2,13 +2,125 @@
 /*jshint newcap: false */
 
 angular.module( 'apicatus.application', [
-    //'ui.ace',
-    /*'vectorMap',
-    'myGraph',
-    'stackedBarChart',
-    'bivariateChart',*/
-    //'worldMap'
+    'vectorMap',
+    'normalBarChart'
 ])
+.config(['$httpProvider', function ($httpProvider) {
+    var interceptor = ['$injector', function ($injector) {
+        return $injector.get('requestInterceptor');
+    }];
+    $httpProvider.interceptors.push(interceptor);
+}])
+.factory('requestInterceptor', ['ngRequestNotify', '$injector', '$q', function(ngRequestNotify, $injector, $q) {
+        var http = null;
+        var requestEnded = function() {
+            http = http || $injector.get('$http');
+            if (http.pendingRequests.length < 1) {
+                // send notification requests are complete
+                ngRequestNotify.requestEnded();
+            }
+        };
+        return {
+            request: function(config) {
+                ngRequestNotify.requestStarted();
+                return config;
+            },
+
+            response: function(response) {
+                requestEnded();
+                return response;
+            },
+
+            responseError: function(reason) {
+                requestEnded();
+                return $q.reject(reason);
+            }
+        };
+    }]
+)
+.factory('ngRequestNotify', ['$rootScope', '$timeout', function($rootScope, $timeout){
+    // private notification messages
+    var START_REQUEST = 'ngRequestNotify:START_REQUEST';
+    var END_REQUEST = 'ngRequestNotify:END_REQUEST';
+    var isDisabled = false;
+    var lastTimeout = null;
+
+    return {
+        /**
+         * This method shall be called when an HTTP request
+         * started. This is called by the initiating component - the
+         * HTTP interceptor.
+         */
+        requestStarted: function() {
+            if (!isDisabled) {
+                $rootScope.$broadcast(START_REQUEST);
+            }
+        },
+
+        /**
+         * This method shall be called when an HTTP request
+         * ends. This is called by the initiating component - the
+         * HTTP interceptor.
+         */
+        requestEnded: function() {
+            $rootScope.$broadcast(END_REQUEST);
+        },
+
+        /**
+         * This method is invoked by any listener that wants to be
+         * notified of the request start.
+         *
+         * @param handler
+         */
+        onRequestStarted: function(handler) {
+            $rootScope.$on(START_REQUEST, function(event){
+                handler(event);
+            });
+        },
+
+        /**
+         * This method is invoked by any listener that wants to be
+         * notified of the request end.
+         *
+         * @param handler
+         */
+        onRequestEnded: function(handler) {
+            $rootScope.$on(END_REQUEST, function(event){
+                handler(event);
+            });
+        },
+
+        /**
+         * This method will disable sham spinner for the reset time. After
+         * reset time the spinner will be enabled again. If reset time is
+         * set to less than 0 then to enable spinner, call this method
+         * again with false as the disable argument.
+         *
+         * @param disable       Set to true to disable the sham spinner
+         * @param resetTime     reset time in ms (no reset if set to < 0)
+         */
+        setDisabled: function(disable, resetTime) {
+            isDisabled = disable;
+            if (isDisabled) {
+                this.requestEnded();
+                if (resetTime > 0) {
+                    if (lastTimeout !== null) {
+                        $timeout.cancel(lastTimeout);
+                    }
+                    lastTimeout = $timeout(function() {
+                        isDisabled = false;
+                        lastTimeout = null;
+                    }, resetTime);
+                }
+            } else {
+                if (lastTimeout !== null) {
+                    $timeout.cancel(lastTimeout);
+                    lastTimeout = null;
+                }
+            }
+        }
+    };
+}])
 .factory('MetricsService', ['$cacheFactory', 'Restangular', function($cacheFactory, Restangular) {
     var route = 'metrics';
     var cache = $cacheFactory(route);
@@ -227,7 +339,7 @@ angular.module( 'apicatus.application', [
         });
     };
     // The modes
-    /* 
+    /*
     $scope.editor = {
         modes: ['Scheme', 'XML', 'Javascript'],
         options: {
@@ -361,71 +473,202 @@ angular.module( 'apicatus.application', [
     var statistics = this;
     var since = new Date().setMinutes(new Date().getMinutes() - 60);
     var until = new Date().getTime();
+    var interval = 60 * 1000;
 
-    function percetage(a, b) {
-        console.log("a: %s b: %s", a, b);
-        if(a > 0 && b > 0) {
-            console.log("availability: ", a / b * 100);
-            return a / b * 100;
-        } else if (a <= 0) {
-            return 100;
-        } else if (b <= 0) {
+    // Calculate percentages
+    statistics.percetage = function(value) {
+        if(value > 0 && statistics.availability.total > 0) {
+            return (value / statistics.availability.total) * 100;
+        } else {
             return 0;
-        } 
-    }
+        }
+    };
+
+    statistics.lineChartOptions = {
+        chart: {
+            type: 'line'
+        },
+        plotOptions: {
+            interpolate: 'linear',
+            fillOpacity: 1,
+            series: {
+                animation: false,
+                pointInterval: interval, // one day
+                pointStart: since
+                //units: 'ms'
+            }
+        },
+        yAxis: {
+            ticks: 2
+        }
+    };
+    statistics.rangeChartOptions = {
+        chart: {
+            type: 'bivariate'
+        },
+        plotOptions: {
+            interpolate: 'linear',
+            fillOpacity: 1,
+            series: {
+                animation: false,
+                pointInterval: interval, // one day
+                pointStart: since
+                //units: 'ms'
+            }
+        },
+        yAxis: {
+            ticks: 2
+        }
+    };
+    statistics.statusClassesBarOptions = {
+        chart: {
+            type: 'stackedBar'
+        },
+        plotOptions: {
+            fillOpacity: 1,
+            series: {
+                animation: false,
+                pointInterval: interval, // one day
+                pointStart: since
+            }
+        },
+        yAxis: {
+            ticks: 2
+        }
+    };
     statistics.load = function(method) {
-        Restangular.one('metrics', method._id).get().then(function(records) {
-            statistics.percentiles = records.percentiles;
-            statistics.average = records.average;
-            //statistics.latency = records.letancy;
-        }, function(error) {
-            console.log("error getting logs: ", error);
-        });
-        ///analitics/:entity/:id
-        Restangular.one('analitics/method', method._id).get().then(function(records) {
-            statistics.statuses = [records.statuses['200'], records.statuses['400'], records.statuses['500']];
-            statistics.availability = [records.statuses['200']];
-        }, function(error) {
-            console.log("error getting analitics: ", error);
-        });
-        // terms
-        Restangular.one('terms/method', method._id).getList().then(function(records) {
-            console.log("records: ", records);
-            
-            statistics.terms = {
-                success: 0,
-                fail: 0,
-                error: 0
+
+        Restangular.one('transfer/method', method._id).get({since: since, until: until}).then(function(records){
+            statistics.percentiles = records.aggregations.t_percentiles.values;
+            statistics.stats = records.aggregations.t_statistics;
+            statistics.timestatistics = records.aggregations.history.buckets;
+            statistics.availability = records.aggregations.statuses.buckets.reduce(function(previousValue, currentValue){
+
+
+                if(currentValue.key >= 100 && currentValue.key < 200) {
+                    previousValue.informational += currentValue.doc_count;
+                } else if(currentValue.key >= 200 && currentValue.key < 300) {
+                    previousValue.success += currentValue.doc_count;
+                } else if(currentValue.key >= 300 && currentValue.key < 400) {
+                    previousValue.redirection += currentValue.doc_count;
+                } else if(currentValue.key >= 400 && currentValue.key < 500) {
+                    previousValue.clientError += currentValue.doc_count;
+                } else if(currentValue.key >= 500) {
+                    previousValue.serverError += currentValue.doc_count;
+                }
+
+                previousValue.total += currentValue.doc_count;
+                previousValue.exception = previousValue.total - previousValue.success;
+                return previousValue;
+
+            }, {total: 0, exception: 0, informational: 0, success: 0, redirection: 0, clientError: 0, serverError: 0});
+
+            statistics.timeStatsByDate = {
+                avg: records.aggregations.history.buckets.map(function(history){
+                    return history.time_statistics.avg || 0;
+                }),
+                max: records.aggregations.history.buckets.map(function(history){
+                    return history.time_statistics.max || 0;
+                }),
+                min: records.aggregations.history.buckets.map(function(history){
+                    return history.time_statistics.min || 0;
+                })
             };
 
-            records.forEach(function(record){
-                if(record.term == 200) {
-                    statistics.terms.success = record.count;
-                } else if (record.term == 400) {
-                    statistics.terms.fail = record.count;
-                } else {
-                    statistics.terms.error = record.count;
-                }
+            statistics.responseClasses = records.aggregations.history.buckets.map(function(history){
+                return history.statuses.buckets;
             });
+            statistics.responseClasses = statistics.responseClasses.reduce(function(previousValue, currentValue, index, array){
 
-            statistics.terms.availability = percetage( (statistics.terms.fail + statistics.terms.error), statistics.terms.success  );
-            statistics.terms.failRate =  100 - statistics.terms.availability;
-            console.log("terms: ", statistics.terms);
+                previousValue.forEach(function(previous, index){
+                    previous.data = previous.data || [];
+                    var count = currentValue.filter(function(classe) {
+                        return (classe.key >= previous.key && classe.key < previous.key + 100);
+                    })[0];
+                    count = count ? count.doc_count : 0;
+                    previous.data.push(count);
+                });
 
-        }, function(error) {
-            console.log("error getting terms: ", error);
+                return previousValue;
+
+            }, [{key: 100}, {key: 200}, {key: 300}, {key: 400}, {key: 500}]);
+
+            // Average
+            statistics.latencyHistogram = {
+                series: [
+                    {
+                        name: 'avg',
+                        stroke: '#2c3e50',
+                        data: statistics.timeStatsByDate.avg
+                    }
+                ]
+            };
+            // Min Max Range
+            statistics.latencyRangeHistogram = {
+                series: [
+                    {
+                        name: 'range',
+                        stroke: '#2980b9',
+                        data: statistics.timeStatsByDate.min.map(function(min, index){
+                            return [min, statistics.timeStatsByDate.max[index]];
+                        })
+                    }
+                ]
+            };
+
+            // Min Max Range
+            statistics.normalBars = {
+                series: [
+                    {
+                        name: 'Success',
+                        stroke: '#27ae60',
+                        fill: '#27ae60',
+                        data: statistics.responseClasses[1].data
+                    },
+                    {
+                        name: 'Redirection',
+                        stroke: '#2980b9',
+                        fill: '#2980b9',
+                        data: statistics.responseClasses[2].data
+                    },
+                    {
+                        name: 'Client Error',
+                        stroke: '#f1c40f',
+                        fill: '#f1c40f',
+                        data: statistics.responseClasses[3].data
+                    },
+                    {
+                        name: 'Server Error',
+                        stroke: '#c0392b',
+                        fill: '#c0392b',
+                        data: statistics.responseClasses[4].data
+                    }
+                ]
+            };
+
+            // Aggregate traffic status codes
+            statistics.codeStatsChilds = records.aggregations.statuses.buckets.reduce(function(previousValue, currentValue, index, array){
+                var current = parseInt(array[index].key, 10);
+                var previous = previousValue.filter(function(value) {
+                    return (current >= value.key && current < value.key + 100);
+                })[0];
+
+                previous.doc_count = previous.doc_count ? previous.doc_count + array[index].doc_count : array[index].doc_count; //previous.doc_count > 0 ? array[index].doc_count : array[index].doc_count + previous.doc_count
+
+                previous.children = previous.children || [];
+                previous.children.push(array[index]);
+
+                return previousValue;
+            }, [{key: 100}, {key: 200}, {key: 300}, {key: 400}, {key: 500}]);
+
+            statistics.codeStats = {
+                name: 'tree',
+                children: statistics.codeStatsChilds
+            };
+
         });
 
-        ///analitics/:entity/:id
-        Restangular.one('timestatistics/method', method._id).get({since: since, until: until}).then(function(records) {
-        //Restangular.one('timestatistics/method', method._id).getList().then(function(records) {
-            statistics.timestatistics = records.buckets;
-            statistics.stats = records.sum;
-        }, function(error) {
-            console.log("error getting analitics: ", error);
-        });
-
-        // Auto Update 
+        // Auto Update
         /*
         $timeout(function(){
             statistics.load(method);
@@ -433,7 +676,6 @@ angular.module( 'apicatus.application', [
         */
     };
     statistics.init = function(method) {
-        console.log("CALL INIT StatisticsCtrl: ", method._id);
         statistics.method = method;
         statistics.load(statistics.method);
     };
@@ -443,17 +685,97 @@ angular.module( 'apicatus.application', [
     var statistics = this;
     var since = new Date().setMinutes(new Date().getMinutes() - 60);
     var until = new Date().getTime();
+    var interval = 60 * 1000;
 
+    statistics.lineChartOptions = {
+        chart: {
+            type: 'line'
+        },
+        plotOptions: {
+            interpolate: 'linear',
+            fillOpacity: 1,
+            series: {
+                animation: false,
+                pointInterval: interval, // one day
+                pointStart: since
+                //units: 'ms'
+            }
+        },
+        yAxis: {
+            ticks: 2
+        }
+    };
+    statistics.rangeChartOptions = {
+        chart: {
+            type: 'bivariate'
+        },
+        plotOptions: {
+            interpolate: 'linear',
+            fillOpacity: 1,
+            series: {
+                animation: false,
+                pointInterval: interval, // one day
+                pointStart: since
+                //units: 'ms'
+            }
+        },
+        yAxis: {
+            ticks: 2
+        }
+    };
     statistics.load = function(method) {
-        Restangular.one('transferstatistics/method', method._id).get({since: since, until: until}).then(function(records) {
-            statistics.transferstatistics = records.buckets;
-            statistics.stats = records.sum;
+        Restangular.one('transfer/method', method._id).get({since: since, until: until}).then(function(records){
+            statistics.percentiles = records.aggregations.z_percentiles.values;
+            statistics.stats = records.aggregations.z_statistics;
+            statistics.transferstatistics = records.aggregations.history.buckets;
+
+            statistics.dataStatsByDate = {
+                avg: records.aggregations.history.buckets.map(function(history){
+                    return history.transfer_statistics.avg || 0;
+                }),
+                max: records.aggregations.history.buckets.map(function(history){
+                    return history.transfer_statistics.max || 0;
+                }),
+                min: records.aggregations.history.buckets.map(function(history){
+                    return history.transfer_statistics.min || 0;
+                })
+            };
+            // Average
+            statistics.dataHistogram = {
+                series: [
+                    {
+                        name: 'avg',
+                        stroke: '#27ae60',
+                        data: statistics.dataStatsByDate.avg
+                    }, {
+                        name: 'max',
+                        stroke: '#c0392b',
+                        data: statistics.dataStatsByDate.max
+                    }, {
+                        name: 'min',
+                        stroke: '#f1c40f',
+                        data: statistics.dataStatsByDate.min
+                    }
+                ]
+            };
+            // Min Max Range
+            statistics.dataRangeHistogram = {
+                series: [
+                    {
+                        name: 'range',
+                        stroke: '#2980b9',
+                        data: statistics.dataStatsByDate.min.map(function(min, index){
+                            return [min, statistics.dataStatsByDate.max[index]];
+                        })
+                    }
+                ]
+            };
+
         }, function(error) {
             console.log("error getting analitics: ", error);
         });
     };
     statistics.init = function(method) {
-        console.log("CALL INIT TransferStatisticsCtrl: ", method._id);
         statistics.method = method;
         statistics.load(statistics.method);
     };
@@ -488,6 +810,44 @@ angular.module( 'apicatus.application', [
         console.log("CALL INIT TransferStatisticsCtrl: ", method._id);
         map.method = method;
         map.load(map.method);
+    };
+}])
+.directive( 'loading', ['$timeout', '$q', 'ngRequestNotify', function($timeout, $q, ngRequestNotify) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attributes) {
+            //element.find('.panel-body').prepend('<div class="panel-loader"><span class="spinner-small"></span></div>');
+
+            /*
+            $timeout(function() {
+                element.addClass('panel-loading');
+                element.find('.panel-body').addClass('fade in').prepend('<div class="panel-loader"><span class="spinner-small"></span></div>');
+                //element.find('.panel-body').removeClass('fade in');
+            }, 5000);
+            */
+
+            // subscribe to request started notification
+            ngRequestNotify.onRequestStarted(function() {
+                // got the request start notification, show the element
+                element
+                    .addClass('panel-loading')
+                    .find('.panel-body')
+                    .addClass('fade in')
+                    .prepend('<div class="panel-loader"><span class="spinner-small"></span></div>');
+            });
+
+            // subscribe to request ended notification
+            ngRequestNotify.onRequestEnded(function() {
+                // got the request end notification, hide the element
+                element
+                    .removeClass('panel-loading')
+                    .find('.panel-body')
+                    .removeClass('fade in')
+                    .find('.panel-loader')
+                    .remove();
+            });
+
+        }
     };
 }]);
 

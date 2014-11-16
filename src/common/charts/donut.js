@@ -29,6 +29,23 @@ charts.donut = function module() {
         property: 'value',
         caption: 'name'
     };
+    ///////////////////////////////////////////////////////////////////////////
+    // Default chart options                                                 //
+    ///////////////////////////////////////////////////////////////////////////
+    var options = {
+        chart: {
+            type: 'donut',
+            margin: {top: 0, right: 0, bottom: 20, left: 0}
+        },
+        plotOptions: {
+            labels: false,
+            summary: false,
+            series: {
+                animation: false,
+                units: null
+            }
+        }
+    };
     function exports(_selection) {
         _selection.each(function(_data) {
             if(!_data) {
@@ -60,7 +77,7 @@ charts.donut = function module() {
                     'width': width - margin.left - margin.right,
                     'height': height - margin.top - margin.bottom
                 };
-                
+
                 radius = Math.min(size.width, size.height) / 2;
 
                 var pie = d3.layout.pie()
@@ -85,7 +102,7 @@ charts.donut = function module() {
                     .attr("class", "label_group")
                     .attr("transform", "translate(" + (size.width / 2) + "," + (size.height / 2) + ")");
 
-                //GROUP FOR CENTER TEXT  
+                //GROUP FOR CENTER TEXT
                 var center_group = svg.append("svg:g")
                     .attr("class", "center_group")
                     .attr("transform", "translate(" + (size.width / 2) + "," + (size.height / 2) + ")");
@@ -173,117 +190,123 @@ charts.donut = function module() {
                             .attrTween("d", removePieTween)
                             .remove();
 
-                        //DRAW TICK MARK LINES FOR LABELS
-                        lines = label_group.selectAll("line").data(filteredPieData);
-                        lines.enter().append("svg:line")
-                            .attr("x1", 0)
-                            .attr("x2", 0)
-                            .attr("y1", -r - 3)
-                            .attr("y2", -r - 8)
-                            .attr("stroke", "gray")
-                            .attr("transform", function(d) {
-                                return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
-                            });
-                        lines.transition()
-                            .duration(tweenDuration)
-                            .attr("transform", function(d) {
-                                return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
-                            });
-                        lines.exit().remove();
-
-                        //DRAW LABELS WITH PERCENTAGE VALUES
-                        valueLabels = label_group.selectAll("text.value").data(filteredPieData)
-                            .attr("dy", function(d) {
-                                if ((d.startAngle + d.endAngle) / 2 > Math.PI / 2 && (d.startAngle + d.endAngle) / 2 < Math.PI * 1.5) {
-                                    return 5;
-                                } else {
-                                    return -7;
-                                }
-                            })
-                            .attr("text-anchor", function(d) {
-                                if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
-                                    return "beginning";
-                                } else {
-                                    return "end";
-                                }
-                            })
-                            .text(function(d) {
-                                var percentage = (d.value / totalOctets) * 100;
-                                return percentage.toFixed(1) + "%";
-                            });
-
-                        valueLabels.enter().append("svg:text")
-                            .attr("class", "value")
-                            .attr("transform", function(d) {
-                                return "translate(" + Math.cos(((d.startAngle + d.endAngle - Math.PI) / 2)) * (r + textOffset) + "," + Math.sin((d.startAngle + d.endAngle - Math.PI) / 2) * (r + textOffset) + ")";
-                            })
-                            .attr("dy", function(d) {
-                                if ((d.startAngle + d.endAngle) / 2 > Math.PI / 2 && (d.startAngle + d.endAngle) / 2 < Math.PI * 1.5) {
-                                    return 5;
-                                } else {
-                                    return -7;
-                                }
-                            })
-                            .attr("text-anchor", function(d) {
-                                if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
-                                    return "beginning";
-                                } else {
-                                    return "end";
-                                }
-                            }).text(function(d) {
-                                var percentage = (d.value / totalOctets) * 100;
-                                return percentage.toFixed(1) + "%";
-                            });
-
-                        valueLabels.transition().duration(tweenDuration).attrTween("transform", textTween);
-
-                        valueLabels.exit().remove();
-
-                        //DRAW LABELS WITH ENTITY NAMES
-                        nameLabels = label_group.selectAll("text.units").data(filteredPieData)
-                            .attr("dy", function(d) {
-                                if ((d.startAngle + d.endAngle) / 2 > Math.PI / 2 && (d.startAngle + d.endAngle) / 2 < Math.PI * 1.5) {
-                                    return 17;
-                                } else {
-                                    return 5;
-                                }
-                            })
-                            .attr("text-anchor", function(d) {
-                                if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
-                                    return "beginning";
-                                } else {
-                                    return "end";
-                                }
-                            }).text(function(d) {
-                                return d.name;
-                            });
-
-                        nameLabels.enter().append("svg:text")
-                            .attr("class", "units")
-                            .attr("transform", function(d) {
-                                return "translate(" + Math.cos(((d.startAngle + d.endAngle - Math.PI) / 2)) * (r + textOffset) + "," + Math.sin((d.startAngle + d.endAngle - Math.PI) / 2) * (r + textOffset) + ")";
-                            })
-                            .attr("dy", function(d) {
-                                if ((d.startAngle + d.endAngle) / 2 > Math.PI / 2 && (d.startAngle + d.endAngle) / 2 < Math.PI * 1.5) {
-                                    return 17;
-                                } else {
-                                    return 5;
-                                }
-                            })
-                            .attr("text-anchor", function(d) {
-                                if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
-                                    return "beginning";
-                                } else {
-                                    return "end";
-                                }
-                            }).text(function(d) {
-                                return d.name;
-                            });
-
-                        nameLabels.transition().duration(tweenDuration).attrTween("transform", textTween);
-
-                        nameLabels.exit().remove();
+                        if(options.plotOptions.labels) {
+                            drawLabels(label_group);
+                        }
                     }
+                }
+
+                function drawLabels(label_group) {
+                    //DRAW TICK MARK LINES FOR LABELS
+                    lines = label_group.selectAll("line").data(filteredPieData);
+                    lines.enter().append("svg:line")
+                        .attr("x1", 0)
+                        .attr("x2", 0)
+                        .attr("y1", -r - 3)
+                        .attr("y2", -r - 8)
+                        .attr("stroke", "gray")
+                        .attr("transform", function(d) {
+                            return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
+                        });
+                    lines.transition()
+                        .duration(tweenDuration)
+                        .attr("transform", function(d) {
+                            return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
+                        });
+                    lines.exit().remove();
+
+                    //DRAW LABELS WITH PERCENTAGE VALUES
+                    valueLabels = label_group.selectAll("text.value").data(filteredPieData)
+                        .attr("dy", function(d) {
+                            if ((d.startAngle + d.endAngle) / 2 > Math.PI / 2 && (d.startAngle + d.endAngle) / 2 < Math.PI * 1.5) {
+                                return 5;
+                            } else {
+                                return -7;
+                            }
+                        })
+                        .attr("text-anchor", function(d) {
+                            if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
+                                return "beginning";
+                            } else {
+                                return "end";
+                            }
+                        })
+                        .text(function(d) {
+                            var percentage = (d.value / totalOctets) * 100;
+                            return percentage.toFixed(1) + "%";
+                        });
+
+                    valueLabels.enter().append("svg:text")
+                        .attr("class", "value")
+                        .attr("transform", function(d) {
+                            return "translate(" + Math.cos(((d.startAngle + d.endAngle - Math.PI) / 2)) * (r + textOffset) + "," + Math.sin((d.startAngle + d.endAngle - Math.PI) / 2) * (r + textOffset) + ")";
+                        })
+                        .attr("dy", function(d) {
+                            if ((d.startAngle + d.endAngle) / 2 > Math.PI / 2 && (d.startAngle + d.endAngle) / 2 < Math.PI * 1.5) {
+                                return 5;
+                            } else {
+                                return -7;
+                            }
+                        })
+                        .attr("text-anchor", function(d) {
+                            if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
+                                return "beginning";
+                            } else {
+                                return "end";
+                            }
+                        }).text(function(d) {
+                            var percentage = (d.value / totalOctets) * 100;
+                            return percentage.toFixed(1) + "%";
+                        });
+
+                    valueLabels.transition().duration(tweenDuration).attrTween("transform", textTween);
+
+                    valueLabels.exit().remove();
+
+                    //DRAW LABELS WITH ENTITY NAMES
+                    nameLabels = label_group.selectAll("text.units").data(filteredPieData)
+                        .attr("dy", function(d) {
+                            if ((d.startAngle + d.endAngle) / 2 > Math.PI / 2 && (d.startAngle + d.endAngle) / 2 < Math.PI * 1.5) {
+                                return 17;
+                            } else {
+                                return 5;
+                            }
+                        })
+                        .attr("text-anchor", function(d) {
+                            if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
+                                return "beginning";
+                            } else {
+                                return "end";
+                            }
+                        }).text(function(d) {
+                            return d.name;
+                        });
+
+                    nameLabels.enter().append("svg:text")
+                        .attr("class", "units")
+                        .attr("transform", function(d) {
+                            return "translate(" + Math.cos(((d.startAngle + d.endAngle - Math.PI) / 2)) * (r + textOffset) + "," + Math.sin((d.startAngle + d.endAngle - Math.PI) / 2) * (r + textOffset) + ")";
+                        })
+                        .attr("dy", function(d) {
+                            if ((d.startAngle + d.endAngle) / 2 > Math.PI / 2 && (d.startAngle + d.endAngle) / 2 < Math.PI * 1.5) {
+                                return 17;
+                            } else {
+                                return 5;
+                            }
+                        })
+                        .attr("text-anchor", function(d) {
+                            if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
+                                return "beginning";
+                            } else {
+                                return "end";
+                            }
+                        }).text(function(d) {
+                            return d.name;
+                        });
+
+                    nameLabels.transition().duration(tweenDuration).attrTween("transform", textTween);
+
+                    nameLabels.exit().remove();
                 }
             }
 

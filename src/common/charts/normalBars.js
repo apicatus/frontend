@@ -36,7 +36,7 @@
 
 var charts = charts || {};
 
-charts.multiline = function module() {
+charts.normalBarChart = function module() {
     var margin = {top: 0, right: 0, bottom: 20, left: 35},
         width = 500,
         height = 500,
@@ -46,7 +46,6 @@ charts.multiline = function module() {
         pathContainer = null,
         axesContainer = null,
         duration = 650;
-
     var stack = d3.layout.stack();
     var dispatch = d3.dispatch('customHover');
 
@@ -60,7 +59,7 @@ charts.multiline = function module() {
             margin: {top: 0, right: 0, bottom: 20, left: 0}
         },
         plotOptions: {
-            interpolate: 'basis',
+            fillOpacity: 1,
             series: {
                 animation: false,
                 pointInterval: 24 * 3600 * 1000, // one day
@@ -69,7 +68,7 @@ charts.multiline = function module() {
             }
         },
         yAxis: {
-            ticks: 6
+            ticks: 2
         },
         xAxis: {
             type: 'datetime',
@@ -108,22 +107,24 @@ charts.multiline = function module() {
                     'height': height - margin.top - margin.bottom
                 };
                 var color = d3.scale.category10();
-                color.domain(d3.keys(data).filter(function(key) { return key !== "date"; }));
-                // Put Dates
+                var datasets = [];
                 data.forEach(function(item){
-                    item.data = item.data.map(function(value, index){
+                    var values = item.data.map(function(value, index){
                         return {
-                            date: new Date(options.plotOptions.series.pointStart + (options.plotOptions.series.pointInterval * index)), //options.plotOptions.pointStart + (options.plotOptions.pointInterval * index),
-                            value: value
+                            time: new Date(options.plotOptions.series.pointStart + (options.plotOptions.series.pointInterval * index)),
+                            count: value,
+                            name: item.name,
+                            fill: item.fill,
+                            y: value
                         };
                     });
-                    item.setVisible = function (toggle) {
-                        alert('invisible !');
-                    };
+                    datasets.push(values);
                 });
 
+                stack(datasets);
+
                 var dateStart = options.plotOptions.series.pointStart;
-                var dateEnd = options.plotOptions.series.pointStart + options.plotOptions.series.pointInterval * data[0].data.length;
+                var dateEnd = options.plotOptions.series.pointStart + options.plotOptions.series.pointInterval * datasets[0].length; //datasets[0][datasets[0].length - 1].time;
                 var daySpan = Math.round((dateEnd - dateStart) / (1000 * 60 * 60 * 24));
                 var ticks, subs;
 
@@ -137,6 +138,7 @@ charts.multiline = function module() {
                     ticks = 4;
                     subs = 6;
                 }
+
                 ///////////////////////////////////////////////////////////////
                 // X Scale                                                   //
                 ///////////////////////////////////////////////////////////////
@@ -148,6 +150,13 @@ charts.multiline = function module() {
                 // Y Scale                                                   //
                 ///////////////////////////////////////////////////////////////
                 var yScale = d3.scale.linear()
+                    .domain([0,
+                        d3.max(datasets, function(d) {
+                            return d3.max(d, function(d) {
+                                return d.y0 + d.y;
+                            });
+                        })
+                    ])
                     .range([size.height, 0]);
 
                 var xAxis = d3.svg.axis()
@@ -168,110 +177,11 @@ charts.multiline = function module() {
                     .ticks(options.yAxis.ticks)
                     //.tickSize(size.width)
                     .tickPadding(5)
+                    .tickValues([(yScale.domain()[1] / 2), (yScale.domain()[1] * 0.9)])
                     .orient("left")
                     .tickFormat(options.xAxis.labels.formatter);
 
-                ///////////////////////////////////////////////////////////////
-                // Stacked area                                              //
-                ///////////////////////////////////////////////////////////////
-                var stack = d3.layout.stack()
-                    .offset("zero")
-                    .values(function(d) {
-                        return d.data;
-                    })
-                    .x(function(d) {
-                        return d.date;
-                    })
-                    .y(function(d) {
-                        return d.value;
-                    });
-
-                var layers = stack(data);
-
-                ///////////////////////////////////////////////////////////////
-                // Domain Scales                                             //
-                ///////////////////////////////////////////////////////////////
-                switch(options.chart.type) {
-                    case 'area':
-                        yScale.domain([0,
-                            d3.max(data, function(d) {
-                                return d3.max(d.data, function(d) {
-                                    return d.y0 + d.y;
-                                });
-                            })
-                        ]);
-                    break;
-                    case 'line':
-                        yScale.domain([
-                            d3.min(data, function(d) {
-                                return d3.min(d.data, function(item) {
-                                    return item.value;
-                                });
-                            }),
-                            d3.max(data, function(d) {
-                                return d3.max(d.data, function(item) {
-                                    return item.value;
-                                });
-                            })
-                        ]);
-                    break;
-                    case 'bivariate':
-                        yScale.domain([
-                            d3.min(data, function(d) {
-                                return d3.min(d.data, function(item) {
-                                    return item.value[0];
-                                });
-                            }),
-                            d3.max(data, function(d) {
-                                return d3.max(d.data, function(item) {
-                                    return item.value[1];
-                                });
-                            })
-                        ]);
-                    break;
-                }
-
-                ///////////////////////////////////////////////////////////////
-                // Area                                                      //
-                ///////////////////////////////////////////////////////////////
-                var area = d3.svg.area()
-                    .interpolate(options.plotOptions.interpolate)
-                    .x(function(d) {
-                        return xScale(d.date);
-                    })
-                    .y0(function(d) {
-                        return yScale(d.y0);
-                    })
-                    .y1(function(d) {
-                        return yScale(d.y0 + d.y);
-                    });
-
-                ///////////////////////////////////////////////////////////////
-                // Range (bivariate)                                         //
-                ///////////////////////////////////////////////////////////////
-                var bivariate = d3.svg.area()
-                    .x(function(d) {
-                        return xScale(d.date);
-                    })
-                    .y0(function(d) {
-                        return yScale(d.value[0]);
-                    })
-                    .y1(function(d) {
-                        return yScale(d.value[1]);
-                    });
-
-                ///////////////////////////////////////////////////////////////
-                // Line                                                      //
-                ///////////////////////////////////////////////////////////////
-                var line = d3.svg.line()
-                    .interpolate(options.plotOptions.interpolate)
-                    .x(function(d) {
-                        return xScale(d.date);
-                    })
-                    .y(function(d) {
-                        return yScale(d.value);
-                    });
-
+                console.log(".tickValues(): ", yScale.domain());
                 ///////////////////////////////////////////////////////////////
                 // Create SVG element                                        //
                 ///////////////////////////////////////////////////////////////
@@ -291,7 +201,7 @@ charts.multiline = function module() {
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                     // Clean all
-                    pathContainer.selectAll(".metric").remove();
+                    pathContainer.selectAll(".bars").remove();
                 }
 
                 function drawAxes (axesContainer) {
@@ -317,61 +227,45 @@ charts.multiline = function module() {
                         .remove();
                 }
 
-                // Path group
-                var metric = pathContainer.selectAll(".line")
-                    .data(function() {
-                        switch(options.chart.type) {
-                            case 'line':
-                                return data;
-                            case 'area':
-                                return layers;
-                            case 'bivariate':
-                                return data;
-                            default:
-                                return data;
-                        }
-                    })
+                var barWidth = d3.scale.ordinal()
+                    .domain(datasets[0].map(function(d) {
+                        return d.time;
+                    }))
+                    .rangeRoundBands(xScale.range(), 0.45)
+                    .rangeBand();
+
+                // Add a group for each row of data
+                var bars = pathContainer.selectAll(".bars")
+                    .data(datasets)
                     .enter()
                     .append("g")
-                    .attr("class", "metric");
+                    .attr("transform", "translate(0," + size.height + ")")
+                    .attr("class", "bars");
 
-                ///////////////////////////////////////////////////////////////
-                // Draw Paths                                                //
-                ///////////////////////////////////////////////////////////////
-                var paths = metric.append("path")
-                    .attr("class", "line")
-                    .attr("d", function(d) {
-                        switch(options.chart.type) {
-                            case 'line':
-                                return line(d.data);
-                            case 'area':
-                                return area(d.data);
-                            case 'bivariate':
-                                return bivariate(d.data);
-                            default:
-                                return data;
-                        }
+                // Add a rect for each data value
+                var rects = bars.selectAll("rect")
+                    .data(function(d) {
+                        return d;
+                    })
+                    .enter()
+                    .append("rect")
+                    .attr("x", function(d) {
+                        return xScale(new Date(d.time));
+                    })
+                    .attr("y", function(d) {
+                        return -(-yScale(d.y0) - yScale(d.y) + (size.height) * 2);
+                    })
+                    .attr("width", barWidth)
+                    .attr("height", function(d) {
+                        return -yScale(d.y) + (size.height);
                     })
                     .style("stroke", function(d) {
-                        switch(options.chart.type) {
-                             case 'line':
-                                return d.stroke || color(d.name);
-                            case 'area':
-                                return d.stroke || color(d.name);
-                            case 'bivariate':
-                                return d.stroke || color(d.name);
-                            default:
-                                return '#f00';
-                        }
+                        return d.fill || color(d.name);
                     })
-                    .style("fill", function(d) {
-                        return options.chart.type == 'line' ? 'none' : d.stroke || color(d.name);
+                    .style("fill", function(d){
+                        return d.fill || color(d.name);
                     })
-                    .style("fill-opacity", 0)
-                    .transition()
-                    .duration(duration)
-                    .ease(ease)
-                    .style("fill-opacity", 0.5);
+                    .style("fill-opacity", options.plotOptions.fillOpacity);
             }
 
             ///////////////////////////////////////////////////////////////
@@ -384,6 +278,7 @@ charts.multiline = function module() {
     // Option accessors                                          //
     ///////////////////////////////////////////////////////////////
     exports.options = function(opt) {
+        console.log("options: ", options);
         options = angular.extend(options, opt);
         return this;
     };

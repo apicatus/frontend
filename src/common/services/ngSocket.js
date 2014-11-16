@@ -65,7 +65,7 @@ angular.module('ngSocket', [])
 
             return function socketFactory (options) {
                 options = options || {};
-                var socket = options.ioSocket || io.connect({ 'query': 'token=1234', 'secure': true });
+                var socket = options.ioSocket || io.connect('http://api.apicat.us', { 'query': 'token=1234', 'secure': true });
                 var prefix = options.prefix || defaultPrefix;
                 var defaultScope = options.scope || $rootScope;
 

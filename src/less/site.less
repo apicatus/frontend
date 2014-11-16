@@ -311,9 +311,26 @@ table {
         > thead > tr > th {
             border-bottom: 1px solid @brand-primary; /*@table-border-color;*/
         }
+        &.table-striped {
+            > tbody:nth-child(odd) {
+                > tr:first-child {
+                    td {
+                        background-color: #fff !important;
+                    }
+                }
+            }
+            > tbody.opened {
+                > tr:first-child {
+                    td {
+                        background-color: #29343e !important;
+                        color: #fff;
+                    }
+                }
+            }
+        }
     }
     .valign-middle {
-        td { 
+        td {
             vertical-align: middle;
         }
     }
@@ -372,7 +389,7 @@ table {
     }
 }
 
-.progress-flat{
+.progress-flat {
     .progress-bar-primary {
         .progress-bar-variant(@brand-primary);
     }
@@ -385,3 +402,117 @@ table {
                 box-shadow: none;
     }
 }
+
+/* <div class="panel-loader"><span class="spinner-small"></span></div> */
+.panel {
+    &.panel-loading {
+        .panel-body {
+            position: relative;
+            z-index: 0;
+            .panel-loader {
+                position: absolute;
+                z-index: 1020;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                background: #fff;
+                border-radius: 0 0 4px 4px;
+                opacity: 0.9;
+                -webkit-animation: fadeIn .2s;
+                        animation: fadeIn .2s;
+            }
+        }
+    }
+    @-webkit-keyframes rotation {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(359deg);
+        }
+    }
+
+    @-moz-keyframes rotation {
+        from {
+            -moz-transform: rotate(0deg);
+        }
+
+        to {
+            -moz-transform: rotate(359deg);
+        }
+    }
+
+    @-o-keyframes rotation {
+        from {
+            -o-transform: rotate(0deg);
+        }
+
+        to {
+            -o-transform: rotate(359deg);
+        }
+    }
+
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(359deg);
+        }
+    }
+
+    .spinner, .spinner-small {
+        height: 40px;
+        width: 40px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -20px -20px 0 0;
+        border: 2px solid #fff;
+        border-top: 2px solid @brand-primary;
+        border-radius: 100%;
+    }
+
+    .fade.in .spinner,.fade.in .spinner-small {
+        -webkit-animation: rotation .6s infinite linear;
+           -moz-animation: rotation .6s infinite linear;
+             -o-animation: rotation .6s infinite linear;
+                animation: rotation .6s infinite linear;
+    }
+
+    .spinner-small {
+        border: 2px solid rgba(0,0,0,.05);
+        border-top: 2px solid #24B498;
+        height: 30px;
+        width: 30px;
+        margin: -15px -15px 0 0;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @-webkit-keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+
+
+
+
