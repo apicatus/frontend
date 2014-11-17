@@ -338,26 +338,6 @@ angular.module( 'apicatus.application', [
             return eval(method.demo);
         });
     };
-    // The modes
-    /*
-    $scope.editor = {
-        modes: ['Scheme', 'XML', 'Javascript'],
-        options: {
-            mode: 'json',
-            theme: 'monokai',
-            onLoad: function (_ace) {
-                console.log("ace loaded: ", _ace);
-                window.ace = _ace;
-                _ace.getSession().setMode('ace/mode/javascript');
-                _ace.getSession().setUseWorker(false);
-                // HACK to have the ace instance in the scope...
-                $scope.modeChanged = function () {
-                    _ace.getSession().setMode('ace/mode/' + $scope.mode.toLowerCase());
-                };
-            }
-        }
-    };
-    */
 })
 .controller( 'DemoCtrl', function DemoController($scope, parseURL, Restangular) {
 
@@ -508,7 +488,7 @@ angular.module( 'apicatus.application', [
         },
         plotOptions: {
             interpolate: 'linear',
-            fillOpacity: 1,
+            fillOpacity: 0.5,
             series: {
                 animation: false,
                 pointInterval: interval, // one day
@@ -525,7 +505,7 @@ angular.module( 'apicatus.application', [
             type: 'stackedBar'
         },
         plotOptions: {
-            fillOpacity: 1,
+            fillOpacity: 0.5,
             series: {
                 animation: false,
                 pointInterval: interval, // one day
@@ -693,7 +673,7 @@ angular.module( 'apicatus.application', [
         },
         plotOptions: {
             interpolate: 'linear',
-            fillOpacity: 1,
+            fillOpacity: 0.5,
             series: {
                 animation: false,
                 pointInterval: interval, // one day
@@ -711,7 +691,7 @@ angular.module( 'apicatus.application', [
         },
         plotOptions: {
             interpolate: 'linear',
-            fillOpacity: 1,
+            fillOpacity: 0.5,
             series: {
                 animation: false,
                 pointInterval: interval, // one day
@@ -785,6 +765,7 @@ angular.module( 'apicatus.application', [
     var map = this;
     var since = new Date().setMinutes(new Date().getMinutes() - 60);
     var until = new Date().getTime();
+
     map.worldMap = [{
         latLng: [40.71, -74],
         name: "New York"
@@ -801,31 +782,22 @@ angular.module( 'apicatus.application', [
     map.load = function(method) {
         Restangular.one('geo/method', method._id).get({since: since, until: until}).then(function(records) {
             map.data = records.summary.buckets;
-            console.log("COUNTRY LIST: ", map.data);
         }, function(error) {
             console.log("error getting analitics: ", error);
         });
     };
     map.init = function(method) {
-        console.log("CALL INIT TransferStatisticsCtrl: ", method._id);
         map.method = method;
         map.load(map.method);
     };
 }])
-.directive( 'loading', ['$timeout', '$q', 'ngRequestNotify', function($timeout, $q, ngRequestNotify) {
+.directive( 'loading', ['$rootScope', '$timeout', '$q', 'ngRequestNotify', function($rootScope, $timeout, $q, ngRequestNotify) {
     return {
         restrict: 'A',
         link: function(scope, element, attributes) {
-            //element.find('.panel-body').prepend('<div class="panel-loader"><span class="spinner-small"></span></div>');
-
-            /*
-            $timeout(function() {
-                element.addClass('panel-loading');
-                element.find('.panel-body').addClass('fade in').prepend('<div class="panel-loader"><span class="spinner-small"></span></div>');
-                //element.find('.panel-body').removeClass('fade in');
-            }, 5000);
-            */
-
+            $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+                console.log("change started !!");
+            });
             // subscribe to request started notification
             ngRequestNotify.onRequestStarted(function() {
                 // got the request start notification, show the element
@@ -835,7 +807,6 @@ angular.module( 'apicatus.application', [
                     .addClass('fade in')
                     .prepend('<div class="panel-loader"><span class="spinner-small"></span></div>');
             });
-
             // subscribe to request ended notification
             ngRequestNotify.onRequestEnded(function() {
                 // got the request end notification, hide the element
@@ -846,7 +817,6 @@ angular.module( 'apicatus.application', [
                     .find('.panel-loader')
                     .remove();
             });
-
         }
     };
 }]);

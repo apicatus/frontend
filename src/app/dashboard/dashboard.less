@@ -22,11 +22,12 @@ multiline-chart {
     width: 100%;
     height: 320px;
     background-color: transparent;
+    cursor: crosshair;
 
     .axis {
         path, line {
             fill: none;
-            stroke: #000;
+            stroke: #eee;
             shape-rendering: crispEdges;
         }
         .tick {
@@ -70,7 +71,7 @@ normal-bar-chart {
     .axis {
         path, line {
             fill: none;
-            stroke: #000;
+            stroke: #eee;
             shape-rendering: crispEdges;
         }
         .tick {
@@ -92,6 +93,9 @@ normal-bar-chart {
         &.x {
             path {
                 display: none;
+            }
+            line {
+                stroke: #eee;
             }
         }
     }

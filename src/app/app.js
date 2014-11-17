@@ -57,9 +57,6 @@ angular.module( 'apicatus', [
             case 401:
                 $state.transitionTo("main.login");
                 break;
-            case 403:
-                $state.transitionTo("main.login");
-                break;
             case 404:
                 //$state.transitionTo("main.error.404", {data: "response.data"});
                 break;

@@ -64,37 +64,42 @@
                     <tab-heading>
                         <i class="icon-network"></i> APIS
                     </tab-heading>
-                    <table class="table table-striped table-condensed table-hover">
+                    <table class="table primary-table table-striped table-condensed table-hover">
                         <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Created</th>
-                            <th>Enabled</th>
-                            <th>Public</th>
-                            <th>Logging</th>
-                            <th class="text-right">Actions</th>
-                          </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Created</th>
+                                <th>Enabled</th>
+                                <th>Public</th>
+                                <th>Logging</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
                         </thead>
                         <tbody>
-                          <tr ng-repeat="api in settings.apis">
-                            <td>{{api.name}}</td>
-                            <td>{{api.created | timeago}}</td>
-                            <td><span class="label" ng-class="api.enabled ? 'label-success' : 'label-danger'">{{api.enabled}}</span></td>
-                            <td><span class="label" ng-class="api.public ? 'label-success' : 'label-danger'">{{api.public}}</span></td>
-                            <td><span class="label" ng-class="api.logging ? 'label-success' : 'label-danger'">{{api.logging}}</span></td>
-                            <td>
-                                <div class="btn-group pull-right" dropdown>
-                                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
-                                        Action <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="#">Modify</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                          </tr>
+                            <tr ng-repeat="api in settings.apis">
+                                <td>{{api.name}}</td>
+                                <td>{{api.created | timeago}}</td>
+                                <td><span class="label" ng-class="api.enabled ? 'label-success' : 'label-danger'">{{api.enabled}}</span>
+                                </td>
+                                <td><span class="label" ng-class="api.public ? 'label-success' : 'label-danger'">{{api.public}}</span>
+                                </td>
+                                <td><span class="label" ng-class="api.logging ? 'label-success' : 'label-danger'">{{api.logging}}</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group pull-right" dropdown>
+                                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                                            Action <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#">Modify</a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">Delete</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </tab>
@@ -102,7 +107,18 @@
                     <tab-heading>
                         <i class="fa fa-sitemap"></i> Notifications
                     </tab-heading>
-                    Data sources settings
+                    <table class="table primary-table table-striped table-condensed table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>From</th>
+                                <th>Subject</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </tab>
             </tabset>
         </div>

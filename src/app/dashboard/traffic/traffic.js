@@ -104,6 +104,8 @@ angular.module( 'apicatus.dashboard.traffic', [
         };
     });
 
+
+
     traffic.timeStatsByDate = {
         avg: transferStatistics.aggregations.history.buckets.map(function(history){
             return history.time_statistics.avg || 0;
@@ -151,8 +153,6 @@ angular.module( 'apicatus.dashboard.traffic', [
         });
     });
 
-    console.log("traffic: ", traffic.codeStats);
-
     traffic.errorHistogram = {
         series: [
             {
@@ -169,6 +169,16 @@ angular.module( 'apicatus.dashboard.traffic', [
                 data: traffic.codeStatsByDate['500']
             }
         ]
+    };
+
+    traffic.transactionsHistogram = {
+        series: [{
+            name: 'transactions',
+            stroke: '#a00040',
+            data: transferStatistics.aggregations.history.buckets.map(function(history){
+                return history.doc_count || 0;
+            })
+        }]
     };
 
     traffic.dataHistogram = {

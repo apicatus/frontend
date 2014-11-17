@@ -20,6 +20,13 @@ angular.module( 'apicatus.dashboard.behavior', [
                 } else {
                     return Restangular.one('transfer').get(queryFactory().get());
                 }
+            }],
+            unique: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
+                if($stateParams.id) {
+                    return Restangular.one('unique/digestor', $stateParams.id).get(queryFactory().get());
+                } else {
+                    return Restangular.one('unique').get(queryFactory().get());
+                }
             }]
         },
         data: { pageTitle: 'Behavior' },
@@ -28,15 +35,54 @@ angular.module( 'apicatus.dashboard.behavior', [
         }
     });
 })
-.controller( 'DashboardBehaviorCtrl', function DashboardBehaviorController( $scope, $filter, $stateParams, Restangular, apis, transferStatistics) {
+.controller( 'DashboardBehaviorCtrl', function DashboardBehaviorController( $scope, queryFactory, Restangular, apis, transferStatistics, unique) {
     var behavior = this;
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Chart config                                                          //
+    ///////////////////////////////////////////////////////////////////////////
+    behavior.timeChartOptions = {
+        chart: {
+            type: 'area'
+        },
+        plotOptions: {
+            series: {
+                animation: false,
+                pointInterval: queryFactory().get().interval, // one day
+                pointStart: queryFactory().get().since
+            }
+        },
+        yAxis: {
+            ticks: 2
+        },
+        xAxis: {
+            tickInterval: queryFactory().get().interval
+        }
+    };
+
     behavior.hasData = transferStatistics.aggregations.statuses.buckets.length;
+    behavior.unique = unique.aggregations.unique;
+    behavior.calls = unique.aggregations.count;
     behavior.realCodeStats = transferStatistics.aggregations.statuses.buckets.map(function(code){
         return {
             name: code.key,
             value: code.doc_count
         };
     });
+
+    behavior.uniqueHistogram = {
+        series: [
+            {
+                name: 'unique',
+                stroke: '#a00040',
+                data: unique.aggregations.history.buckets.map(function(history){
+                    return history.ip_count.value || 0;
+                })
+            }
+        ]
+    };
+
+    console.log("uniqueHistogram: ", behavior.uniqueHistogram);
 
     // Aggregate traffic status codes
     behavior.codeStatsChilds = transferStatistics.aggregations.statuses.buckets.reduce(function(previousValue, currentValue, index, array){

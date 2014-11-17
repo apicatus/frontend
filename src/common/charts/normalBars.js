@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
-// @file         : multilina.js                                              //
-// @summary      : Generic Multilina Chart                                   //
+// @file         : normalBars.js                                             //
+// @summary      : Stacked Bar charts                                        //
 // @version      : 0.1                                                       //
 // @project      : apicat.us                                                 //
-// @description  : D3 Multilina for apicatus UI                              //
+// @description  : D3 Stacked Bar charts for apicatus UI                     //
 // @author       : Benjamin Maggi                                            //
 // @email        : benjaminmaggi@gmail.com                                   //
 // @date         : 15 Nov 2014                                               //
@@ -56,10 +56,11 @@ charts.normalBarChart = function module() {
     var options = {
         chart: {
             type: 'area',
-            margin: {top: 0, right: 0, bottom: 20, left: 0}
+            margin: {top: 0, right: 0, bottom: 20, left: 35}
         },
         plotOptions: {
-            fillOpacity: 1,
+            interpolate: 'basis',
+            fillOpacity: 0.5,
             series: {
                 animation: false,
                 pointInterval: 24 * 3600 * 1000, // one day
@@ -68,28 +69,27 @@ charts.normalBarChart = function module() {
             }
         },
         yAxis: {
-            ticks: 2
+            ticks: 2,
+            labels: {
+                formatter: function(tick) {
+                    var sign = (tick < 0) ? '-' : '';
+                    tick = Math.abs(tick);
+                    if(tick < 1000) {
+                        return tick || 0;
+                    }
+                    var si = ['K', 'M', 'G', 'T', 'P', 'H'];
+                    var exp = Math.floor(Math.log(tick) / Math.log(1000));
+                    var result = tick / Math.pow(1000, exp);
+                    result = (result % 1 > (1 / Math.pow(1000, exp - 1))) ? result.toFixed(2) : result.toFixed(0);
+                    return isNaN(result) ? 0 : sign + result + si[exp - 1];
+                }
+            }
         },
         xAxis: {
             type: 'datetime',
             tickInterval: 24 * 3600 * 1000,
-            dateTimeLabelFormats: {
-                day: '%a',
-                week: '%d'
-            },
             labels: {
-                formatter: function(number) {
-                    console.log("formatter: ", number);
-                    var sign = (number < 0) ? '-' : '';
-                    number = Math.abs(number);
-                    if(number < 1000) {
-                        return number || 0;
-                    }
-                    var si = ['K', 'M', 'G', 'T', 'P', 'H'];
-                    var exp = Math.floor(Math.log(number) / Math.log(1000));
-                    var result = number / Math.pow(1000, exp);
-                    result = (result % 1 > (1 / Math.pow(1000, exp - 1))) ? result.toFixed(2) : result.toFixed(0);
-                    return isNaN(result) ? 0 : sign + result + si[exp - 1];
+                formatter: function (tick) {
                 }
             }
         }
@@ -103,8 +103,8 @@ charts.normalBarChart = function module() {
 
             function draw(data) {
                 var size = {
-                    'width': width - margin.left - margin.right,
-                    'height': height - margin.top - margin.bottom
+                    'width': width - options.chart.margin.left - options.chart.margin.right,
+                    'height': height - options.chart.margin.top - options.chart.margin.bottom
                 };
                 var color = d3.scale.category10();
                 var datasets = [];
@@ -159,10 +159,11 @@ charts.normalBarChart = function module() {
                     ])
                     .range([size.height, 0]);
 
+                ///////////////////////////////////////////////////////////////
+                // X Axes                                                    //
+                ///////////////////////////////////////////////////////////////
                 var xAxis = d3.svg.axis()
                     .scale(xScale)
-                    .tickSubdivide(subs)
-                    .ticks(ticks)
                     .orient("bottom")
                     .tickFormat(function(d) {
                         if (daySpan <= 1) {
@@ -172,16 +173,16 @@ charts.normalBarChart = function module() {
                         }
                     });
 
+                ///////////////////////////////////////////////////////////////
+                // Y Axes                                                    //
+                ///////////////////////////////////////////////////////////////
                 var yAxis = d3.svg.axis()
                     .scale(yScale)
                     .ticks(options.yAxis.ticks)
-                    //.tickSize(size.width)
                     .tickPadding(5)
-                    .tickValues([(yScale.domain()[1] / 2), (yScale.domain()[1] * 0.9)])
                     .orient("left")
-                    .tickFormat(options.xAxis.labels.formatter);
+                    .tickFormat(options.yAxis.labels.formatter);
 
-                console.log(".tickValues(): ", yScale.domain());
                 ///////////////////////////////////////////////////////////////
                 // Create SVG element                                        //
                 ///////////////////////////////////////////////////////////////
@@ -194,39 +195,41 @@ charts.normalBarChart = function module() {
                         .attr("height", "100%");
 
                     axesContainer = svg.append('g')
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                        .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
                     drawAxes(axesContainer);
 
                     pathContainer = svg.append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                        .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
 
                     // Clean all
                     pathContainer.selectAll(".bars").remove();
                 }
 
+                ///////////////////////////////////////////////////////////////
+                // Draw Axes                                                 //
+                ///////////////////////////////////////////////////////////////
                 function drawAxes (axesContainer) {
-                    function customAxis(g) {
-                        //g.selectAll("text")
-                        //    .attr("x", -(margin.left));
-                    }
                     // Clean all
                     axesContainer.selectAll('.axis').remove();
                     // xAxis
                     axesContainer.append("g")
                         .attr("class", "x axis")
-                        .attr("transform", "translate(" + margin.left + "," + size.height + ")")
+                        .attr("transform", "translate(0," + size.height + ")")
                         .call(xAxis);
                     // yAxis
                     axesContainer.append("g")
                         .attr("class", "y axis")
-                        .call(yAxis)
-                        .call(customAxis);
+                        .call(yAxis);
 
                     axesContainer.selectAll(".tick")
                         .filter(function (d) { return d === 0;  })
                         .remove();
                 }
 
+
+                ///////////////////////////////////////////////////////////////
+                // Calculate Bar Width                                       //
+                ///////////////////////////////////////////////////////////////
                 var barWidth = d3.scale.ordinal()
                     .domain(datasets[0].map(function(d) {
                         return d.time;
@@ -278,8 +281,8 @@ charts.normalBarChart = function module() {
     // Option accessors                                          //
     ///////////////////////////////////////////////////////////////
     exports.options = function(opt) {
-        console.log("options: ", options);
-        options = angular.extend(options, opt);
+        // Need deep copy !
+        options = $.extend(true, {}, options, opt);
         return this;
     };
     exports.width = function(w) {

@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
-// @file         : multilina.js                                              //
-// @summary      : Generic Multilina Chart                                   //
+// @file         : multiline.js                                              //
+// @summary      : D3 Multiline Chart                                        //
 // @version      : 0.1                                                       //
 // @project      : apicat.us                                                 //
-// @description  : D3 Multilina for apicatus UI                              //
+// @description  : D3 Multiline for apicatus UI                              //
 // @author       : Benjamin Maggi                                            //
 // @email        : benjaminmaggi@gmail.com                                   //
 // @date         : 15 Nov 2014                                               //
@@ -37,8 +37,7 @@
 var charts = charts || {};
 
 charts.multiline = function module() {
-    var margin = {top: 0, right: 0, bottom: 20, left: 35},
-        width = 500,
+    var width = 500,
         height = 500,
         gap = 0,
         ease = 'cubic-in-out';
@@ -57,10 +56,11 @@ charts.multiline = function module() {
     var options = {
         chart: {
             type: 'area',
-            margin: {top: 0, right: 0, bottom: 20, left: 0}
+            margin: {top: 0, right: 0, bottom: 20, left: 35}
         },
         plotOptions: {
-            interpolate: 'basis',
+            interpolate: 'linear',
+            fillOpacity: 0.5,
             series: {
                 animation: false,
                 pointInterval: 24 * 3600 * 1000, // one day
@@ -69,30 +69,35 @@ charts.multiline = function module() {
             }
         },
         yAxis: {
-            ticks: 6
-        },
-        xAxis: {
-            type: 'datetime',
-            tickInterval: 24 * 3600 * 1000,
-            dateTimeLabelFormats: {
-                day: '%a',
-                week: '%d'
-            },
+            ticks: 6,
             labels: {
-                formatter: function(number) {
-                    console.log("formatter: ", number);
-                    var sign = (number < 0) ? '-' : '';
-                    number = Math.abs(number);
-                    if(number < 1000) {
-                        return number || 0;
+                formatter: function(tick) {
+                    var sign = (tick < 0) ? '-' : '';
+                    tick = Math.abs(tick);
+                    if(tick < 1000) {
+                        return tick || 0;
                     }
                     var si = ['K', 'M', 'G', 'T', 'P', 'H'];
-                    var exp = Math.floor(Math.log(number) / Math.log(1000));
-                    var result = number / Math.pow(1000, exp);
+                    var exp = Math.floor(Math.log(tick) / Math.log(1000));
+                    var result = tick / Math.pow(1000, exp);
                     result = (result % 1 > (1 / Math.pow(1000, exp - 1))) ? result.toFixed(2) : result.toFixed(0);
                     return isNaN(result) ? 0 : sign + result + si[exp - 1];
                 }
             }
+        },
+        xAxis: {
+            type: 'datetime',
+            tickInterval: 24 * 3600 * 1000,
+            labels: {
+                formatter: function (tick) {
+                }
+            }
+        },
+        xGrid: {
+            enabled: false
+        },
+        yGrid: {
+            enabled: true
         }
     };
     function exports(_selection) {
@@ -104,8 +109,8 @@ charts.multiline = function module() {
 
             function draw(data) {
                 var size = {
-                    'width': width - margin.left - margin.right,
-                    'height': height - margin.top - margin.bottom
+                    'width': width - options.chart.margin.left - options.chart.margin.right,
+                    'height': height - options.chart.margin.top - options.chart.margin.bottom
                 };
                 var color = d3.scale.category10();
                 color.domain(d3.keys(data).filter(function(key) { return key !== "date"; }));
@@ -137,6 +142,10 @@ charts.multiline = function module() {
                     ticks = 4;
                     subs = 6;
                 }
+
+                var bisect = d3.bisector(function(d) {
+                    return d.date;
+                }).right;
                 ///////////////////////////////////////////////////////////////
                 // X Scale                                                   //
                 ///////////////////////////////////////////////////////////////
@@ -152,8 +161,6 @@ charts.multiline = function module() {
 
                 var xAxis = d3.svg.axis()
                     .scale(xScale)
-                    .tickSubdivide(subs)
-                    .ticks(ticks)
                     .orient("bottom")
                     .tickFormat(function(d) {
                         if (daySpan <= 1) {
@@ -166,10 +173,9 @@ charts.multiline = function module() {
                 var yAxis = d3.svg.axis()
                     .scale(yScale)
                     .ticks(options.yAxis.ticks)
-                    //.tickSize(size.width)
                     .tickPadding(5)
                     .orient("left")
-                    .tickFormat(options.xAxis.labels.formatter);
+                    .tickFormat(options.yAxis.labels.formatter);
 
                 ///////////////////////////////////////////////////////////////
                 // Stacked area                                              //
@@ -284,14 +290,18 @@ charts.multiline = function module() {
                         .attr("height", "100%");
 
                     axesContainer = svg.append('g')
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                        .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
+                    drawGrid(svg, xScale, yScale);
                     drawAxes(axesContainer);
 
+
                     pathContainer = svg.append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                        .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
 
                     // Clean all
                     pathContainer.selectAll(".metric").remove();
+
+                    drawNeedle(svg);
                 }
 
                 function drawAxes (axesContainer) {
@@ -304,7 +314,7 @@ charts.multiline = function module() {
                     // xAxis
                     axesContainer.append("g")
                         .attr("class", "x axis")
-                        .attr("transform", "translate(" + margin.left + "," + size.height + ")")
+                        .attr("transform", "translate(0," + size.height + ")")
                         .call(xAxis);
                     // yAxis
                     axesContainer.append("g")
@@ -315,6 +325,85 @@ charts.multiline = function module() {
                     axesContainer.selectAll(".tick")
                         .filter(function (d) { return d === 0;  })
                         .remove();
+                }
+                function drawGrid (gridContainer, xScale, yScale) {
+                    var xGrid, yGrid;
+                    ////////////////////////////////////////////////////////////
+                    // Axix                                                   //
+                    ////////////////////////////////////////////////////////////
+                    if(options.xGrid.enabled) {
+                        xGrid = d3.svg.axis()
+                            .scale(xScale)
+                            .ticks(options.yAxis.ticks)
+                            .tickSize(size.height, 0, 0)
+                            .tickFormat('');
+                        gridContainer.append("g")
+                            .attr("class", "x axis grid")
+                            .call(xGrid);
+                    }
+                    if(options.yGrid.enabled) {
+                        yGrid = d3.svg.axis()
+                            .scale(yScale)
+                            .ticks(options.yAxis.ticks)
+                            .tickSize(-(size.width), 0, 0)
+                            .orient('right');
+                        svg.append("g")
+                            .attr("class", "y axis grid")
+                            .attr("transform", "translate(" + (size.width + options.chart.margin.left) + ", 0)")
+                            .call(yGrid);
+                    }
+                }
+
+                function drawNeedle (needleContainer) {
+                    ////////////////////////////////////////////////////////////
+                    // Dial needle on top of everything                       //
+                    ////////////////////////////////////////////////////////////
+
+
+                    var hoverLineGroup = needleContainer.append("g")
+                        .attr("class", "needle")
+                        .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")")
+                        .style({
+                            'opacity': 0
+                        });
+
+                    var surface = needleContainer.append('rect')
+                        .attr("x", 0)
+                        .attr("y", 0)
+                        .attr("width", size.width)
+                        .attr("height", size.height)
+                        .style({
+                            'fill': '#fff',
+                            'fill-opacity': 0.1
+                        })
+                        .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
+
+                    var hoverLine = hoverLineGroup
+                            .append("line")
+                            .attr("x1", 0)
+                            .attr("x2", 0)
+                            .attr("y1", 0)
+                            .attr("y2", size.height)
+                            .style("stroke", "#000"); //49c5b1
+                    var hoverDate = hoverLineGroup.append('text')
+                        .attr("class", "hover-text")
+                        .attr('y', height - 10);
+
+                    surface.on("mousemove", needleMove);
+
+                    function needleMove(event) {
+                        var mouse_x = d3.mouse(this)[0];
+                        var mouse_y = d3.mouse(this)[1];
+                        var graph_y = yScale.invert(mouse_y);
+                        var graph_x = xScale.invert(mouse_x);
+                        var format = d3.time.format('%a %d %H:%Mhs');
+
+                        var item = data[0].data[bisect(data[0].data, new Date(graph_x))];
+                        if(item) {
+                            hoverLineGroup.transition().duration(100).style("opacity", 1);
+                            hoverLine.attr("x1", xScale(item.date)).attr("x2", xScale(item.date));
+                        }
+                    }
                 }
 
                 // Path group
@@ -371,7 +460,7 @@ charts.multiline = function module() {
                     .transition()
                     .duration(duration)
                     .ease(ease)
-                    .style("fill-opacity", 0.5);
+                    .style("fill-opacity", options.plotOptions.fillOpacity);
             }
 
             ///////////////////////////////////////////////////////////////
@@ -384,7 +473,8 @@ charts.multiline = function module() {
     // Option accessors                                          //
     ///////////////////////////////////////////////////////////////
     exports.options = function(opt) {
-        options = angular.extend(options, opt);
+        // Need deep copy !
+        options = $.extend(true, {}, options, opt);
         return this;
     };
     exports.width = function(w) {

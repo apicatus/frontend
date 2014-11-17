@@ -89,6 +89,16 @@
                 </tab>
                 <tab>
                     <tab-heading>
+                        <i class="fa fa-area-chart"></i> Transactions
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <multiline-chart data="traffic.transactionsHistogram.series" options="traffic.timeChartOptions"></multiline-chart>
+                        </div>
+                    </div>
+                </tab>
+                <tab>
+                    <tab-heading>
                         <i class="fa fa-area-chart"></i> Crashes
                     </tab-heading>
                     <div class="row">
@@ -134,7 +144,7 @@
                 </tab>
                 <tab>
                     <tab-heading>
-                        <i class="fa fa-gears"></i> By Target URL
+                        <i class="fa fa-gears"></i> Target URLs
                     </tab-heading>
                     <table class="table primary-table table-fixed table-striped table-hover table-responsive">
                         <thead>

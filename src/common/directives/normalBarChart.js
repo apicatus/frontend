@@ -60,7 +60,6 @@ angular.module('normalBarChart', ['D3Service'])
             });
             scope.$on('$destroy', function() {
                 //angular.element($window).unbind('resize', delayedResize);
-                console.log("DESTROY MULTILINE");
             });
         }
     };

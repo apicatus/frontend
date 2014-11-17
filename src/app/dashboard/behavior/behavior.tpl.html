@@ -2,11 +2,11 @@
     <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats bg-green">
-                <div class="stats-icon"><i class="fa fa-area-chart"></i>
+                <div class="stats-icon"><i class="icon-user"></i>
                 </div>
                 <div class="stats-info">
-                    <h4>AVG. API RESPONSE TIME</h4>
-                    <p>{{behavior.timeStats.avg | number:0 }}ms</p>
+                    <h4>UNIQUE USERS</h4>
+                    <p>{{behavior.unique.value | number:0 }}</p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
@@ -15,11 +15,11 @@
         </div>
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats bg-blue">
-                <div class="stats-icon"><i class="fa fa-line-chart"></i>
+                <div class="stats-icon"><i class="fa fa-retweet"></i>
                 </div>
                 <div class="stats-info">
-                    <h4>MAX API RESPONSE TIME</h4>
-                    <p>{{behavior.timeStats.max | number:0 }}ms</p>
+                    <h4>TRANSACTIONS</h4>
+                    <p>{{behavior.calls.value | number:0 }}</p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
@@ -54,11 +54,24 @@
         </div>
     </div>
 
-    <div class="splited">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-globe"></i> Unique Users</h3>
+                </div>
+                <div class="panel-body">
+                    <multiline-chart data="behavior.uniqueHistogram.series" options="behavior.timeChartOptions"></multiline-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- div class="splited">
         <div class="max">
             <tree-map data="behavior.codeStats"></tree-map>
         </div>
-    </div>
+    </div -->
     <!-- div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">

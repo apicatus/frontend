@@ -9,7 +9,7 @@ angular.module( 'apicatus.dashboard.technology', [
 ])
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state('main.dashboard.technology', {
-        url: '/technology/:id',
+        url: '/technology/:id/?since&until',
         templateUrl: 'dashboard/technology/technology.tpl.html',
         controller: 'DashboardTechnologyCtrl as technology',
         resolve: {

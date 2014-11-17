@@ -89,9 +89,17 @@ angular.module( 'apicatus.applications', [
 ///////////////////////////////////////////////////////////////////////////////
 .controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $interval, $modal, fileReader, Restangular, apis, summaries ) {
 
+    apis.forEach(function(api){
+        var index = $scope.user.digestors.indexOf(api._id);
+        console.log("api: ", api.name, index);
+        if(index > -1) {
+            api.imOwner = true;
+        }
+    });
     var applications = this.apis = apis;
     $scope.apis = apis;
     $scope.summaries = summaries;
+    //$scope.user.digestors
 
     // Sort params
     $scope.sort = {
