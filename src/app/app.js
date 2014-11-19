@@ -129,10 +129,12 @@ angular.module( 'apicatus', [
             console.log("could not authenticate user");
             $cookies.token = undefined;
         });
+    } else {
+        console.log('no auth token received');
     }
 
     // SocketIO notifications
-    mySocket.emit('angularMessage', {data: "myMessage"});
+    mySocket.emit('angularMessage', {data: 'myMessage'});
     mySocket.on('message', function(result){
         messanger.post({
             message: result.hello,
@@ -142,6 +144,7 @@ angular.module( 'apicatus', [
 
     $scope.$on('userLoggedIn', function(event, user){
         $scope.user = user;
+        $state.transitionTo('main.applications.list');
     });
 
     ///////////////////////////////////////////////////////////////////////////
