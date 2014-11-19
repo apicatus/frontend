@@ -8,6 +8,33 @@ angular.module( 'apicatus.dashboard.geo', [
     'bivariateChart',
     'worldMap'
 ])
+.config(function config( $stateProvider, $urlRouterProvider ) {
+    $stateProvider.state('main.dashboard.geo', {
+        url: '/geo/:id/?since&until',
+        templateUrl: 'dashboard/geo/geo.tpl.html',
+        controller: 'DashboardGeoCtrl as geo',
+        resolve: {
+            geoStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
+                if($stateParams.id) {
+                    return Restangular.one('geo/digestor', $stateParams.id).get();
+                } else {
+                    return Restangular.one('geo').get();
+                }
+            }],
+            languageStatistics: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
+                if($stateParams.id) {
+                    return Restangular.one('lang/digestor', $stateParams.id).get();
+                } else {
+                    return Restangular.one('lang').get();
+                }
+            }]
+        },
+        data: { pageTitle: 'Geo' },
+        onEnter: function() {
+            console.log("enter geo");
+        }
+    });
+})
 .controller( 'DashboardGeoCtrl', function DashboardGeoController( $scope, $filter, $stateParams, Restangular, countryCode, apis, geoStatistics, languageStatistics ) {
 
     var geo = this;
