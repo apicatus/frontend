@@ -47,31 +47,6 @@ angular.module( 'apicatus.dashboard', [
         data: { pageTitle: 'Dashboard' },
         authenticate: true
     })
-    .state('main.dashboard.geo', {
-        url: '/geo/:id',
-        templateUrl: 'dashboard/geo/geo.tpl.html',
-        controller: 'DashboardGeoCtrl as geo',
-        resolve: {
-            geoStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
-                if($stateParams.id) {
-                    return Restangular.one('geo/digestor', $stateParams.id).get();
-                } else {
-                    return Restangular.one('geo').get();
-                }
-            }],
-            languageStatistics: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
-                if($stateParams.id) {
-                    return Restangular.one('lang/digestor', $stateParams.id).get();
-                } else {
-                    return Restangular.one('lang').get();
-                }
-            }]
-        },
-        data: { pageTitle: 'Geo' },
-        onEnter: function() {
-            console.log("enter geo");
-        }
-    })
     .state('main.dashboard.realtime', {
         url: '/realtime/:id',
         templateUrl: 'dashboard/realtime/realtime.tpl.html',

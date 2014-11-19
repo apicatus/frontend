@@ -111,22 +111,22 @@ angular.module( 'apicatus', [
 .controller( 'AppCtrl', function AppCtrl ( $scope, $location, localStorageService, $cookies, Restangular, mySocket, messanger ) {
     var token = localStorageService.get('token');
     if(token) {
-        Restangular.configuration.defaultHeaders.token = token.token;
+        Restangular.configuration.defaultHeaders['token'] = token.token;
         Restangular.one('user').get().then(function(user) {
             $scope.user = user;
         }, function(error) {
-            console.log("could not authenticate user");
+            console.log("could not authenticate user with localStorage token");
             localStorageService.remove('token');
         });
     } else if ($cookies.token) {
         token = unescape($cookies.token);
         console.log("I got a cookie token", token);
-        Restangular.configuration.defaultHeaders.token = token;
+        Restangular.configuration.defaultHeaders['token'] = token;
         Restangular.one('user').get().then(function(user) {
             localStorageService.add('token', token);
             $scope.user = user;
         }, function(error) {
-            console.log("could not authenticate user");
+            console.log("could not authenticate user with cookie token");
             $cookies.token = undefined;
         });
     } else {
