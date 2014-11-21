@@ -15,7 +15,7 @@ module.exports = function ( grunt ) {
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-coffeelint');
   grunt.loadNpmTasks('grunt-contrib-less');
-  //grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-mocha');
   grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-html2js');
@@ -334,6 +334,13 @@ module.exports = function ( grunt ) {
         singleRun: true
       }
     },
+    protractor: {
+      options: {
+        keepAlive: true,
+        configFile: "protractor.conf.js"
+      },
+      run: {}
+    },
 
     /**
     * The Mocha configuration
@@ -535,6 +542,22 @@ module.exports = function ( grunt ) {
    */
   grunt.registerTask( 'compile', [
     'less:compile', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify', 'index:compile'
+  ]);
+
+  grunt.registerTask('protractor:run', function () {
+    var run = {
+      files: ['protractor.conf.js'],
+      tasks: ['protractor protractor:run']
+    };
+    grunt.config.set('protractor', run);
+    return grunt.task.run(['protractor']);
+  });
+
+  grunt.registerTask('test', [
+    'clean', 'html2js', 'jshint', 'less:build',
+    'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
+    'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
+    'karma:continuous', 'karma', 'protractor:run'
   ]);
 
   /**

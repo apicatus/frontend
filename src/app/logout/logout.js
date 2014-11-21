@@ -40,8 +40,9 @@ angular.module( 'apicatus.logout', [])
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'LogoutCtrl', function LogoutController( $scope, $moment, signout ) {
+.controller( 'LogoutCtrl', ['$rootScope', '$scope', '$moment', 'signout', function LogoutController( $rootScope, $scope, $moment, signout ) {
     var logout = this;
     logout.date = $moment().format('MMMM DD, YYYY [at] HH:MM A');
-});
+    $scope.$emit('userLoggedOut', logout.date);
+}]);
 

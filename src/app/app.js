@@ -60,9 +60,13 @@ angular.module( 'apicatus', [
             case 404:
                 //$state.transitionTo("main.error.404", {data: "response.data"});
                 break;
+            case 498:
+                $state.transitionTo("main.login");
+                break;
             case 500:
                 $state.transitionTo("main.error.500", {data: "response.data"});
                 break;
+
         }
         return response;
     });
@@ -108,17 +112,9 @@ angular.module( 'apicatus', [
         };
     }];
 }])
-.controller( 'AppCtrl', function AppCtrl ( $scope, $location, localStorageService, $cookies, Restangular, mySocket, messanger ) {
+.controller( 'AppCtrl', function AppCtrl ( $scope, $state, $location, localStorageService, $cookies, Restangular, mySocket, messanger ) {
     var token = localStorageService.get('token');
-    if(token) {
-        Restangular.configuration.defaultHeaders['token'] = token.token;
-        Restangular.one('user').get().then(function(user) {
-            $scope.user = user;
-        }, function(error) {
-            console.log("could not authenticate user with localStorage token");
-            localStorageService.remove('token');
-        });
-    } else if ($cookies.token) {
+    if ($cookies.token) {
         token = unescape($cookies.token);
         console.log("I got a cookie token", token);
         Restangular.configuration.defaultHeaders['token'] = token;
@@ -128,6 +124,15 @@ angular.module( 'apicatus', [
         }, function(error) {
             console.log("could not authenticate user with cookie token");
             $cookies.token = undefined;
+        });
+    } else if(token) {
+        console.log("localStorage token: ", token);
+        Restangular.configuration.defaultHeaders['token'] = token.token;
+        Restangular.one('user').get().then(function(user) {
+            $scope.user = user;
+        }, function(error) {
+            console.log("could not authenticate user with localStorage token");
+            localStorageService.remove('token');
         });
     } else {
         console.log('no auth token received');
@@ -145,6 +150,9 @@ angular.module( 'apicatus', [
     $scope.$on('userLoggedIn', function(event, user){
         $scope.user = user;
         $state.transitionTo('main.applications.list');
+    });
+    $scope.$on('userLoggedOut', function(event, user){
+        $scope.user = null;
     });
 
     ///////////////////////////////////////////////////////////////////////////
