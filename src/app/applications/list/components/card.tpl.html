@@ -23,7 +23,7 @@
             </div>
             <div class="yearly-changes container" ng-show="api.enabled">
                 <div class="year-all col-xs-6 col-sm-6">
-                    <strong ng-init="cosa=1000000">{{card.summary.current.doc_count - card.summary.previous.doc_count | humanize}}</strong><span>Weekly change</span>
+                    <strong>{{card.summary.current.doc_count - card.summary.previous.doc_count | humanize}}</strong><span>Weekly change</span>
                 </div>
                 <div class="year-chart col-xs-6">
                     <inline-bar-chart data="card.barChart.data" options="{height: '80%', width: '100%', fill: ['#49c5b1']}"></inline-bar-chart>
@@ -45,8 +45,8 @@
                 <div class="panel-heading clearfix">
                     <h4 class="panel-title pull-left" style="padding-top: 7.5px;"><i class="fa fa-sitemap"></i> {{api.name}}</h4>
                     <div class="btn-group pull-right">
-                        <button class="btn btn-sm btn-default"><i class="fa fa-question-circle"></i></button>
-                        <button class="btn btn-sm btn-default" ng-click="flipped=!flipped"><i class="fa fa-share"></i></button>
+                        <button class="btn btn-sm btn-primary"><i class="fa fa-question-circle"></i></button>
+                        <button class="btn btn-sm btn-primary" ng-click="flipped=!flipped"><i class="fa fa-share"></i></button>
                     </div>
                 </div>
                 <div class="panel-body">
@@ -69,6 +69,11 @@
                                 <div class="checkbox">
                                     <label>Enable
                                         <input type="checkbox" id="enable" ng-model="api.enabled">
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>Traffic logging
+                                        <input type="checkbox" id="enable" ng-model="api.logging">
                                     </label>
                                 </div>
                                 <div class="checkbox">

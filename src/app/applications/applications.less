@@ -64,6 +64,8 @@ applications {
                 box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
                 .panel-heading {
                     padding: 5px 10px;
+                    background-color: #1d2122;
+                    color: #FFFFFF;
                 }
             }
         }
@@ -107,7 +109,7 @@ applications {
             .stock-chart {
                 border-top-left-radius: 0.3rem;
                 border-top-right-radius: 0.3rem;
-                background-image: linear-gradient(155deg, #FFD03B 40%, #fb792f);
+                background-image: linear-gradient(155deg, darken(@brand-warning, 10%) 40%, @brand-warning);
                 background-size: cover;
                 background-repeat: no-repeat;
                 background-position-y: 50%;
@@ -118,7 +120,7 @@ applications {
                     background-color: #FD3E07;
                 }
                 &[owner="true"] {
-                    background-image: linear-gradient(155deg, #1edcde 40%, #49c5b1);
+                    background-image: linear-gradient(155deg, darken(@brand-primary, 10%) 40%, @brand-primary);
                 }
             }
             .stock-chart {
