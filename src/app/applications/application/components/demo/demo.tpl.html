@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-12">
+        <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="myDemo"></div>
+    </div>
+    <div class="col-md-12">
+        <pre class="output">{{method.demoResponse}}</pre>
+    </div>
+    <div class="col-md-12">
+        <div class="toolbar well well-sm">
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group">
+                    <button class="btn btn-primary" ng-click="demo.play(myDemo)"><i class="fa fa-play"></i></button>
+                    <button class="btn btn-primary" ng-click="removeMethod($index, $index)"><i class="fa fa-circle"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

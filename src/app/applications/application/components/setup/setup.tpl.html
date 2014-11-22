@@ -1,0 +1,168 @@
+<form name="form" class="form-horizontal" ng-submit="updateMethod(method, $index)">
+
+    <div class="form-group">
+        <label for="route" class="col-lg-2 control-label">Route</label>
+        <div class="col-lg-10">
+            <input type="text" class="form-control" id="route" placeholder="Route" ng-model="method.URI" required ng-required="true" >
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': form.name.$invalid}">
+        <label for="proxy" class="col-lg-2 control-label">Proxy</label>
+        <div class="col-lg-10">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <input type="checkbox" ng-model="method.proxy.enabled">
+                </span>
+                <input type="url" id="proxy" class="form-control" ng-model="method.proxy.URI" placeholder="proxy url (http / https)" ng-disabled="!method.proxy.enabled" ng-required="method.proxy.enabled">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="method" class="col-lg-2 control-label">Method</label>
+        <div class="col-lg-2">
+            <select class="form-control" id="method" ng-model="method.method" ng-options="methods.label as methods.label group by methods.group for methods in httpSettings.methods"></select>
+        </div>
+    </div>
+    <fieldset ng-disabled="method.proxy.enabled" ng-hide="method.proxy.enabled">
+        <div class="form-group">
+            <label for="contentType" class="col-lg-2 control-label">Content type</label>
+            <div class="col-lg-4">
+                    <!-- select class="" ng-init="method.response.contentType = httpSettings.contentTypes[method.produces].id" ng-model="method.produces.contentType" ng-options="contentTypes.id as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes"></select -->
+                    <!-- select ui-select2="" style="width:340px" class="col-lg-2" ng-model="method.response.contentType" ng-options="contentTypes.label as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes"></select -->
+                <select class="form-control" id="contentType" ng-model="method.response.contentType" ng-options="contentTypes.label as contentTypes.label group by contentTypes.group for contentTypes in httpSettings.contentTypes">
+                    <option></option>
+                </select>
+            </div>
+        </div>
+        <!-- CUSTOM HEADERS -->
+        <div class="form-group">
+            <label for="inputPassword1" class="col-lg-2 control-label">headers</label>
+            <div class="col-lg-10">
+                <div class="row" ng-model="header">
+                    <div class="col-xs-4">
+                        <input type="text" class="form-control" placeholder="Key" ng-model="header.name" name="headerName">
+                        <span class="help-block" ng-show="form.headerName.$error.required">Required</span>
+                    </div>
+                    <div class="col-xs-7">
+                        <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
+                    </div>
+                    <div class="col-xs-1">
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-default" ng-click="addHeader(method, header, $scope)"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-repeat="header in method.response.headers">
+                    <div class="col-xs-4">
+                        <input type="text" class="form-control" placeholder="Key" ng-model="header.name">
+                    </div>
+                    <div class="col-xs-7">
+                        <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
+                    </div>
+                    <div class="col-xs-1">
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-danger" ng-click="removeHeader(method, header, $index)"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Headers -->
+        <div class="form-group">
+            <label for="statusCode" class="col-lg-2 control-label">Status Code</label>
+            <div class="col-lg-10">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <select class="form-control" id="statusCode" ng-model="method.response.statusCode" ng-options="status.id as status.label group by status.group for status in httpSettings.statuses"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Response -->
+        <div class="form-group">
+            <label for="inputPassword1" class="col-lg-2 control-label">Response Body</label>
+            <div class="col-lg-10">
+                <tabset>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-cubes"></i> Body data
+                        </tab-heading>
+                        <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="method.response.body"></div>
+                    </tab>
+                    <tab disabled="method.response.contentType != 'application/json'">
+                        <tab-heading>
+                            <i class="fa fa-code"></i> Schema
+                        </tab-heading>
+                        <div ui-ace="{mode: 'json', theme:'monokai'}" ng-model="method.response.validator.schema"></div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="method.response.validator.enabled"> Enable
+                            </label>
+                        </div>
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-shield"></i> Assertions
+                        </tab-heading>
+                        <table class="table table-condensed table-edit-grid">
+                            <tbody data-bind="visible:hasAssertions('fde74dde-3bc9-4ef5-95a1-5a4fe46c021a')">
+                                <tr>
+                                    <th class="source">Source</th>
+                                    <th class="value">Property</th>
+                                    <th class="source">Comparison</th>
+                                    <th class="value">Target Value</th>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td class="source">
+                                        <select class="form-control" name="assertion-source-type">
+                                            <option value="json">JSON Body</option>
+                                            <option value="xml">XML Body</option>
+                                            <option value="headers">Response Headers</option>
+                                            <option value="body">Text Body</option>
+                                            <option value="status">Status Code</option>
+                                            <option value="meta.response_time_ms">Response Time (ms)</option>
+                                            <option value="meta.size_bytes">Response Size (bytes)</option>
+                                        </select>
+                                    </td>
+                                    <td class="value">
+                                        <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+                                        <input type="text" name="assertion-source-path" class="editable ui-autocomplete-input" placeholder="Enter property" autocomplete="off" style="display: none;">
+                                        <span class="noneditable">--</span>
+                                    </td>
+                                    <td class="source">
+                                        <select class="form-control" name="assertion-assert">
+                                            <option value="eq">equals (number)</option>
+                                            <option value="lt">less than</option>
+                                            <option value="lte">less than or equal</option>
+                                            <option value="gt">greater than</option>
+                                            <option value="gte">greater than or equal</option>
+                                        </select>
+                                    </td>
+                                    <td class="value">
+                                        <input type="text" class="form-control" placeholder="Enter target value">
+                                    </td>
+                                    <td class="remove-assertion">
+                                        <i class="icon icon-remove" data-bind="click: deleteAssertion"></i>
+                                    </td>
+                                </tr>
+                                <!--/ko -->
+                            </tbody>
+                        </table>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+            <div class="btn-group">
+                <button type="submit" class="btn btn-default" ng-disabled="form.$pristine && !form.$invalid"><i class="fa fa-save"></i></button>
+                <button class="btn btn-default" ng-click="removeMethod(method, $index)"><i class="fa fa-power-off"></i></button>
+            </div>
+            <button class="btn btn-danger pull-right" ng-click="deleteMethod(endpoint.methods, $index)" tooltip="Remove Method"><i class="fa fa-trash-o"></i> {{ 'REMOVE' | translate }}</button>
+        </div>
+    </div>
+</form>

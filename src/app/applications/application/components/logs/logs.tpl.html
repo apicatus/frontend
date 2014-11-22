@@ -1,0 +1,77 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group">
+                <div class="btn-group">
+                    <button class="btn btn-default">
+                        <i class="fa fa-save"></i>
+                    </button>
+                    <button class="btn btn-default" ng-click="logs.deleteLogs()">
+                        <i class="fa fa-trash-o"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-2 pull-right master-search">
+                <input type="text" name="search" autocomplete="off" id="searchLog" class="form-control" maxlength="200" placeholder="Search" name="searchLog">
+                <span class="icon input-group-btn">
+                    <i class="fa fa-search"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table log-table table-striped table-condensed table-hover table-fixed">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Query</th>
+            <th class="text-center">IP</th>
+            <th class="text-center">Status</th>
+            <th class="text-right">Latency (ms)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody ng-repeat="log in logs.records" ng-class="details ? 'opened': 'closed'">
+        <tr>
+            <td>{{log._source.date | date:'MM/dd/yy hh:mm a'}}</td>
+            <td>
+                <code>{{log._source.uri.search}}</code>
+            </td>
+            <td class="text-center">{{log._source.ip}}</td>
+            <td class="text-center"><span class="label" ng-class="{'label-success': log._source.status < 300, 'label-warning': log._source.status >= 300 && log._source.status < 400, 'label-danger': log._source.status >= 400}">{{log._source.status}}</span></td>
+            <td class="text-right">{{log._source.time}}</td>
+            <td class="text-right">
+                <button class="btn btn-xs btn-default" ng-click="details=!details"><i class="fa fa-angle-down"></i></button>
+            </td>
+        </tr>
+        <tr ng-if="details">
+            <td colspan="6" class="expandable">
+                <table class="table log-table table-striped table-condensed table-hover table-fixed">
+                    <thead>
+                        <tr>
+                            <!-- th ng-repeat="header in logs.keys(log._source)">{{header}}</th -->
+                            <th class="col-sm-2">Field</th>
+                            <th class="col-sm-1">Action</th>
+                            <th class="col-sm-9">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="field in logs.keys(log._source)">
+                            <td>{{field}}</td>
+                            <td>
+                                <button class="btn btn-default btn-xs" ng-click="logs.viewResponse(log._source)"><i class="fa fa-fw fa-file-code-o"></i></button>
+                                <button class="btn btn-default btn-xs" ng-click="logs.viewResponse(log._source)"><i class="fa fa-fw fa-floppy-o"></i></button>
+                            </td>
+                            <td>
+                                <div style="display:block;width:100%;overflow-x: scroll;">
+                                    <code>{{log._source[field]}}</code>
+                                <div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<pagination ng-change="logs.pageChanged(logs.currentPage)" total-items="logs.totalItems" ng-model="logs.currentPage" max-size="logs.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="logs.numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>

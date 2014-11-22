@@ -1,0 +1,42 @@
+<div class="row graph">
+    <div class="col-sm-3 legend">
+        <h2>TOTAL. BYTES OUT</h2>
+        <span class="number">{{statistics.stats.sum | humanize}}b</span>
+    </div>
+    <div class="col-sm-9">
+        <div class="chart-container statiscis">
+            <multiline-chart data="statistics.dataHistogram.series" options="statistics.lineChartOptions"></multiline-chart>
+        </div>
+    </div>
+</div>
+<div class="row graph">
+    <div class="col-sm-3 legend">
+        <h2>AVG. BYTES OUT</h2>
+        <span class="number">{{statistics.stats.avg | number:0 }}b</span>
+    </div>
+    <div class="col-sm-9">
+        <div class="chart-container statiscis">
+            <multiline-chart data="statistics.dataRangeHistogram.series" options="statistics.rangeChartOptions"></multiline-chart>
+        </div>
+    </div>
+</div>
+
+<div class="row graph">
+    <div class="col-sm-3 legend">
+        <h2>MAX. BYTES OUT</h2>
+        <span class="number">{{statistics.stats.max | humanize}}b</span>
+    </div>
+    <div class="col-sm-9">
+        <div class="chart-container statiscis"></div>
+    </div>
+</div>
+
+<div class="row graph">
+    <div class="col-sm-3 legend">
+        <h2>MIN. BYTES OUT</h2>
+        <span class="number">{{statistics.stats.min | humanize}}b</span>
+    </div>
+    <div class="col-sm-9">
+        <div class="chart-container statiscis"></div>
+    </div>
+</div>

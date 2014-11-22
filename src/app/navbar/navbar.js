@@ -20,25 +20,40 @@ angular.module( 'apicatus.navbar', ['dateRange'])
 .controller( 'NavBarCtrl', function NavBarController($scope, $state, Restangular) {
     $scope.sideBarOpened = false;
     $scope.oneAtATime = true;
+    $scope.data = {
+        name: 'pepe'
+    };
     $scope.addItem = function() {
         var newItemNo = $scope.items.length + 1;
         $scope.items.push('Item ' + newItemNo);
     };
-    $scope.logOut = function(user) {
-        $state.transitionTo("main.home");
-        /*
-        Restangular.one('user/signout').get().then(function() {
-            $state.transitionTo("main.home");
-            console.log("user logged out !");
-        });*/
-    };
 })
 .directive("menuToggle", function () {
+    /*
     return function (scope, element) {
         element.bind("click", function () {
             scope.sideBarOpened = !scope.sideBarOpened;
             document.body.classList.toggle('opened');
             $(window).trigger('resize');
         });
+    };
+    */
+    return {
+        restrict: 'A',
+        scope: {
+            menuToggle: '='
+        },
+        link: function(scope, element, attrs) {
+            element.bind("click", function () {
+                scope.sideBarOpened = !scope.sideBarOpened;
+                document.body.classList.toggle('opened');
+                $(window).trigger('resize');
+            });
+            console.log("navbar: ", scope.menuToggle);
+            scope.$watch(scope.menuToggle, function() {
+                console.log("user change: ", scope.menuToggle);
+                document.body.classList.remove('opened');
+            });
+        }
     };
 });

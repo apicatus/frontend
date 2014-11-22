@@ -22,7 +22,7 @@ angular.module( 'apicatus.settings', [])
  */
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state( 'main.settings', {
-        url: '/settings',
+        url: '/settings/?tab',
         views: {
             "main": {
                 controller: 'SettingsCtrl as settings',
@@ -45,10 +45,26 @@ angular.module( 'apicatus.settings', [])
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'SettingsCtrl', ['$modal', 'Restangular', 'user', 'apis', function SettingsController( $modal, Restangular, user, apis ) {
+.controller( 'SettingsCtrl', ['$location', '$modal', 'Restangular', 'user', 'apis', function SettingsController( $location, $modal, Restangular, user, apis ) {
     var settings = this;
     settings.apis = apis;
     settings.user = user;
+
+    this.tabs = {
+        profile: {
+            active: false
+        },
+        apis: {
+            active: false
+        },
+        inbox: {
+            active: false
+        }
+    };
+
+    var tab = $location.search().tab || 'profile';
+    this.tabs[tab].active = true;
+
     this.save = function(user) {
         console.log("user.name: ", user.name);
         user.put();

@@ -1,0 +1,59 @@
+<div class="row graph">
+    <div class="col-sm-3 legend">
+        <h2>APP SERVER AVAILABILITY</h2>
+        <span class="number" title="Updated about 14 seconds ago">{{statistics.percetage(statistics.availability.success) | number:2}}%</span>
+    </div>
+    <div class="col-sm-9">
+        <div class="chart-container statiscis">
+            <normal-bar-chart data="statistics.normalBars.series" options="statistics.statusClassesBarOptions"></multiline-chart>
+        </div>
+    </div>
+</div>
+
+<div class="row graph">
+    <div class="col-sm-3 legend">
+        <h2>AVG. API RESPONSE TIME</h2>
+        <span class="number" title="Updated about 14 seconds ago">{{statistics.stats.avg | number:0}}ms</span>
+    </div>
+    <div class="col-sm-9">
+        <div class="chart-container statiscis">
+            <multiline-chart data="statistics.latencyHistogram.series" options="statistics.lineChartOptions"></multiline-chart>
+        </div>
+    </div>
+</div>
+
+<div class="row graph">
+    <div class="col-sm-3 legend">
+        <h2>95TH PERC. API RESPONSE TIME</h2>
+        <span class="number" title="Updated about 14 seconds ago">{{ statistics.percentiles['95.0'] | number:0 }}ms</span>
+    </div>
+    <div class="col-sm-9">
+        <div class="chart-container statiscis">
+            <multiline-chart data="statistics.latencyRangeHistogram.series" options="statistics.rangeChartOptions"></multiline-chart>
+        </div>
+    </div>
+</div>
+
+<div class="row graph">
+    <div class="col-sm-3 legend">
+        <h2>FAILURE RATE</h2>
+        <span class="number" title="Updated about 14 seconds ago">{{statistics.percetage(statistics.availability.exception) | number:2}}%</span>
+    </div>
+    <div class="col-sm-9">
+        <div class="chart-container statiscis">
+            <normal-bar-chart data="statistics.normalBars.series" options="statistics.statusClassesBarOptions"></multiline-chart>
+        </div>
+    </div>
+</div>
+
+<div class="row graph">
+    <div class="col-sm-3 legend">
+        <h2>EXCEPTION PERCENTAGE</h2>
+        <span class="number" title="Updated about 14 seconds ago">{{statistics.percetage(statistics.availability.serverError) | number:2}}%</span>
+    </div>
+    <div class="col-sm-9">
+        <div class="chart-container statiscis">
+            <tree-map data="statistics.codeStats"></tree-map>
+        </div>
+    </div>
+</div>

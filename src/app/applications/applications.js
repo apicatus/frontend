@@ -91,7 +91,6 @@ angular.module( 'apicatus.applications', [
 
     apis.forEach(function(api){
         var index = $scope.user.digestors.indexOf(api._id);
-        console.log("api: ", api.name, index);
         if(index > -1) {
             api.imOwner = true;
         }
@@ -134,10 +133,10 @@ angular.module( 'apicatus.applications', [
     $scope.newApi = function () {
         // Please note that $modalInstance represents a modal window (instance) dependency.
         // It is not the same as the $modal service used above.
-        var newApiModalCtrl = function ($scope, $modalInstance) {
+        var ModalController = ['$scope', '$modalInstance', function ($scope, $modalInstance) {
             $scope.api = {
-                name: "test123",
-                subdomain: "mySubdomain",
+                name: '',
+                subdomain: '',
                 synopsis: "API Description"
             };
             $scope.submit = function () {
@@ -146,11 +145,11 @@ angular.module( 'apicatus.applications', [
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
-        };
+        }];
 
         var modalInstance = $modal.open({
-            templateUrl: 'new_api_modal.html',
-            controller: newApiModalCtrl,
+            templateUrl: 'applications/list/components/modals/new.tpl.html',
+            controller: ModalController,
             windowClass: ''
         });
 
@@ -172,7 +171,7 @@ angular.module( 'apicatus.applications', [
         // Please note that $modalInstance represents a modal window (instance) dependency.
         // It is not the same as the $modal service used above.
         var that = this;
-        var modalCtl = function ($scope, $modalInstance, apiModel) {
+        var ModalController = ['$scope', '$modalInstance', 'apiModel', function ($scope, $modalInstance, apiModel) {
             $scope.apiModel = {};
             $scope.submit = function () {
                 $modalInstance.close($scope.apiModel);
@@ -192,15 +191,15 @@ angular.module( 'apicatus.applications', [
                 });
             };
 
-        };
+        }];
         var modalInstance = $modal.open({
-            templateUrl: 'import_modal.html',
-            controller: modalCtl,
+            templateUrl: 'applications/list/components/modals/import.tpl.html',
+            controller: ModalController,
             windowClass: '',
             resolve: {
-                apiModel: function () {
+                apiModel: [function () {
                     return $scope.apiModel;
-                }
+                }]
             }
         });
         modalInstance.result.then(

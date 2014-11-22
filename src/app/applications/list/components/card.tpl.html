@@ -54,8 +54,11 @@
                         <div class="col-md-12">
                             <form name="apiForm" id="apiForm" role="form" ng-model="api" ng-submit="applications.update(api)">
                                 <div class="form-group">
-                                    <label for="subdomain">API subdomain</label>
-                                    <input type="text" class="form-control" id="subdomain" name="subdomain" placeholder="subdomain" ng-model="api.subdomain" ng-keydown="resetWithCancel($event)">
+                                    <label for="subdomain">{{ 'APPLICATIONS.NEWAPI.DOMAIN' | translate }}</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="subdomain" name="subdomain" placeholder="{{ 'APPLICATIONS.NEWAPI.SUBDOMAIN' | translate }}" ng-model="api.subdomain" ng-keydown="resetWithCancel($event)", required>
+                                        <div class="input-group-addon">.apicat.us</div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="proxy">Global Proxy</label>
@@ -67,12 +70,12 @@
                                     </div>
                                 </div>
                                 <div class="checkbox">
-                                    <label>Enable
+                                    <label>{{ 'ENABLE' | translate }}
                                         <input type="checkbox" id="enable" ng-model="api.enabled">
                                     </label>
                                 </div>
                                 <div class="checkbox">
-                                    <label>Traffic logging
+                                    <label>{{ 'APPLICATIONS.CARD.LOGGING' | translate }}
                                         <input type="checkbox" id="enable" ng-model="api.logging">
                                     </label>
                                 </div>
@@ -84,7 +87,7 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-default">Submit</button>
+                                            <button type="submit" class="btn btn-default">{{ 'SUBMIT' | translate }}</button>
                                         </div>
                                     </div>
                                     <div class="col-xs-6">
