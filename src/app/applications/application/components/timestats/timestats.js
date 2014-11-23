@@ -2,9 +2,20 @@ angular.module( 'apicatus.application.timestats', [])
 .controller( 'StatisticsCtrl', ['$timeout', '$scope', '$moment', 'Restangular', function StatisticsController($timeout, $scope, $moment, Restangular) {
 
     var statistics = this;
-    var since = new Date().setMinutes(new Date().getMinutes() - 60);
-    var until = new Date().getTime();
-    var interval = 60 * 1000;
+    statistics.period = $scope.accordion.selectedPeriod;
+    statistics.since = new Date().getTime() - statistics.period.value;
+    statistics.until = new Date().getTime();
+    statistics.interval = 60 * 1000;
+    ////////////////////////////////////////////////////////////////////////////
+    // Handle Date Range                                                      //
+    ////////////////////////////////////////////////////////////////////////////
+    $scope.$on('changePeriod', function(event, period) {
+        statistics.period = period;
+        statistics.since = new Date().getTime() - period.value;
+        statistics.until = new Date().getTime();
+
+        statistics.load(statistics.method);
+    });
 
     // Calculate percentages
     statistics.percetage = function(value) {
@@ -15,6 +26,9 @@ angular.module( 'apicatus.application.timestats', [])
         }
     };
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Chart Options                                                          //
+    ////////////////////////////////////////////////////////////////////////////
     statistics.lineChartOptions = {
         chart: {
             type: 'line'
@@ -24,8 +38,8 @@ angular.module( 'apicatus.application.timestats', [])
             fillOpacity: 1,
             series: {
                 animation: false,
-                pointInterval: interval, // one day
-                pointStart: since
+                pointInterval: statistics.interval, // one day
+                pointStart: statistics.since
                 //units: 'ms'
             }
         },
@@ -42,8 +56,8 @@ angular.module( 'apicatus.application.timestats', [])
             fillOpacity: 0.5,
             series: {
                 animation: false,
-                pointInterval: interval, // one day
-                pointStart: since
+                pointInterval: statistics.interval, // one day
+                pointStart: statistics.since
                 //units: 'ms'
             }
         },
@@ -59,17 +73,21 @@ angular.module( 'apicatus.application.timestats', [])
             fillOpacity: 0.5,
             series: {
                 animation: false,
-                pointInterval: interval, // one day
-                pointStart: since
+                pointInterval: statistics.interval, // one day
+                pointStart: statistics.since
             }
         },
         yAxis: {
             ticks: 2
         }
     };
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Load Data                                                              //
+    ////////////////////////////////////////////////////////////////////////////
     statistics.load = function(method) {
 
-        Restangular.one('transfer/method', method._id).get({since: since, until: until}).then(function(records){
+        Restangular.one('transfer/method', method._id).get({since: statistics.since, until: statistics.until}).then(function(records){
             statistics.percentiles = records.aggregations.t_percentiles.values;
             statistics.stats = records.aggregations.t_statistics;
             statistics.timestatistics = records.aggregations.history.buckets;

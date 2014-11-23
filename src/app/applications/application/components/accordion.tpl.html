@@ -1,5 +1,5 @@
 <accordion close-others="false">
-    <accordion-group loading ng-class="{true: method.method}[true]" id="{{method._id}}" ng-repeat="method in endpoint.methods | limitTo:8" is-open="status.open">
+    <accordion-group ng-class="{true: method.method}[true]" id="{{method._id}}" ng-repeat="method in endpoint.methods | limitTo:8" is-open="status.open">
         <accordion-heading class="clearfix" style="padding-top: 7.5px;">
             <a href="">
                 <span class="method" ng-class="{true: method.method}[true]">{{method.method}}</span>
@@ -7,7 +7,7 @@
                 <span class="pull-right trigger-collapse"><i class="fa fa-angle-down" ng-class="{'open': status.open}"></i></span>
             </a>
         </accordion-heading>
-        <div class="row">
+        <div class="row" ng-controller="AccordionCtrl as accordion">
             <div class="col-md-12">
                 <tabset ng-model="mytabs">
                     <tab>
@@ -28,6 +28,12 @@
                         </tab-heading>
                         <div ng-include="'applications/application/components/logs/logs.tpl.html'"></div>
                     </tab>
+                    <!-- tab>
+                        <tab-heading ui-sref="main.applications.application.logs({method: method._id})">
+                            <i class="fa fa-list-alt"></i> Logs
+                        </tab-heading>
+                        <div ui-view></div>
+                    </tab -->
                     <tab ng-controller="StatisticsCtrl as statistics" ng-click="statistics.init(method)" select="range.show=true" deselect="range.show=false">
                         <tab-heading>
                             <i class="fa fa-bar-chart-o"></i> Performance
@@ -50,10 +56,17 @@
                     </tab>
                     <li class="pull-right">
                         <div class="btn-toolbar" role="toolbar">
-                            <div class="btn-group" ng-show="range.show">
-                                <label class="btn btn-sm btn-default" ng-model="range.interval" btn-radio="10080" uncheckable>week</label>
-                                <label class="btn btn-sm btn-default" ng-model="range.interval" btn-radio="1440" uncheckable>day</label>
-                                <label class="btn btn-sm btn-default" ng-model="range.interval" btn-radio="60" uncheckable>hour</label>
+                            <div class="btn-group" dropdown>
+                                <button type="button" class="btn btn-sm btn-default dropdown-toggle"><i class="fa fa-clock-o"></i> {{accordion.selectedPeriod.name}} <span class="fa fa-angle-down"></span></button>
+                                <ul class="dropdown-menu pull-right" role="menu">
+                                    <li ng-repeat="period in accordion.periods">
+                                        <a href="" ng-click="accordion.selectPeriod(period)">
+                                            <i class="fa fa-fw" ng-class="accordion.selectedPeriod.name == period.name ? 'fa-check-circle' : 'fa-circle-thin'"></i>{{period.name}}
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li><a href="" ng-click="selectApi()"><i class="fa fa-fw fa-edit"></i> Custom</a></li>
+                                </ul>
                             </div>
                             <div class="btn-group">
                                 <button class="btn btn-sm btn-default" tooltip="Refresh"><i class="fa fa-refresh"></i></button>

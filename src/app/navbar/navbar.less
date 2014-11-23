@@ -48,6 +48,18 @@ nav {
             text-decoration: none;
             vertical-align: middle;
         }
+        .product-name {
+            position: relative;
+            span.beta {
+                font-size: 12px;
+                text-transform: uppercase;
+                position: absolute;
+                right: 0px;
+                bottom: -2px;
+                font-weight: lighter;
+                color: lighten(@navbar-text-color, 25%);
+            }
+        }
         .current {
             vertical-align: middle;
         }
@@ -347,7 +359,7 @@ nav {
             outline: none;
             font-size: 1.5em;
             background-color: transparent !important;
-            color: #627c94;
+            color: @navbar-text-color;
             -webkit-transition: all 0.5s ease-in-out;
                -moz-transition: all 0.5s ease-in-out;
                  -o-transition: all 0.5s ease-in-out;

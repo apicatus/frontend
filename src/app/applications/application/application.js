@@ -7,6 +7,7 @@ angular.module( 'apicatus.application', [
     'apicatus.application.timestats',
     'apicatus.application.datastats',
     'vectorMap',
+    'queryFactory',
     'normalBarChart'
 ])
 .config(['$httpProvider', function ( $httpProvider ) {
@@ -155,7 +156,7 @@ angular.module( 'apicatus.application', [
 }])
 .config(['$stateProvider', function ( $stateProvider ) {
     $stateProvider.state('main.applications.application', {
-        url: '/:id/?tab',
+        url: '/:id',
         templateUrl: 'applications/application/application.tpl.html',
         controller: 'ApplicationCtrl',
         resolve: {
@@ -169,28 +170,12 @@ angular.module( 'apicatus.application', [
         }
     });
 }])
-.controller( 'ApplicationCtrl', function ApplicationController( $scope, $timeout, $stateParams, $modal, $filter, Restangular, parseURL, httpSettings, api) {
+.controller( 'ApplicationCtrl', function ApplicationController( $scope, $timeout, $stateParams, $modal, $filter, Restangular, queryFactory, parseURL, httpSettings, api) {
 
     //$controller('apicatus.application.demo', {$scope: $scope});
 
     $scope.httpSettings = httpSettings.settings();
     $scope.api = api;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Query template                                                        //
-    ///////////////////////////////////////////////////////////////////////////
-    $scope.range = {
-        since: new Date().setMinutes(new Date().getMinutes() - 60),
-        until: new Date().getTime(),
-        interval: 60 * 1000,
-        show: false
-    };
-    $scope.customQueryParams = function () {
-        return {
-            since: new Date().setMinutes(new Date().getMinutes() - 60),
-            until: new Date().getTime()
-        };
-    };
 
     $scope.save = function(api) {
         $scope.api.put();
@@ -356,7 +341,30 @@ angular.module( 'apicatus.application', [
         console.log(api);
     };
 })
-.controller( 'MapCtrl', ['$timeout', 'Restangular', function TransferStatisticsController($timeout, Restangular) {
+.controller( 'AccordionCtrl', ['$scope', 'queryFactory', function AccordionController( $scope, queryFactory ) {
+
+    var accordion = this;
+    ///////////////////////////////////////////////////////////////////////////
+    // Query template                                                        //
+    ///////////////////////////////////////////////////////////////////////////
+    // Load preset periods
+    accordion.periods = queryFactory().periods();
+    // Default period
+    accordion.selectedPeriod = queryFactory().period();
+
+    // Change Periods
+    accordion.selectPeriod = function(period) {
+        console.log("change period: ", period);
+        queryFactory().set({
+            since: new Date().getTime() - period.value,
+            until: new Date().getTime()
+        });
+        accordion.selectedPeriod = period;
+        $scope.$broadcast('changePeriod', period);
+    };
+
+}])
+.controller( 'MapCtrl', ['$timeout', 'Restangular', function MapController($timeout, Restangular) {
 
     var map = this;
     var since = new Date().setMinutes(new Date().getMinutes() - 60);

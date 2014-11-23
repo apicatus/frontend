@@ -5,7 +5,7 @@
                 <div class="profile-details">
 
                     <div class="profile-box">
-                        <img class="avatar img-circle" ng-src="{{user.avatar || 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'}}"/>
+                        <img class="avatar img-circle" ng-gravatar="user.email" />
                         <h3 class="profile-user">{{user.username}}</h3>
                     </div>
 
@@ -14,7 +14,6 @@
                 <ul class="social nav nav-pills">
                     <li><a href="#"><i class="fa fa-github"></i></a></li>
                     <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fa fa-gears"></i></a></li>
                 </ul>
             </div>
         </div>
@@ -56,7 +55,7 @@
                             </form>
                         </div>
                         <div class="col-md-8">
-                            <img class="img-thumbnail pull-right" ng-src="{{user.avatar || 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'}}"/>
+                            <img class="img-thumbnail pull-right" ng-gravatar="user.email" />
                         </div>
                     </div>
                 </tab>

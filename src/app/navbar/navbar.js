@@ -12,7 +12,9 @@
  * The dependencies block here is also where component dependencies should be
  * specified, as shown below.
  */
-angular.module( 'apicatus.navbar', ['dateRange'])
+angular.module( 'apicatus.navbar', [
+    'ngGravatar'
+])
 
 /**
  * And of course we define a controller for our route.
@@ -29,15 +31,6 @@ angular.module( 'apicatus.navbar', ['dateRange'])
     };
 })
 .directive("menuToggle", function () {
-    /*
-    return function (scope, element) {
-        element.bind("click", function () {
-            scope.sideBarOpened = !scope.sideBarOpened;
-            document.body.classList.toggle('opened');
-            $(window).trigger('resize');
-        });
-    };
-    */
     return {
         restrict: 'A',
         scope: {
@@ -49,9 +42,7 @@ angular.module( 'apicatus.navbar', ['dateRange'])
                 document.body.classList.toggle('opened');
                 $(window).trigger('resize');
             });
-            console.log("navbar: ", scope.menuToggle);
             scope.$watch(scope.menuToggle, function() {
-                console.log("user change: ", scope.menuToggle);
                 document.body.classList.remove('opened');
             });
         }
