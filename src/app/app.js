@@ -141,10 +141,10 @@ angular.module( 'apicatus', [
     // SocketIO notifications
     mySocket.emit('angularMessage', {data: 'myMessage'});
     mySocket.on('message', function(result){
-        messanger.post({
+        /*messanger.post({
             message: result.hello,
             showCloseButton: true
-        });
+        });*/
     });
 
     $scope.$on('userLoggedIn', function(event, user){

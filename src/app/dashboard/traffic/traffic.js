@@ -86,7 +86,7 @@ angular.module( 'apicatus.dashboard.traffic', [
         plotOptions: {
             series: {
                 animation: false,
-                pointInterval: queryFactory().get().interval, // one day
+                pointInterval: transferStatistics.period.interval.value, // one day
                 pointStart: queryFactory().get().since
             }
         },

@@ -6,16 +6,7 @@ angular.module( 'apicatus.application.timestats', [])
     statistics.since = new Date().getTime() - statistics.period.value;
     statistics.until = new Date().getTime();
     statistics.interval = 60 * 1000;
-    ////////////////////////////////////////////////////////////////////////////
-    // Handle Date Range                                                      //
-    ////////////////////////////////////////////////////////////////////////////
-    $scope.$on('changePeriod', function(event, period) {
-        statistics.period = period;
-        statistics.since = new Date().getTime() - period.value;
-        statistics.until = new Date().getTime();
 
-        statistics.load(statistics.method);
-    });
 
     // Calculate percentages
     statistics.percetage = function(value) {
@@ -38,7 +29,7 @@ angular.module( 'apicatus.application.timestats', [])
             fillOpacity: 1,
             series: {
                 animation: false,
-                pointInterval: statistics.interval, // one day
+                pointInterval: statistics.interval,
                 pointStart: statistics.since
                 //units: 'ms'
             }
@@ -56,7 +47,7 @@ angular.module( 'apicatus.application.timestats', [])
             fillOpacity: 0.5,
             series: {
                 animation: false,
-                pointInterval: statistics.interval, // one day
+                pointInterval: statistics.interval,
                 pointStart: statistics.since
                 //units: 'ms'
             }
@@ -73,7 +64,7 @@ angular.module( 'apicatus.application.timestats', [])
             fillOpacity: 0.5,
             series: {
                 animation: false,
-                pointInterval: statistics.interval, // one day
+                pointInterval: statistics.interval,
                 pointStart: statistics.since
             }
         },
@@ -88,9 +79,13 @@ angular.module( 'apicatus.application.timestats', [])
     statistics.load = function(method) {
 
         Restangular.one('transfer/method', method._id).get({since: statistics.since, until: statistics.until}).then(function(records){
+            // Performance Percentiles
             statistics.percentiles = records.aggregations.t_percentiles.values;
+            // Performance Stats
             statistics.stats = records.aggregations.t_statistics;
+            // Performance Histogram
             statistics.timestatistics = records.aggregations.history.buckets;
+            // Performance Availability stats
             statistics.availability = records.aggregations.statuses.buckets.reduce(function(previousValue, currentValue){
 
 
@@ -112,6 +107,7 @@ angular.module( 'apicatus.application.timestats', [])
 
             }, {total: 0, exception: 0, informational: 0, success: 0, redirection: 0, clientError: 0, serverError: 0});
 
+            // Performance Histogram
             statistics.timeStatsByDate = {
                 avg: records.aggregations.history.buckets.map(function(history){
                     return history.time_statistics.avg || 0;
@@ -127,6 +123,8 @@ angular.module( 'apicatus.application.timestats', [])
             statistics.responseClasses = records.aggregations.history.buckets.map(function(history){
                 return history.statuses.buckets;
             });
+
+            // Group Response Classes
             statistics.responseClasses = statistics.responseClasses.reduce(function(previousValue, currentValue, index, array){
 
                 previousValue.forEach(function(previous, index){
@@ -142,6 +140,11 @@ angular.module( 'apicatus.application.timestats', [])
 
             }, [{key: 100}, {key: 200}, {key: 300}, {key: 400}, {key: 500}]);
 
+            // Update charts intervals and starting date
+            [statistics.lineChartOptions, statistics.rangeChartOptions, statistics.statusClassesBarOptions].forEach(function(chartOptions){
+                chartOptions.plotOptions.series.pointInterval = records.period.interval.value;
+                chartOptions.plotOptions.series.pointStart = statistics.since;
+            });
             // Average
             statistics.latencyHistogram = {
                 series: [
@@ -225,7 +228,21 @@ angular.module( 'apicatus.application.timestats', [])
         */
     };
     statistics.init = function(method) {
-        statistics.method = method;
-        statistics.load(statistics.method);
+        if(!statistics.method) {
+            statistics.method = method;
+            statistics.load(statistics.method);
+            ////////////////////////////////////////////////////////////////////////////
+            // Handle Date Range                                                      //
+            ////////////////////////////////////////////////////////////////////////////
+            $scope.$on('changePeriod', function(event, period) {
+                statistics.period = period;
+                statistics.since = new Date().getTime() - period.value;
+                statistics.until = new Date().getTime();
+
+                console.log("new Pariod: ", new Date(statistics.since), new Date(statistics.until));
+
+                statistics.load(statistics.method);
+            });
+        }
     };
 }]);

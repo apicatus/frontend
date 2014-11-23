@@ -48,7 +48,7 @@ angular.module( 'apicatus.dashboard.behavior', [
         plotOptions: {
             series: {
                 animation: false,
-                pointInterval: queryFactory().get().interval, // one day
+                pointInterval: unique.period.interval.value,
                 pointStart: queryFactory().get().since
             }
         },

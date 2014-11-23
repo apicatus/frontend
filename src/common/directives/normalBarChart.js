@@ -21,22 +21,30 @@ angular.module('normalBarChart', ['D3Service'])
                     if (mutation.type === 'attributes') {
                         var isActive = mutation.target.classList.contains('active');
                         if(isActive) {
-                            render(scope.data, element);
+                            render(element);
                         }
                     }
                 });
             });
 
-            var render = function(data, canvas) {
+            var render = function(canvas) {
 
                 var width = canvas[0].offsetWidth;
                 var height = canvas[0].offsetHeight;
                 chartEl.call(chart.height(height));
                 chartEl.call(chart.width(width));
                 chartEl.call(chart.options(scope.options));
-
+                if(scope.data && scope.data.length > 0 ) {
+                    chartEl.datum(scope.data).call(chart);
+                }
+                // Update series data
                 scope.$watchCollection('data', function (newVal, oldVal) {
                     chartEl.datum(newVal).call(chart);
+                }, true);
+
+                // Update Options
+                scope.$watch('options', function (newVal, oldVal) {
+                    chartEl.call(chart.options(newVal));
                 }, true);
             };
 
@@ -52,7 +60,7 @@ angular.module('normalBarChart', ['D3Service'])
                         characterData: true
                     });
                 } else {
-                    render(scope.data, element);
+                    render(element);
                 }
             });
             angular.element($window).bind('resize', function(){

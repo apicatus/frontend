@@ -46,6 +46,7 @@ charts.treemap = function module() {
 
                     pathContainer = svg.append("g");
                 }
+                pathContainer.selectAll('.node').remove();
 
                 var node = pathContainer
                     .datum(data)
@@ -95,13 +96,6 @@ charts.treemap = function module() {
                             return 1;
                         }
                     });
-
-
-
-                //if(box.attr('width') < d3.select(label).select("text").node().clientWidth || box.attr('height') < d3.select(label).select("text").node().clientHeight) {
-                //    d3.select(label).remove();
-                //}
-
 
             }
             draw(_data);

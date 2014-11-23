@@ -128,8 +128,9 @@ charts.multiline = function module() {
                 });
 
                 var dateStart = options.plotOptions.series.pointStart;
-                var dateEnd = options.plotOptions.series.pointStart + options.plotOptions.series.pointInterval * data[0].data.length;
+                var dateEnd = options.plotOptions.series.pointStart + options.plotOptions.series.pointInterval * (data[0].data.length - 1);
                 var daySpan = Math.round((dateEnd - dateStart) / (1000 * 60 * 60 * 24));
+
                 var ticks, subs;
 
                 if (daySpan === 1) {
@@ -143,9 +144,13 @@ charts.multiline = function module() {
                     subs = 6;
                 }
 
+                ///////////////////////////////////////////////////////////////
+                // Bisector                                                  //
+                ///////////////////////////////////////////////////////////////
                 var bisect = d3.bisector(function(d) {
                     return d.date;
-                }).right;
+                }).left;
+
                 ///////////////////////////////////////////////////////////////
                 // X Scale                                                   //
                 ///////////////////////////////////////////////////////////////
@@ -159,6 +164,9 @@ charts.multiline = function module() {
                 var yScale = d3.scale.linear()
                     .range([size.height, 0]);
 
+                ///////////////////////////////////////////////////////////////
+                // X Axis                                                    //
+                ///////////////////////////////////////////////////////////////
                 var xAxis = d3.svg.axis()
                     .scale(xScale)
                     .orient("bottom")
@@ -170,6 +178,9 @@ charts.multiline = function module() {
                         }
                     });
 
+                ///////////////////////////////////////////////////////////////
+                // Y Axis                                                    //
+                ///////////////////////////////////////////////////////////////
                 var yAxis = d3.svg.axis()
                     .scale(yScale)
                     .ticks(options.yAxis.ticks)
@@ -291,19 +302,23 @@ charts.multiline = function module() {
 
                     axesContainer = svg.append('g')
                         .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
-                    drawGrid(svg, xScale, yScale);
-                    drawAxes(axesContainer);
-
-
+                    gridContainer = svg.append('g');
+                    // Make Path Container
                     pathContainer = svg.append("g")
                         .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
 
-                    // Clean all
-                    pathContainer.selectAll(".metric").remove();
-
+                    // Draw Needle
                     drawNeedle(svg);
                 }
 
+                drawGrid(gridContainer, xScale, yScale);
+                drawAxes(axesContainer);
+                // Cean Paths
+                pathContainer.selectAll(".metric").remove();
+
+                ///////////////////////////////////////////////////////////////
+                // Axes                                                      //
+                ///////////////////////////////////////////////////////////////
                 function drawAxes (axesContainer) {
                     function customAxis(g) {
                         //g.selectAll("text")
@@ -326,11 +341,15 @@ charts.multiline = function module() {
                         .filter(function (d) { return d === 0;  })
                         .remove();
                 }
+                ////////////////////////////////////////////////////////////
+                // Grid                                                   //
+                ////////////////////////////////////////////////////////////
                 function drawGrid (gridContainer, xScale, yScale) {
                     var xGrid, yGrid;
-                    ////////////////////////////////////////////////////////////
-                    // Axix                                                   //
-                    ////////////////////////////////////////////////////////////
+
+                    // Clean all
+                    gridContainer.selectAll('.grid').remove();
+
                     if(options.xGrid.enabled) {
                         xGrid = d3.svg.axis()
                             .scale(xScale)
@@ -347,7 +366,7 @@ charts.multiline = function module() {
                             .ticks(options.yAxis.ticks)
                             .tickSize(-(size.width), 0, 0)
                             .orient('right');
-                        svg.append("g")
+                        gridContainer.append("g")
                             .attr("class", "y axis grid")
                             .attr("transform", "translate(" + (size.width + options.chart.margin.left) + ", 0)")
                             .call(yGrid);
@@ -358,7 +377,6 @@ charts.multiline = function module() {
                     ////////////////////////////////////////////////////////////
                     // Dial needle on top of everything                       //
                     ////////////////////////////////////////////////////////////
-
 
                     var hoverLineGroup = needleContainer.append("g")
                         .attr("class", "needle")
@@ -374,7 +392,7 @@ charts.multiline = function module() {
                         .attr("height", size.height)
                         .style({
                             'fill': '#fff',
-                            'fill-opacity': 0.1
+                            'fill-opacity': 0
                         })
                         .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
 
@@ -393,16 +411,16 @@ charts.multiline = function module() {
 
                     function needleMove(event) {
                         var mouse_x = d3.mouse(this)[0];
-                        var mouse_y = d3.mouse(this)[1];
-                        var graph_y = yScale.invert(mouse_y);
                         var graph_x = xScale.invert(mouse_x);
                         var format = d3.time.format('%a %d %H:%Mhs');
 
-                        var item = data[0].data[bisect(data[0].data, new Date(graph_x))];
-                        if(item) {
-                            hoverLineGroup.transition().duration(100).style("opacity", 1);
-                            hoverLine.attr("x1", xScale(item.date)).attr("x2", xScale(item.date));
-                        }
+                        var i = bisect(data[0].data, graph_x, 1);
+                        var d0 = data[0].data[i - 1];
+                        var d1 = data[0].data[i];
+                        var d = graph_x - d0.date > d1.date - graph_x ? d1 : d0;
+
+                        hoverLineGroup.transition().duration(100).style("opacity", 1);
+                        hoverLine.attr("x1", xScale(d.date)).attr("x2", xScale(d.date));
                     }
                 }
 

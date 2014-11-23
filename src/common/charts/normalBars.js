@@ -56,7 +56,7 @@ charts.normalBarChart = function module() {
     var options = {
         chart: {
             type: 'area',
-            margin: {top: 0, right: 0, bottom: 20, left: 35}
+            margin: {top: 0, right: 10, bottom: 20, left: 35}
         },
         plotOptions: {
             interpolate: 'basis',
@@ -107,9 +107,8 @@ charts.normalBarChart = function module() {
                     'height': height - options.chart.margin.top - options.chart.margin.bottom
                 };
                 var color = d3.scale.category10();
-                var datasets = [];
                 data.forEach(function(item){
-                    var values = item.data.map(function(value, index){
+                    item.data = item.data.map(function(value, index){
                         return {
                             time: new Date(options.plotOptions.series.pointStart + (options.plotOptions.series.pointInterval * index)),
                             count: value,
@@ -118,13 +117,15 @@ charts.normalBarChart = function module() {
                             y: value
                         };
                     });
-                    datasets.push(values);
                 });
-
-                stack(datasets);
+                stack
+                .values(function(d) {
+                    return d.data;
+                });
+                stack(data);
 
                 var dateStart = options.plotOptions.series.pointStart;
-                var dateEnd = options.plotOptions.series.pointStart + options.plotOptions.series.pointInterval * datasets[0].length; //datasets[0][datasets[0].length - 1].time;
+                var dateEnd = options.plotOptions.series.pointStart + options.plotOptions.series.pointInterval * (data[0].data.length - 1);
                 var daySpan = Math.round((dateEnd - dateStart) / (1000 * 60 * 60 * 24));
                 var ticks, subs;
 
@@ -151,8 +152,8 @@ charts.normalBarChart = function module() {
                 ///////////////////////////////////////////////////////////////
                 var yScale = d3.scale.linear()
                     .domain([0,
-                        d3.max(datasets, function(d) {
-                            return d3.max(d, function(d) {
+                        d3.max(data, function(d) {
+                            return d3.max(d.data, function(d) {
                                 return d.y0 + d.y;
                             });
                         })
@@ -160,7 +161,7 @@ charts.normalBarChart = function module() {
                     .range([size.height, 0]);
 
                 ///////////////////////////////////////////////////////////////
-                // X Axes                                                    //
+                // X Axis                                                    //
                 ///////////////////////////////////////////////////////////////
                 var xAxis = d3.svg.axis()
                     .scale(xScale)
@@ -174,7 +175,7 @@ charts.normalBarChart = function module() {
                     });
 
                 ///////////////////////////////////////////////////////////////
-                // Y Axes                                                    //
+                // Y Axis                                                    //
                 ///////////////////////////////////////////////////////////////
                 var yAxis = d3.svg.axis()
                     .scale(yScale)
@@ -196,14 +197,15 @@ charts.normalBarChart = function module() {
 
                     axesContainer = svg.append('g')
                         .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
-                    drawAxes(axesContainer);
 
                     pathContainer = svg.append("g")
                         .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
 
-                    // Clean all
-                    pathContainer.selectAll(".bars").remove();
                 }
+
+                drawAxes(axesContainer);
+                // Clean all
+                pathContainer.selectAll(".bars").remove();
 
                 ///////////////////////////////////////////////////////////////
                 // Draw Axes                                                 //
@@ -226,12 +228,11 @@ charts.normalBarChart = function module() {
                         .remove();
                 }
 
-
                 ///////////////////////////////////////////////////////////////
                 // Calculate Bar Width                                       //
                 ///////////////////////////////////////////////////////////////
                 var barWidth = d3.scale.ordinal()
-                    .domain(datasets[0].map(function(d) {
+                    .domain(data[0].data.map(function(d) {
                         return d.time;
                     }))
                     .rangeRoundBands(xScale.range(), 0.45)
@@ -239,7 +240,7 @@ charts.normalBarChart = function module() {
 
                 // Add a group for each row of data
                 var bars = pathContainer.selectAll(".bars")
-                    .data(datasets)
+                    .data(data)
                     .enter()
                     .append("g")
                     .attr("transform", "translate(0," + size.height + ")")
@@ -248,12 +249,12 @@ charts.normalBarChart = function module() {
                 // Add a rect for each data value
                 var rects = bars.selectAll("rect")
                     .data(function(d) {
-                        return d;
+                        return d.data;
                     })
                     .enter()
                     .append("rect")
                     .attr("x", function(d) {
-                        return xScale(new Date(d.time));
+                        return xScale(d.time);
                     })
                     .attr("y", function(d) {
                         return -(-yScale(d.y0) - yScale(d.y) + (size.height) * 2);

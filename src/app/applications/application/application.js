@@ -354,11 +354,6 @@ angular.module( 'apicatus.application', [
 
     // Change Periods
     accordion.selectPeriod = function(period) {
-        console.log("change period: ", period);
-        queryFactory().set({
-            since: new Date().getTime() - period.value,
-            until: new Date().getTime()
-        });
         accordion.selectedPeriod = period;
         $scope.$broadcast('changePeriod', period);
     };

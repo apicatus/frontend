@@ -2,9 +2,10 @@ angular.module( 'apicatus.application.datastats', [])
 .controller( 'TransferStatisticsCtrl', ['$timeout', '$scope', '$moment', 'Restangular', function TransferStatisticsController($timeout, $scope, $moment, Restangular) {
 
     var statistics = this;
-    var since = new Date().setMinutes(new Date().getMinutes() - 60);
-    var until = new Date().getTime();
-    var interval = 60 * 1000;
+    statistics.period = $scope.accordion.selectedPeriod;
+    statistics.since = new Date().getTime() - statistics.period.value;
+    statistics.until = new Date().getTime();
+    statistics.interval = 60 * 1000;
 
     statistics.lineChartOptions = {
         chart: {
@@ -15,8 +16,8 @@ angular.module( 'apicatus.application.datastats', [])
             fillOpacity: 0.5,
             series: {
                 animation: false,
-                pointInterval: interval, // one day
-                pointStart: since
+                pointInterval: statistics.interval,
+                pointStart: statistics.since
                 //units: 'ms'
             }
         },
@@ -33,8 +34,8 @@ angular.module( 'apicatus.application.datastats', [])
             fillOpacity: 0.5,
             series: {
                 animation: false,
-                pointInterval: interval, // one day
-                pointStart: since
+                pointInterval: statistics.interval,
+                pointStart: statistics.since
                 //units: 'ms'
             }
         },
@@ -43,7 +44,7 @@ angular.module( 'apicatus.application.datastats', [])
         }
     };
     statistics.load = function(method) {
-        Restangular.one('transfer/method', method._id).get({since: since, until: until}).then(function(records){
+        Restangular.one('transfer/method', method._id).get({since: statistics.since, until: statistics.until}).then(function(records){
             statistics.percentiles = records.aggregations.z_percentiles.values;
             statistics.stats = records.aggregations.z_statistics;
             statistics.transferstatistics = records.aggregations.history.buckets;
@@ -59,6 +60,13 @@ angular.module( 'apicatus.application.datastats', [])
                     return history.transfer_statistics.min || 0;
                 })
             };
+
+            // Update charts intervals and starting date
+            [statistics.lineChartOptions, statistics.rangeChartOptions].forEach(function(chartOptions){
+                chartOptions.plotOptions.series.pointInterval = records.period.interval.value;
+                chartOptions.plotOptions.series.pointStart = statistics.since;
+            });
+
             // Average
             statistics.dataHistogram = {
                 series: [
@@ -95,7 +103,21 @@ angular.module( 'apicatus.application.datastats', [])
         });
     };
     statistics.init = function(method) {
-        statistics.method = method;
-        statistics.load(statistics.method);
+        if(!statistics.method) {
+            statistics.method = method;
+            statistics.load(statistics.method);
+            ////////////////////////////////////////////////////////////////////////////
+            // Handle Date Range                                                      //
+            ////////////////////////////////////////////////////////////////////////////
+            $scope.$on('changePeriod', function(event, period) {
+                statistics.period = period;
+                statistics.since = new Date().getTime() - period.value;
+                statistics.until = new Date().getTime();
+
+                console.log("new Pariod: ", new Date(statistics.since), new Date(statistics.until));
+
+                statistics.load(statistics.method);
+            });
+        }
     };
 }]);
