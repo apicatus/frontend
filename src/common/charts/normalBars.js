@@ -37,15 +37,16 @@
 var charts = charts || {};
 
 charts.normalBarChart = function module() {
-    var margin = {top: 0, right: 0, bottom: 20, left: 35},
-        width = 500,
+    var width = 500,
         height = 500,
         gap = 0,
         ease = 'cubic-in-out';
     var svg,
         pathContainer = null,
         axesContainer = null,
+        gridContainer = null,
         duration = 650;
+
     var stack = d3.layout.stack();
     var dispatch = d3.dispatch('customHover');
 
@@ -56,7 +57,7 @@ charts.normalBarChart = function module() {
     var options = {
         chart: {
             type: 'area',
-            margin: {top: 0, right: 10, bottom: 20, left: 35}
+            margin: {top: 20, right: 20, bottom: 30, left: 35}
         },
         plotOptions: {
             interpolate: 'basis',
@@ -92,6 +93,12 @@ charts.normalBarChart = function module() {
                 formatter: function (tick) {
                 }
             }
+        },
+        xGrid: {
+            enabled: false
+        },
+        yGrid: {
+            enabled: true
         }
     };
     function exports(_selection) {
@@ -100,6 +107,10 @@ charts.normalBarChart = function module() {
                 return;
             }
             var graph = this;
+
+            // Clean all
+            d3.select(graph).select('svg').remove();
+            svg = null;
 
             function draw(data) {
                 var size = {
@@ -127,6 +138,7 @@ charts.normalBarChart = function module() {
                 var dateStart = options.plotOptions.series.pointStart;
                 var dateEnd = options.plotOptions.series.pointStart + options.plotOptions.series.pointInterval * (data[0].data.length - 1);
                 var daySpan = Math.round((dateEnd - dateStart) / (1000 * 60 * 60 * 24));
+
                 var ticks, subs;
 
                 if (daySpan === 1) {
@@ -139,6 +151,13 @@ charts.normalBarChart = function module() {
                     ticks = 4;
                     subs = 6;
                 }
+
+                ///////////////////////////////////////////////////////////////
+                // Bisector                                                  //
+                ///////////////////////////////////////////////////////////////
+                var bisect = d3.bisector(function(d) {
+                    return d.date;
+                }).left;
 
                 ///////////////////////////////////////////////////////////////
                 // X Scale                                                   //
@@ -165,7 +184,7 @@ charts.normalBarChart = function module() {
                 ///////////////////////////////////////////////////////////////
                 var xAxis = d3.svg.axis()
                     .scale(xScale)
-                    .orient("bottom")
+                    .orient('bottom')
                     .tickFormat(function(d) {
                         if (daySpan <= 1) {
                             return d3.time.format('%H:%M')(d).replace(/\s/, '').replace(/^0/, '');
@@ -181,7 +200,7 @@ charts.normalBarChart = function module() {
                     .scale(yScale)
                     .ticks(options.yAxis.ticks)
                     .tickPadding(5)
-                    .orient("left")
+                    .orient('left')
                     .tickFormat(options.yAxis.labels.formatter);
 
                 ///////////////////////////////////////////////////////////////
@@ -189,23 +208,25 @@ charts.normalBarChart = function module() {
                 ///////////////////////////////////////////////////////////////
                 if(!svg) {
                     svg = d3.select(graph)
-                        .append("svg")
-                        .attr("preserveAspectRatio", "xMidYMid")
-                        .attr("viewBox", "0 0 " + width + " " + height)
-                        .attr("width", "100%")
-                        .attr("height", "100%");
+                        .append('svg')
+                        .attr('preserveAspectRatio', 'xMidYMid')
+                        .attr('viewBox', '0 0 ' + width + ' ' + height)
+                        .attr('width', '100%')
+                        .attr('height', '100%');
 
                     axesContainer = svg.append('g')
-                        .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
+                        .attr('transform', 'translate(' + options.chart.margin.left + ',' + options.chart.margin.top + ')');
+                    gridContainer = svg.append('g');
 
-                    pathContainer = svg.append("g")
-                        .attr("transform", "translate(" + options.chart.margin.left + "," + options.chart.margin.top + ")");
+                    pathContainer = svg.append('g')
+                        .attr('transform', 'translate(' + options.chart.margin.left + ',' + options.chart.margin.top + ')');
 
                 }
 
+                drawGrid(gridContainer, xScale, yScale);
                 drawAxes(axesContainer);
                 // Clean all
-                pathContainer.selectAll(".bars").remove();
+                pathContainer.selectAll('.bars').remove();
 
                 ///////////////////////////////////////////////////////////////
                 // Draw Axes                                                 //
@@ -214,18 +235,52 @@ charts.normalBarChart = function module() {
                     // Clean all
                     axesContainer.selectAll('.axis').remove();
                     // xAxis
-                    axesContainer.append("g")
-                        .attr("class", "x axis")
-                        .attr("transform", "translate(0," + size.height + ")")
+                    axesContainer.append('g')
+                        .attr('class', 'x axis')
+                        .attr('transform', 'translate(0,' + size.height + ')')
                         .call(xAxis);
                     // yAxis
-                    axesContainer.append("g")
-                        .attr("class", "y axis")
+                    axesContainer.append('g')
+                        .attr('class', 'y axis')
                         .call(yAxis);
 
-                    axesContainer.selectAll(".tick")
+                    axesContainer.selectAll('.tick')
                         .filter(function (d) { return d === 0;  })
                         .remove();
+                }
+
+                ////////////////////////////////////////////////////////////
+                // Grid                                                   //
+                ////////////////////////////////////////////////////////////
+                function drawGrid (gridContainer, xScale, yScale) {
+                    var xGrid, yGrid;
+
+                    // Clean all
+                    gridContainer.selectAll('.grid').remove();
+
+                    if(options.xGrid.enabled) {
+                        xGrid = d3.svg.axis()
+                            .scale(xScale)
+                            .ticks(options.yAxis.ticks)
+                            .tickSize(size.height, 0, 0)
+                            .tickFormat('');
+                        gridContainer.append('g')
+                            .attr('class', 'x axis grid')
+                            .call(xGrid);
+                    }
+                    if(options.yGrid.enabled) {
+                        yGrid = d3.svg.axis()
+                            .scale(yScale)
+                            .ticks(options.yAxis.ticks)
+                            .tickSize(-(size.width), 0, 0)
+                            .tickPadding(5)
+                            .orient('right')
+                            .tickFormat('');
+                        gridContainer.append('g')
+                            .attr('class', 'y axis grid')
+                            .attr('transform', 'translate(' + (size.width + options.chart.margin.left) + ',' + options.chart.margin.top + ')')
+                            .call(yGrid);
+                    }
                 }
 
                 ///////////////////////////////////////////////////////////////
@@ -239,37 +294,37 @@ charts.normalBarChart = function module() {
                     .rangeBand();
 
                 // Add a group for each row of data
-                var bars = pathContainer.selectAll(".bars")
+                var bars = pathContainer.selectAll('.bars')
                     .data(data)
                     .enter()
-                    .append("g")
-                    .attr("transform", "translate(0," + size.height + ")")
-                    .attr("class", "bars");
+                    .append('g')
+                    .attr('transform', 'translate(0,' + size.height + ')')
+                    .attr('class', 'bars');
 
                 // Add a rect for each data value
-                var rects = bars.selectAll("rect")
+                var rects = bars.selectAll('rect')
                     .data(function(d) {
                         return d.data;
                     })
                     .enter()
-                    .append("rect")
-                    .attr("x", function(d) {
+                    .append('rect')
+                    .attr('x', function(d) {
                         return xScale(d.time);
                     })
-                    .attr("y", function(d) {
+                    .attr('y', function(d) {
                         return -(-yScale(d.y0) - yScale(d.y) + (size.height) * 2);
                     })
-                    .attr("width", barWidth)
-                    .attr("height", function(d) {
+                    .attr('width', barWidth)
+                    .attr('height', function(d) {
                         return -yScale(d.y) + (size.height);
                     })
-                    .style("stroke", function(d) {
+                    .style('stroke', function(d) {
                         return d.fill || color(d.name);
                     })
-                    .style("fill", function(d){
+                    .style('fill', function(d){
                         return d.fill || color(d.name);
                     })
-                    .style("fill-opacity", options.plotOptions.fillOpacity);
+                    .style('fill-opacity', options.plotOptions.fillOpacity);
             }
 
             ///////////////////////////////////////////////////////////////

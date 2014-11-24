@@ -29,6 +29,8 @@ angular.module('multilineChart', ['D3Service'])
 
             var render = function(canvas) {
 
+                //element.append('<button class="btn-download"><i class="fa fa-bars"></i></button>');
+
                 var width = canvas[0].offsetWidth;
                 var height = canvas[0].offsetHeight;
 

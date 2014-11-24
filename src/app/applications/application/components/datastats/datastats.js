@@ -31,7 +31,7 @@ angular.module( 'apicatus.application.datastats', [])
         },
         plotOptions: {
             interpolate: 'linear',
-            fillOpacity: 0.5,
+            fillOpacity: 0.2,
             series: {
                 animation: false,
                 pointInterval: statistics.interval,
@@ -94,6 +94,11 @@ angular.module( 'apicatus.application.datastats', [])
                         data: statistics.dataStatsByDate.min.map(function(min, index){
                             return [min, statistics.dataStatsByDate.max[index]];
                         })
+                    }, {
+                        name: 'avg',
+                        stroke: '#2980b9',
+                        data: statistics.dataStatsByDate.avg,
+                        linkedTo: ':previous'
                     }
                 ]
             };

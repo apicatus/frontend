@@ -44,7 +44,7 @@ angular.module( 'apicatus.application.timestats', [])
         },
         plotOptions: {
             interpolate: 'linear',
-            fillOpacity: 0.5,
+            fillOpacity: 0.2,
             series: {
                 animation: false,
                 pointInterval: statistics.interval,
@@ -164,6 +164,11 @@ angular.module( 'apicatus.application.timestats', [])
                         data: statistics.timeStatsByDate.min.map(function(min, index){
                             return [min, statistics.timeStatsByDate.max[index]];
                         })
+                    }, {
+                        name: 'avg',
+                        stroke: '#2980b9',
+                        data: statistics.timeStatsByDate.avg,
+                        linkedTo: ':previous'
                     }
                 ]
             };
@@ -176,20 +181,17 @@ angular.module( 'apicatus.application.timestats', [])
                         stroke: '#27ae60',
                         fill: '#27ae60',
                         data: statistics.responseClasses[1].data
-                    },
-                    {
+                    }, {
                         name: 'Redirection',
                         stroke: '#2980b9',
                         fill: '#2980b9',
                         data: statistics.responseClasses[2].data
-                    },
-                    {
+                    }, {
                         name: 'Client Error',
                         stroke: '#f1c40f',
                         fill: '#f1c40f',
                         data: statistics.responseClasses[3].data
-                    },
-                    {
+                    }, {
                         name: 'Server Error',
                         stroke: '#c0392b',
                         fill: '#c0392b',
