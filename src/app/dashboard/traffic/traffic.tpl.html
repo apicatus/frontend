@@ -87,13 +87,23 @@
                         </div>
                     </div -->
                 </tab>
-                <tab active="true">
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-area-chart"></i> Performance
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ng-chart type="scatterplot" data="traffic.scatterplot.series" options="traffic.scatterplotOptions"></ng-chart>
+                        </div>
+                    </div>
+                </tab>
+                <tab>
                     <tab-heading>
                         <i class="fa fa-area-chart"></i> Transactions
                     </tab-heading>
                     <div class="row">
                         <div class="col-md-12">
-                            <multiline-chart data="traffic.transactionsHistogram.series" options="traffic.timeChartOptions"></multiline-chart>
+                            <ng-chart type="multiline" data="traffic.transactionsHistogram.series" options="traffic.timeChartOptions"></ng-chart>
                         </div>
                     </div>
                 </tab>
@@ -103,7 +113,7 @@
                     </tab-heading>
                     <div class="row">
                         <div class="col-md-12">
-                            <multiline-chart data="traffic.errorHistogram.series" options="traffic.timeChartOptions"></multiline-chart>
+                            <ng-chart type="multiline" data="traffic.errorHistogram.series" options="traffic.timeChartOptions"></ng-chart>
                         </div>
                     </div>
                     <div class="row">
@@ -118,7 +128,7 @@
                     </tab-heading>
                     <div class="row">
                         <div class="col-md-12">
-                            <multiline-chart data="traffic.dataHistogram.series" options="traffic.timeChartOptions"></multiline-chart>
+                            <ng-chart type="multiline" data="traffic.dataHistogram.series" options="traffic.timeChartOptions"></ng-chart>
                         </div>
                     </div>
                     <div class="row">
@@ -133,7 +143,7 @@
                     </tab-heading>
                     <div class="row">
                         <div class="col-md-12">
-                            <multiline-chart data="traffic.latencyHistogram.series" options="traffic.timeChartOptions"></multiline-chart>
+                            <ng-chart type="multiline" data="traffic.latencyHistogram.series" options="traffic.timeChartOptions"></ng-chart>
                         </div>
                     </div>
                     <div class="row">

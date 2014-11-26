@@ -22,7 +22,8 @@ angular.module( 'apicatus.application.timestats', [])
     ////////////////////////////////////////////////////////////////////////////
     statistics.lineChartOptions = {
         chart: {
-            type: 'line'
+            type: 'line',
+            margin: {top: 20, right: 20, bottom: 30, left: 50}
         },
         plotOptions: {
             interpolate: 'linear',
@@ -40,7 +41,8 @@ angular.module( 'apicatus.application.timestats', [])
     };
     statistics.rangeChartOptions = {
         chart: {
-            type: 'bivariate'
+            type: 'bivariate',
+            margin: {top: 20, right: 20, bottom: 30, left: 50}
         },
         plotOptions: {
             interpolate: 'linear',
@@ -58,7 +60,8 @@ angular.module( 'apicatus.application.timestats', [])
     };
     statistics.statusClassesBarOptions = {
         chart: {
-            type: 'stackedBar'
+            type: 'stackedBar',
+            margin: {top: 20, right: 20, bottom: 30, left: 50}
         },
         plotOptions: {
             fillOpacity: 0.5,
@@ -73,12 +76,37 @@ angular.module( 'apicatus.application.timestats', [])
         }
     };
 
+    statistics.scatterplotOptions = {
+        chart: {
+            type: 'scatter',
+            margin: {top: 20, right: 20, bottom: 30, left: 50}
+        },
+        plotOptions: {
+            fillOpacity: 0.5,
+            scatter: {
+                marker: {
+                    radius: 5,
+                    states: {
+                        hover: {
+                            enabled: true,
+                            lineColor: 'rgb(100,100,100)'
+                        }
+                    }
+                }
+            }
+        },
+        yAxis: {
+            ticks: 2
+        }
+    };
+
     ////////////////////////////////////////////////////////////////////////////
     // Load Data                                                              //
     ////////////////////////////////////////////////////////////////////////////
     statistics.load = function(method) {
 
         Restangular.one('transfer/method', method._id).get({since: statistics.since, until: statistics.until}).then(function(records){
+            statistics.interval = records.period.interval.value;
             // Performance Percentiles
             statistics.percentiles = records.aggregations.t_percentiles.values;
             // Performance Stats
@@ -142,7 +170,7 @@ angular.module( 'apicatus.application.timestats', [])
 
             // Update charts intervals and starting date
             [statistics.lineChartOptions, statistics.rangeChartOptions, statistics.statusClassesBarOptions].forEach(function(chartOptions){
-                chartOptions.plotOptions.series.pointInterval = records.period.interval.value;
+                chartOptions.plotOptions.series.pointInterval = statistics.interval;
                 chartOptions.plotOptions.series.pointStart = statistics.since;
             });
             // Average
@@ -152,6 +180,17 @@ angular.module( 'apicatus.application.timestats', [])
                         name: 'avg',
                         stroke: '#2c3e50',
                         data: statistics.timeStatsByDate.avg
+                    }
+                ]
+            };
+            statistics.tpmHistogram = {
+                series: [
+                    {
+                        name: 'avg',
+                        stroke: '#49c5b1',
+                        data: records.aggregations.history.buckets.map(function(history){
+                            return history.doc_count || 0;
+                        })
                     }
                 ]
             };
@@ -200,6 +239,36 @@ angular.module( 'apicatus.application.timestats', [])
                 ]
             };
 
+            // Response time vs Requests per XXX
+            statistics.scatterplot = {
+                series: [
+                    {
+                        name: 'response',
+                        fill: '#2980b9',
+                        data: statistics.timestatistics
+                        .filter(function(bucket){
+                            return bucket.doc_count > 0;
+                        })
+                        .map(function(bucket){
+                            return [bucket.doc_count / ((statistics.interval / 1000) / 60), bucket.time_statistics.avg || 0];
+                        })
+                    }
+                ]
+            };
+
+            // Total Transactions
+            statistics.tpmCount = records.aggregations.history.buckets
+            .reduce(function(previousValue, currentValue) {
+                return previousValue + currentValue.doc_count;
+            }, 0);
+
+            // Average Transactions per minute
+            statistics.tpm = statistics.scatterplot.series[0].data
+            .reduce(function(previousValue, currentValue) {
+                return previousValue + currentValue[0];
+            }, 0) / statistics.scatterplot.series[0].data.length;
+
+
             // Aggregate traffic status codes
             statistics.codeStatsChilds = records.aggregations.statuses.buckets.reduce(function(previousValue, currentValue, index, array){
                 var current = parseInt(array[index].key, 10);
@@ -241,7 +310,7 @@ angular.module( 'apicatus.application.timestats', [])
                 statistics.since = new Date().getTime() - period.value;
                 statistics.until = new Date().getTime();
 
-                console.log("new Pariod: ", new Date(statistics.since), new Date(statistics.until));
+                //console.log("new Pariod: ", new Date(statistics.since), new Date(statistics.until));
 
                 statistics.load(statistics.method);
             });

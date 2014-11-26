@@ -8,7 +8,8 @@ angular.module( 'apicatus.application', [
     'apicatus.application.datastats',
     'vectorMap',
     'queryFactory',
-    'normalBarChart'
+    'normalBarChart',
+    'ngChart'
 ])
 .config(['$httpProvider', function ( $httpProvider ) {
     var interceptor = ['$injector', function ($injector) {

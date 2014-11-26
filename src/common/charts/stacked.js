@@ -57,8 +57,6 @@ charts.stacked = function module() {
                         return a - b;
                     });
 
-                    window.timeSpan = timeSpan;
-
                     //var interval = (endDate - startDate) / (max - 1);
                     var interval = ( timeSpan[timeSpan.length -1] - timeSpan[0] ) / ( timeSpan.length - 1);
                     interval = 60000;

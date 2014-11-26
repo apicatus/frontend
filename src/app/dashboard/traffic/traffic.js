@@ -3,7 +3,8 @@
 
 angular.module( 'apicatus.dashboard.traffic', [
     'donutChart',
-    'multilineChart'
+    'multilineChart',
+    'ngChart'
 ])
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state('main.dashboard.traffic', {
@@ -92,6 +93,36 @@ angular.module( 'apicatus.dashboard.traffic', [
         },
         xAxis: {
             tickInterval: queryFactory().get().interval
+        }
+    };
+
+    traffic.scatterplotOptions = {
+        chart: {
+            type: 'scatter'
+        },
+        plotOptions: {
+            fillOpacity: 0.5,
+            scatter: {
+                marker: {
+                    radius: 5,
+                    states: {
+                        hover: {
+                            enabled: true,
+                            lineColor: 'rgb(100,100,100)'
+                        }
+                    }
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Response time'
+            }
+        },
+        xAxis: {
+            title: {
+                text: 'API calls per minute'
+            }
         }
     };
 
@@ -218,6 +249,23 @@ angular.module( 'apicatus.dashboard.traffic', [
         ]
     };
 
+    // Response time vs Requests per XXX
+    traffic.scatterplot = {
+        series: [
+            {
+                name: 'response',
+                data: transferStatistics.aggregations.history.buckets.map(function(history){
+                    return [history.doc_count / ((queryFactory().get().interval / 1000) / 60), history.time_statistics.avg || 0];
+                })
+            }, {
+                name: 'max',
+                fill: '#2c87be',
+                data: transferStatistics.aggregations.history.buckets.map(function(history){
+                    return [history.doc_count / ((queryFactory().get().interval / 1000) / 60), history.time_statistics.max || 0];
+                })
+            }
+        ]
+    };
 
     traffic.methodStats = methodstatsbydate.aggregations.methods.buckets;
     traffic.methodStats.forEach(function(stat){
