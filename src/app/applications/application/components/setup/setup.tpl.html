@@ -108,15 +108,16 @@
                         <table class="table table-condensed primary-table">
                             <thead>
                                 <tr>
-                                    <th class="source">Source</th>
-                                    <th class="value">Property</th>
-                                    <th class="source">Comparison</th>
-                                    <th class="value">Target Value</th>
+                                    <th>Source</th>
+                                    <th>Property</th>
+                                    <th>Comparison</th>
+                                    <th>Target Value</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="source">
+                                    <td>
                                         <select class="form-control" name="assertion-source-type">
                                             <option value="json">JSON Body</option>
                                             <option value="xml">XML Body</option>
@@ -127,12 +128,12 @@
                                             <option value="meta.size_bytes">Response Size (bytes)</option>
                                         </select>
                                     </td>
-                                    <td class="value">
+                                    <td>
                                         <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
                                         <input type="text" name="assertion-source-path" class="editable ui-autocomplete-input" placeholder="Enter property" autocomplete="off" style="display: none;">
                                         <span class="noneditable">--</span>
                                     </td>
-                                    <td class="source">
+                                    <td>
                                         <select class="form-control" name="assertion-assert">
                                             <option value="eq">equals (number)</option>
                                             <option value="lt">less than</option>
@@ -141,11 +142,11 @@
                                             <option value="gte">greater than or equal</option>
                                         </select>
                                     </td>
-                                    <td class="value">
+                                    <td>
                                         <input type="text" class="form-control" placeholder="Enter target value">
                                     </td>
-                                    <td class="remove-assertion">
-                                        <i class="icon icon-remove" data-bind="click: deleteAssertion"></i>
+                                    <td class="text-right">
+                                        <button type="button" class="btn btn-sm btn-default"><i class="fa fa-remove"></i></button>
                                     </td>
                                 </tr>
                                 <!--/ko -->

@@ -70,13 +70,17 @@ charts.multiline = function module() {
         plotOptions: {
             interpolate: 'linear',
             fillOpacity: 0.5,
+            area: {
+                stacking: 'normal'
+            },
             series: {
                 animation: false,
                 pointInterval: 24 * 3600 * 1000, // one day
                 pointStart: new Date().getTime(),
                 units: null,
                 tracking: true,
-                makers: true
+                makers: true,
+                stroke: true
             }
         },
         yAxis: {
@@ -135,11 +139,23 @@ charts.multiline = function module() {
                 };
                 var color = d3.scale.category10();
                 color.domain(d3.keys(data).filter(function(key) { return key !== 'date'; }));
+
+                if(options.plotOptions.area.stacking == 'percent') {
+                    var arrSum = data.map(function(serie) {
+                        return serie.data.map(function(value, index){
+                            return data.reduce(function(previous, current){
+                                return previous + current.data[index] || 0;
+                            }, 0);
+
+                        });
+                    });
+                }
+
                 // Put Dates
-                data.forEach(function(item) {
+                data.forEach(function(item, i) {
                     // Assign default id
                     item.id = item.id || guidGenerator();
-                    item.data = item.data.map(function(value, index){
+                    item.data = item.data.map(function(value, index) {
                         return {
                             date: new Date(options.plotOptions.series.pointStart + (options.plotOptions.series.pointInterval * index)), //options.plotOptions.pointStart + (options.plotOptions.pointInterval * index),
                             value: value,
@@ -638,7 +654,7 @@ charts.multiline = function module() {
                     .ease(ease)
                     .style('fill-opacity', options.plotOptions.fillOpacity);
 
-                    if(options.chart.type == 'area') {
+                    if(options.chart.type == 'area' && options.plotOptions.series.stroke) {
                         drawAreaLine(metric);
                     }
                     // Add Markers

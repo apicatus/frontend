@@ -1,0 +1,57 @@
+/* MODALS */
+/* NAVBAR STYLES */
+@modal-header-background: #29343e;
+@navbar-menuitem-background: #1f1f1f;
+@navbar-menuitem-color: #fff;
+@modal-text-color: #627c94;
+@modal-header-color: #49c5b1;
+.modal-dialog {
+    .modal-content {
+        .modal-header {
+            background-color: @modal-header-background;
+            color: @modal-header-color;
+            text-transform: uppercase;
+            .modal-title {
+                font-weight: 200;
+            }
+            .close {
+                font-size: 30px;
+                font-weight: bold;
+                line-height: 1;
+                color: darken(@brand-primary, 50%);
+                opacity: 0.35;
+                text-shadow: none;
+                filter: alpha(opacity=20);
+            }
+            .close:hover,
+            .close:focus {
+                color: @brand-primary;
+                filter: alpha(opacity=50);
+            }
+        }
+        .modal-body {
+            textarea {
+                resize: vertical;
+            }
+        }
+        .modal-footer {
+            padding: 10px 20px 10px;
+            background-color: #fafafa;
+        }
+    }
+}
+
+.modal.ace-editor {
+    .modal-header {
+        border-bottom: 1px solid darken(@modal-header-background, 10%);
+    }
+    .modal-body {
+        padding: 0px;
+    }
+    .modal-footer {
+        margin-top: 0px;
+    }
+    .ace_editor {
+        height: 320px;
+    }
+}

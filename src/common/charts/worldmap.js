@@ -10,10 +10,16 @@ charts.worldmap = function module() {
         canvas,
         svg,
         graticule = d3.geo.graticule(),
-        projectionMode = "equirectangular",
         daylightVisible = false;
         daylight = d3.geo.circle().angle(90).precision(0.5);
-        daylightPath = null;
+        daylightPath = null,
+        active = d3.select(null),
+        limitBounds = null,
+        tlast = null,
+        slast = null,
+        fitGeoInside = null,
+        setGeoTransform = null,
+        geoLayer = {};
     var features = [
 { "type": "Feature", "properties": {  "name": "Mexico" , "amount":"2,485,336", "rank":"6" }, "geometry": { "type": "Point", "coordinates": [ -102.506621210999924, 23.940958892339154 ] } },
 { "type": "Feature", "properties": {  "name": "Guatemala" , "amount":"60,891", "rank":"5" }, "geometry": { "type": "Point", "coordinates": [ -91.240086433242141, 15.007764594360708 ] } },
@@ -153,7 +159,8 @@ charts.worldmap = function module() {
                     })
                     .attr("title", function (d, i) {
                         return d.properties.name;
-                    });
+                    })
+                    .on("click", clicked); //exports.click);
 
                 // Draw Day/Night
                 if(daylightVisible) {
@@ -165,12 +172,125 @@ charts.worldmap = function module() {
 
                 exports.addZoomBtns();
 
-                features.forEach(function(feature){
+                /*features.forEach(function(feature){
                     exports.addRoute(feature.geometry.coordinates, [-58.5201, -34.5309]);
-                });
+                });*/
                 //exports.addRoute([-58.5201, -34.5309], [-74, 40.71]);
 
             }
+            ///////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
+            function getFeaturesBox() {
+                return {
+                    x: featureBounds[0][0],
+                    y: featureBounds[0][1],
+                    width: featureBounds[1][0] - featureBounds[0][0],
+                    height: featureBounds[1][1] - featureBounds[0][1]
+                };
+            }
+
+            // fits the geometry layer inside the viewport
+            fitGeoInside = function () {
+                var bbox = getFeaturesBox(),
+                    scale = 0.95 / Math.max(bbox.width / width, bbox.height / height),
+                    trans = [-(bbox.x + bbox.width / 2) * scale + width / 2, -(bbox.y + bbox.height / 2) * scale + height / 2];
+
+                geoLayer.scale = scale;
+                geoLayer.translate = trans;
+
+                canvas
+                .transition()
+                .duration(750)
+                .attr('transform', [
+                    'translate(' + geoLayer.translate + ')',
+                    'scale(' + geoLayer.scale + ')'
+                ].join(' '));
+            };
+
+            // transform geoParent
+            setGeoTransform = function(scale, trans, animate) {
+                var container = canvas;
+                zoom.scale(scale).translate(trans);
+
+                tlast = trans;
+                slast = scale;
+
+                if(animate) {
+                    container = canvas.transition().duration(750);
+                }
+                container
+                    .attr('transform', [
+                        'translate(' + trans + ')',
+                        'scale(' + scale + ')'
+                    ].join(' '))
+                    .selectAll(".country")
+                    .style("stroke-width", 1 / scale);
+            };
+            // limits panning
+            // XXX: this could be better
+            limitBounds = function (scale, trans, animate) {
+
+                var bbox = getFeaturesBox();
+                var outer = width - width * scale;
+                var geoWidth = bbox.width * geoLayer.scale * scale,
+                    geoLeft = -((width * scale) / 2 - ((geoWidth) / 2)),
+                    geoRight = outer - geoLeft;
+
+                if (scale === slast) {
+                    //trans[0] = Math.min(0, Math.max(trans[0], width - width * scale));
+                    trans[1] = Math.min(0, Math.max(trans[1], height - height * scale));
+
+                    if (geoWidth > width) {
+                        if (trans[0] < tlast[0]) { // panning left
+                            trans[0] = Math.max(trans[0], geoRight);
+                        } else if (trans[0] > tlast[0]) { // panning right
+                            trans[0] = Math.min(trans[0], geoLeft);
+                        }
+                    } else {
+
+                        if (trans[0] < geoLeft) {
+                            trans[0] = geoLeft;
+                        } else if (trans[0] > geoRight) {
+                            trans[0] = geoRight;
+                        }
+                    }
+                }
+
+                setGeoTransform(scale, trans, animate);
+            };
+            ///////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
+
+            function clicked(d) {
+                if (active.node() === this) {
+                    return reset();
+                }
+                active.classed("active", false);
+                active = d3.select(this).classed("active", true);
+
+                var bounds = path.bounds(d),
+                    dx = bounds[1][0] - bounds[0][0],
+                    dy = bounds[1][1] - bounds[0][1],
+                    x = (bounds[0][0] + bounds[1][0]) / 2,
+                    y = (bounds[0][1] + bounds[1][1]) / 2,
+                    scale = 0.9 / Math.max(dx / width, dy / height),
+                    translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+                limitBounds(scale, translate, true);
+            }
+            function reset() {
+                active.classed("active", false);
+                active = d3.select(null);
+
+                setGeoTransform(1, [0, 0], true);
+
+                /*canvas.transition()
+                    .duration(750)
+                    .call(zoom.translate([0, 0]).scale(1).event);*/
+            }
+
 
             function redraw() {
                 width = document.getElementById('container').offsetWidth;
@@ -260,7 +380,18 @@ charts.worldmap = function module() {
                 .translate([0, 0])
                 .scale(1)
                 .scaleExtent([1, 9])
-                .on("zoom", exports.move);
+                .on("zoom", zoomed);
+
+            function zoomed() {
+                //canvas.style("stroke-width", 1 / d3.event.scale);
+                //canvas.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+
+                var e = d3.event,
+                    scale = (e && e.scale) ? e.scale : zoom.scale(),
+                    trans = (e && e.translate) ? e.translate : zoom.translate();
+
+                limitBounds(scale, trans);
+            }
 
             d3.select(window).on("resize", exports.throttle);
 
@@ -276,17 +407,31 @@ charts.worldmap = function module() {
                 world = JSON.parse(world);
                 var countries = topojson.feature(world, world.objects.countries).features;
 
-                topo = countries;
-                draw(topo);
+                collection = {
+                    'type': 'FeatureCollection',
+                    'features': countries
+                };
+
+                featureBounds = path.bounds(collection);
+
+                var bbox = getFeaturesBox(),
+                    scale = 0.95 / Math.max(bbox.width / width, bbox.height / height);
+
+                // set scale
+                projection.scale(scale);
+
+                draw(countries);
                 exports.addpoint(-58.5201, -34.5309);
             });
         });
     }
     exports.setup = function(element, width, height) {
-        projection = d3.geo.equirectangular()
-            .translate([width / 2, height / 2])
-            .scale((width + 1) / 2 / Math.PI)
+        projection = d3.geo.miller()
+            .translate([width / 2, height / 2 + 50])
+            .scale(1)
             .precision(0.1);
+
+
 
         path = d3.geo.path().projection(projection);
 
@@ -296,11 +441,9 @@ charts.worldmap = function module() {
             .attr("viewBox", "0 0 " + width + " " + height)
             .attr("width", '100%')
             .attr("height", '100%')
-            .call(zoom)
-            .on("click", this.click)
-            .append("g");
+            .call(zoom);
 
-        canvas = svg.append("g");
+        canvas = svg.append("g").attr('class', 'canvas');
     };
     exports.zoom = function() {
         var currentZoom = zoom.scale();
@@ -314,23 +457,24 @@ charts.worldmap = function module() {
         console.log(latlon);
     };
     exports.move = function() {
-        var t = d3.event.translate;
-        var s = d3.event.scale;
-        zscale = s;
+        active = d3.select(null);
+
+        var translate = d3.event.translate;
+        var scale = d3.event.scale;
         var h = height / 4;
-        t[0] = Math.min(
-            (width / height) * (s - 1),
-            Math.max(width * (1 - s), t[0])
+        translate[0] = Math.min(
+            (width / height) * (scale - 1),
+            Math.max(width * (1 - scale), translate[0])
         );
-        t[1] = Math.min(
-            h * (s - 1) + h * s,
-            Math.max(height * (1 - s) - h * s, t[1])
+        translate[1] = Math.min(
+            h * (scale - 1) + h * scale,
+            Math.max(height * (1 - scale) - h * scale, translate[1])
         );
-        zoom.translate(t);
-        canvas.attr("transform", "translate(" + t + ")scale(" + s + ")");
+        zoom.translate(translate);
+        canvas.attr('transform', "translate(" + translate + ")scale(" + scale + ")");
         // adjust the country hover stroke width based on zoom level
         d3.selectAll(".country")
-            .style("stroke-width", 1.5 / s);
+            .style("stroke-width", 1 / scale);
 
     };
     exports.addRoute = function(origin, destination) {
@@ -388,7 +532,7 @@ charts.worldmap = function module() {
         var zoomInGrp = zoomBtnGroup
             .append('g')
             .attr('class', 'zoom-in-grp');
-        
+
         var zoomInBtn = zoomInGrp.append('rect')
             .attr('class', 'zoom-in-btn')
             .attr('x', 10)
@@ -412,7 +556,7 @@ charts.worldmap = function module() {
         var zoomOutGrp = zoomBtnGroup
             .append('g')
             .attr('class', 'zoom-out-grp');
-        
+
         var zoomOutBtn = zoomOutGrp.append('rect')
             .attr('class', 'zoom-out-btn')
             .attr('x', 10)

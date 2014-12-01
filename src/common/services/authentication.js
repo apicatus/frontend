@@ -109,6 +109,16 @@ angular.module('AuthService', ['restangular'])
             return false;
         }
     }
+    function getToken() {
+        var token = localStorageService.get('token');
+        if ($cookies.token) {
+            return unescape($cookies.token);
+        } else if (token) {
+            return token.token;
+        } else {
+            return null;
+        }
+    }
     return {
         authenticate: function(user, pass) {
             return enterAuthentication(user, pass);
@@ -118,6 +128,12 @@ angular.module('AuthService', ['restangular'])
         },
         isAuthenticated: function() {
             return checkAuthenticated(); /*return d.promise;*/
+        },
+        getToken: function() {
+            return getToken();
+        },
+        setToken: function(token) {
+
         },
         saveState: function(state) {
             appState = state; // Save the app state before going into the login secuence

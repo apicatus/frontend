@@ -99,6 +99,36 @@ angular.module( 'apicatus.application.timestats', [])
             ticks: 2
         }
     };
+    ///////////////////////////////////////////////////////////////////////////
+    // Chart config                                                          //
+    ///////////////////////////////////////////////////////////////////////////
+    statistics.stackedClasses = {
+        chart: {
+            type: 'area',
+            margin: {top: 20, right: 20, bottom: 30, left: 50}
+        },
+        plotOptions: {
+            area: {
+                stacking: 'percent'
+            },
+            series: {
+                animation: false,
+                pointInterval: statistics.interval,
+                pointStart: statistics.since,
+                makers: false,
+                tracking: false,
+                stroke: false
+            }
+        },
+        yAxis: {
+            ticks: 2,
+            labels: {
+                formatter: function (tick) {
+                    return tick + '%';
+                }
+            }
+        }
+    };
 
     ////////////////////////////////////////////////////////////////////////////
     // Load Data                                                              //
@@ -168,12 +198,40 @@ angular.module( 'apicatus.application.timestats', [])
 
             }, [{key: 100}, {key: 200}, {key: 300}, {key: 400}, {key: 500}]);
 
+            statistics.responseClassesStack = records.aggregations.history.buckets
+            .map(function(history){
+                return history.statuses.buckets;
+            })
+            .reduce(function(previousValue, currentValue, index, array){
+
+                var total = currentValue.reduce(function(previous, current) {
+                    return previous + current.doc_count;
+                }, 0);
+
+                console.log("total: ", total);
+
+                previousValue.forEach(function(previous, index){
+                    previous.data = previous.data || [];
+                    var count = currentValue.filter(function(classe) {
+                        return (classe.key >= previous.key && classe.key < previous.key + 100);
+                    })[0];
+                    count = count ? count.doc_count / total * 100: 0;
+                    previous.data.push(count);
+                });
+
+                return previousValue;
+
+            }, [{key: 100}, {key: 200}, {key: 300}, {key: 400}, {key: 500}]);
+
+            console.log("stack:", statistics.responseClassesStack);
+
             // Update charts intervals and starting date
-            [statistics.lineChartOptions, statistics.rangeChartOptions, statistics.statusClassesBarOptions].forEach(function(chartOptions){
+            [statistics.lineChartOptions, statistics.rangeChartOptions, statistics.statusClassesBarOptions, statistics.stackedClasses].forEach(function(chartOptions){
                 chartOptions.plotOptions.series.pointInterval = statistics.interval;
                 chartOptions.plotOptions.series.pointStart = statistics.since;
             });
-            // Average
+
+            // Average response histogram
             statistics.latencyHistogram = {
                 series: [
                     {
@@ -183,6 +241,7 @@ angular.module( 'apicatus.application.timestats', [])
                     }
                 ]
             };
+            // Transactions per minute histogram
             statistics.tpmHistogram = {
                 series: [
                     {
@@ -235,6 +294,32 @@ angular.module( 'apicatus.application.timestats', [])
                         stroke: '#c0392b',
                         fill: '#c0392b',
                         data: statistics.responseClasses[4].data
+                    }
+                ]
+            };
+
+            statistics.percentBars = {
+                series: [
+                    {
+                        name: 'Success',
+                        stroke: '#27ae60',
+                        fill: '#27ae60',
+                        data: statistics.responseClassesStack[1].data
+                    }, {
+                        name: 'Redirection',
+                        stroke: '#2980b9',
+                        fill: '#2980b9',
+                        data: statistics.responseClassesStack[2].data
+                    }, {
+                        name: 'Client Error',
+                        stroke: '#f1c40f',
+                        fill: '#f1c40f',
+                        data: statistics.responseClassesStack[3].data
+                    }, {
+                        name: 'Server Error',
+                        stroke: '#c0392b',
+                        fill: '#c0392b',
+                        data: statistics.responseClassesStack[4].data
                     }
                 ]
             };

@@ -1,0 +1,89 @@
+table {
+    .progress {
+        margin-bottom: 0px;
+    }
+    &.table-fixed {
+        table-layout: fixed;
+        td {
+            position: relative;
+            .no-overflow {
+                position: relative;
+                overflow-x: scroll;
+                display: block;
+                white-space: nowrap;
+            }
+            /* nice but not so good on table-stripped */
+            /*&:after {
+                content: "";
+                position: absolute;
+                right: 0px;
+                top: 0px;
+                width: 30px;
+                height: 100%;
+                background-image: linear-gradient(90deg, rgba(255,255,255, 0) 10%, rgba(255,255,255, 1));
+            }*/
+        }
+    }
+    &.primary-table {
+        > thead, > tbody, > tfoot {
+            > tr {
+                > th, > td {
+                    padding: @table-cell-padding;
+                    line-height: @line-height-base;
+                    vertical-align: middle;
+                    border-top: 1px solid lighten(@table-border-color, 20%);
+                }
+            }
+        }
+        > thead > tr > th {
+            border-bottom: 1px solid @brand-primary; /*@table-border-color;*/
+        }
+    }
+    /* LOG TABLE */
+    &.log-table {
+        > thead, > tbody, > tfoot {
+            > tr {
+                > th, > td {
+                    padding: @table-cell-padding;
+                    line-height: @line-height-base;
+                    vertical-align: top;
+                    //border-top: 1px solid lighten(@table-border-color, 20%);
+                }
+            }
+        }
+        td.expandable {
+            padding: 0px;
+            > table {
+                margin: 0px;
+            }
+        }
+        > tbody + tbody {
+            border-width: 1px;
+        }
+        > thead > tr > th {
+            border-bottom: 1px solid @brand-primary; /*@table-border-color;*/
+        }
+        &.table-striped {
+            > tbody:nth-child(odd) {
+                > tr:first-child {
+                    td {
+                        background-color: #fff !important;
+                    }
+                }
+            }
+            > tbody.opened {
+                > tr:first-child {
+                    td {
+                        background-color: #29343e !important;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+    .valign-middle {
+        td {
+            vertical-align: middle;
+        }
+    }
+}

@@ -472,6 +472,12 @@ charts.scatterplot = function module() {
                     }
                     function needleLeave() {
                         needleContainer.transition().duration(1500).style('opacity', 0);
+                        d3.select(graph).selectAll('.dot')
+                            .transition()
+                            .duration(75)
+                            .attr('r', options.plotOptions.scatter.marker.radius)
+                            .style('fill-opacity', options.plotOptions.fillOpacity)
+                            .style('stroke', 'none');
                     }
                 }
 

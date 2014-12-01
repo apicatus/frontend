@@ -1,3 +1,40 @@
+///////////////////////////////////////////////////////////////////////////////
+// @file         : app.js                                                   //
+// @summary      : Main Application entry point                              //
+// @version      : 0.1                                                       //
+// @project      : Apicat.us                                                 //
+// @description  :                                                           //
+// @author       : Benjamin Maggi                                            //
+// @email        : benjaminmaggi@gmail.com                                   //
+// @date         : 06 Oct 2013                                               //
+// @license:     : MIT                                                       //
+// ------------------------------------------------------------------------- //
+//                                                                           //
+// Copyright 2013~2014 Benjamin Maggi <benjaminmaggi@gmail.com>              //
+//                                                                           //
+//                                                                           //
+// License:                                                                  //
+// Permission is hereby granted, free of charge, to any person obtaining a   //
+// copy of this software and associated documentation files                  //
+// (the "Software"), to deal in the Software without restriction, including  //
+// without limitation the rights to use, copy, modify, merge, publish,       //
+// distribute, sublicense, and/or sell copies of the Software, and to permit //
+// persons to whom the Software is furnished to do so, subject to the        //
+// following conditions:                                                     //
+//                                                                           //
+// The above copyright notice and this permission notice shall be included   //
+// in all copies or substantial portions of the Software.                    //
+//                                                                           //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS   //
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF                //
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.    //
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY      //
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,      //
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE         //
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                    //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
 /*jshint newcap: false */
 
 angular.module( 'apicatus', [
@@ -139,10 +176,10 @@ angular.module( 'apicatus', [
     }
 
     // SocketIO notifications
-    mySocket.emit('angularMessage', {data: 'myMessage'});
     mySocket.on('message', function(result){
+        //console.log('WebSocket: ', result);
         /*messanger.post({
-            message: result.hello,
+            message: result.greet,
             showCloseButton: true
         });*/
     });
@@ -150,9 +187,16 @@ angular.module( 'apicatus', [
     $scope.$on('userLoggedIn', function(event, user){
         $scope.user = user;
         $state.transitionTo('main.applications.list');
+
+        mySocket.disconnect();
+        mySocket.connect();
+        mySocket.emit('userLoggedIn', {data: user.name});
     });
     $scope.$on('userLoggedOut', function(event, user){
         $scope.user = null;
+
+        mySocket.emit('userLoggedOut', {data: 'myMessage'});
+        mySocket.disconnect();
     });
 
     ///////////////////////////////////////////////////////////////////////////
