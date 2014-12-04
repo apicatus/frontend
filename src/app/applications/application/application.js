@@ -3,11 +3,13 @@
 
 angular.module( 'apicatus.application', [
     'apicatus.application.demo',
+    'apicatus.application.monitor',
     'apicatus.application.logs',
     'apicatus.application.timestats',
     'apicatus.application.datastats',
-    'vectorMap',
     'queryFactory',
+    'ngAssertions',
+    'vectorMap',
     'normalBarChart',
     'ngChart'
 ])
@@ -171,15 +173,33 @@ angular.module( 'apicatus.application', [
         }
     });
 }])
-.controller( 'ApplicationCtrl', function ApplicationController( $scope, $timeout, $stateParams, $modal, $filter, Restangular, queryFactory, parseURL, httpSettings, api) {
+.controller( 'ApplicationCtrl', function ApplicationController( $scope, $timeout, $stateParams, $modal, $filter, Restangular, queryFactory, parseURL, ngAssertions, mySocket, httpSettings, api) {
 
     //$controller('apicatus.application.demo', {$scope: $scope});
 
     $scope.httpSettings = httpSettings.settings();
+    $scope.assertionSources = ngAssertions.getSources();
+    $scope.assertions = ngAssertions.getAssertions();
+
     $scope.api = api;
 
     $scope.save = function(api) {
         $scope.api.put();
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Assertions                                                            //
+    ///////////////////////////////////////////////////////////////////////////
+    $scope.addAssertion = function(method) {
+        console.log("addAssertion: ", method);
+        method.assertions = method.assertions || [];
+        method.assertions.push({
+            source: 1,
+            assertion: 2
+        });
+    };
+    $scope.removeAssertion = function(method, asserion, $index) {
+        method.assertions.splice($index, 1);
     };
     ////////////////////////////////////////////////////////////////////////////
     // Endpoints [ Create, Read, Update, Delete ]                             //
@@ -331,6 +351,17 @@ angular.module( 'apicatus.application', [
             return eval(method.demo);
         });
     };
+
+    // SocketIO notifications
+    mySocket.on('message', function(result){
+        console.log('WebSocket: ', result.log.digestor);
+    });
+
+    $scope.$on('$destroy', function() {
+        console.log('leave realtime ');
+        mySocket.removeListener('message');
+    });
+
 })
 .controller( 'SourceCtrl', function SourceController() {
     var source = this;
@@ -418,6 +449,20 @@ angular.module( 'apicatus.application', [
                     .remove();
             });
         }
+    };
+}])
+.filter('filterBySource', [function() {
+    return function(assertions, source) {
+        return assertions.filter(function(assertion) {
+            try {
+                if(assertion.sourceTypes && assertion.sourceTypes.indexOf(source) != -1) {
+                    return true;
+                }
+            } catch (error) {
+                return false;
+            }
+            return false;
+        });
     };
 }]);
 

@@ -3,7 +3,24 @@
 angular.module( 'apicatus.dashboard.realtime', [
     'worldMap'
 ])
-.controller( 'DashboardRealTimeCtrl', function DashboardRealTimeController( $scope, mySocket ) {
+
+.config(function config( $stateProvider, $urlRouterProvider ) {
+    $stateProvider.state('main.dashboard.realtime', {
+        url: '/realtime/:id',
+        views: {
+            'widgets': {
+                templateUrl: 'dashboard/realtime/realtime.tpl.html',
+                controller: 'DashboardRealTimeCtrl as realtime'
+            }
+        },
+        data: { pageTitle: 'RealTime Monitor' },
+        //authenticate: true,
+        onEnter: function(){
+            console.log("enter realtime");
+        }
+    });
+})
+.controller( 'DashboardRealTimeCtrl', function DashboardRealTimeController( $scope, $interval, countryCode, mySocket ) {
 
     console.log("activeting DashboardRealTimeController", mySocket);
     var realtime = this;
@@ -25,18 +42,91 @@ angular.module( 'apicatus.dashboard.realtime', [
         name: "Sydney"
     }];
 
+    realtime.transactions = 0;
+    realtime.tpmAvg = 0;
+    realtime.latencies = [];
+    realtime.log = null;
+    realtime.data = {
+        'in': 0,
+        'out': 0
+    };
+
+    realtime.tpm = [];
+
+    $interval(function(){
+        realtime.time = new Date();
+    }, 1000);
+
+    $interval(function(){
+        var sum = realtime.tpm.reduce(function(a, b) {
+            return a + b;
+        }, 0);
+        var transactions = realtime.transactions != sum ? realtime.transactions - sum : 0;
+        realtime.tpm.push(transactions);
+
+        // take last 6 buckets
+        realtime.tpmAvg = (realtime.tpm.slice(realtime.tpm.length - 6, realtime.tpm.length).reduce(function(a, b) {
+            return a + b;
+        }, 0) / 6 ) || 0;
+
+    }, 10 * 1000);
+
+
+
     // SocketIO notifications
     mySocket.on('message', function(result){
-        console.log('WebSocket: ', result.log.geo.ll);
+        realtime.transactions += 1;
+        realtime.log = result.log;
+        realtime.data['out'] += parseInt(realtime.log.responseHeaders['content-length'], 10) || 0;
+        realtime.data['in'] += result.log.data['in'];
+
+        realtime.latencies.push(realtime.log.time);
+        realtime.latency = realtime.latencies.reduce(function(a, b) { return a + b; }) / realtime.latencies.length;
+
+        realtime.latencyPerTransaction = realtime.latencies.slice(realtime.latencies.length - realtime.tpmAvg, realtime.latencies.length).reduce(function(a, b) {
+            return a + b;
+        }, 0) / realtime.tpmAvg || '∞';
+
+        //console.log('WebSocket: ', realtime.log);
         if(result.log.geo) {
+            console.log('WebSocket: ', countryCode.isoConvert(realtime.log.geo.country));
             realtime.route = {
                 origin: [result.log.geo.ll[1], result.log.geo.ll[0]], //features[Math.floor(Math.random() * features.length)].geometry.coordinates, //[-74, 40.71],
                 destination: [-74, 40.71]
             };
+        } else {
+            realtime.route = {
+                origin: features[Math.floor(Math.random() * features.length)].geometry.coordinates, //[-74, 40.71],
+                destination: [-74, 40.71]
+            };
         }
     });
+
+    $scope.$on('$destroy', function() {
+        console.log('leave realtime ');
+        mySocket.removeListener('message');
+    });
+
+
     realtime.route = {
         origin: [-58.5201, -34.5309],
         destination: [-74, 40.71]
     };
+
+    realtime.worldMap = [{
+        key: 'ARG',
+        value: 123
+    }, {
+        key: 'RUS',
+        value: 800
+    }, {
+        key: 'PRY',
+        value: 1000
+    }, {
+        key: 'VEN',
+        value: 12
+    }, {
+        key: 'USA',
+        value: 1500
+    }];
 });

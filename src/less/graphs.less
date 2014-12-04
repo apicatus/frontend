@@ -134,14 +134,14 @@ world-map {
     height: 320px;
     background-color: transparent;
     .country {
-        fill: #D2D2D2;
+        fill: #EEEFF3;
         stroke: #FFF;
         stroke-width: 1px;
         stroke-linecap: round;
         stroke-linejoin: round;
         //vector-effect: non-scaling-stroke;
         &:hover {
-            fill: @brand-primary;
+            fill: #555555 !important;
         }
     }
     .graticule {
@@ -164,9 +164,6 @@ world-map {
     .point {
         fill: @gray;
     }
-    .text {
-        fill: @gray;
-    }
     .night {
         stroke: steelblue;
         fill: steelblue;
@@ -185,13 +182,22 @@ world-map {
             &:hover {
                 fill: @brand-primary;
             }
+            text {
+                font-size: 1em;
+                fill: #fff;
+                font-weight: bold;
+            }
         }
     }
     .overlay {
         fill: none;
         pointer-events: all;
     }
-
+    text, .label {
+        font-size: 0.80em;
+        fill: @gray;
+        font-weight: 100;
+    }
     .feature {
         fill: #adbbc9;
         stroke: #fff;
@@ -275,6 +281,9 @@ ng-chart {
         padding: 5px;
         font-size: 10px;
         .transition(opacity 0.2 ease);
+    }
+    &[type="gauge"] {
+        height: 80px;
     }
 }
 /* ToolTip */

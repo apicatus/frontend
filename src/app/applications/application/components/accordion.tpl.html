@@ -22,6 +22,12 @@
                         </tab-heading>
                         <div ng-include="'applications/application/components/demo/demo.tpl.html'"></div>
                     </tab>
+                    <tab ng-controller="MonitorCtrl as monitor" ng-click="monitor.init(method)">
+                        <tab-heading>
+                            <i class="fa fa-list-alt"></i> Monitor
+                        </tab-heading>
+                        <div ng-include="'applications/application/components/monitor/monitor.tpl.html'"></div>
+                    </tab>
                     <tab ng-controller="LogsCtrl as logs" ng-click="logs.init(method)">
                         <tab-heading>
                             <i class="fa fa-list-alt"></i> Logs

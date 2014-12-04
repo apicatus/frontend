@@ -11,8 +11,15 @@ angular.module( 'apicatus.dashboard.behavior', [
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state('main.dashboard.behavior', {
         url: '/behavior/:id/?since&until',
-        templateUrl: 'dashboard/behavior/behavior.tpl.html',
-        controller: 'DashboardBehaviorCtrl as behavior',
+        views: {
+            'widgets': {
+                templateUrl: 'dashboard/behavior/behavior.tpl.html',
+                controller: 'DashboardBehaviorCtrl as behavior'
+            },
+            'periodSelector': {
+                templateUrl: 'dashboard/components/periodSelector.tpl.html'
+            }
+        },
         resolve: {
             transferStatistics: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
                 if($stateParams.id) {

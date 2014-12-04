@@ -7,7 +7,7 @@
                 <inline-line-chart data="card.barChart.data" options="{height: '100%', width: '100%', fill: ['rgba(255,255,255,0.25)'], stroke: ['rgba(255,255,255,0.5)']}"></inline-line-chart>
                 <!-- line-chart title="{{title}}" data="[1,20,30,4,5,66,44,33,22,1,2,4,55]" key="time"></line-chart -->
                 <button class="btn api-setup pull-right" ng-click="flipped=!flipped" ng-show="api.imOwner"><i class="fa fa-cogs"></i></button>
-                <div class="api-heartbeat"><i class="fa fa-heart"></i></div>
+                <div class="api-heartbeat" heartbeat="{{api._id}}"><i class="fa fa-fw fa-heart"></i></div>
             </div>
             <div class="current-price container">
                 <div class="info col-sm-6">

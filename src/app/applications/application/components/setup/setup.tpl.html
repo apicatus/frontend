@@ -116,44 +116,30 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr ng-repeat="assert in method.assertions">
                                     <td>
-                                        <select class="form-control" name="assertion-source-type">
-                                            <option value="json">JSON Body</option>
-                                            <option value="xml">XML Body</option>
-                                            <option value="headers">Response Headers</option>
-                                            <option value="body">Text Body</option>
-                                            <option value="status">Status Code</option>
-                                            <option value="meta.response_time_ms">Response Time (ms)</option>
-                                            <option value="meta.size_bytes">Response Size (bytes)</option>
-                                        </select>
+                                        <select class="form-control" ng-model="assert.source" ng-options="source.id as source.label group by source.group for source in assertionSources"></select>
                                     </td>
                                     <td>
-                                        <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
-                                        <input type="text" name="assertion-source-path" class="editable ui-autocomplete-input" placeholder="Enter property" autocomplete="off" style="display: none;">
-                                        <span class="noneditable">--</span>
+                                        <input type="text" class="form-control" ng-if="(assertionSources | filter:{id: assert.source})[0].needsProperty" ng-model="assert.property" name="assertion-source-path" placeholder="Enter property" autocomplete="off">
+                                        <span ng-if="!(assertionSources | filter:{id: assert.source})[0].needsProperty"> --- </span>
                                     </td>
                                     <td>
-                                        <select class="form-control" name="assertion-assert">
-                                            <option value="eq">equals (number)</option>
-                                            <option value="lt">less than</option>
-                                            <option value="lte">less than or equal</option>
-                                            <option value="gt">greater than</option>
-                                            <option value="gte">greater than or equal</option>
-                                        </select>
+                                        <select class="form-control" id="assertion-source-type" ng-model="assert.assertion" ng-options="assertion.id as assertion.label group by assertion.group for assertion in assertions | filterBySource:assert.source"></select>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" placeholder="Enter target value">
+                                        <input type="text" class="form-control" ng-if="(assertions | filter:{id: assert.assertion})[0].needsValue" ng-model="assert.value" class="form-control" placeholder="Enter target value">
+                                        <span ng-if="!(assertions | filter:{id: assert.assertion})[0].needsValue"> --- </span>
                                     </td>
                                     <td class="text-right">
                                         <button type="button" class="btn btn-sm btn-default"><i class="fa fa-remove"></i></button>
                                     </td>
                                 </tr>
-                                <!--/ko -->
                             </tbody>
                         </table>
                     </tab>
                 </tabset>
+                <button type="button" class="btn btn-sm btn-default" ng-click="addAssertion(method)"><i class="fa fa-plus"></i> Add assertion</button>
             </div>
         </div>
     </fieldset>

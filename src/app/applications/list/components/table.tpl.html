@@ -16,7 +16,10 @@
             <tr ng-repeat="api in applications.apis | orderBy:sort.property:sort.reverse" ng-controller="TableCtrl as table" ng-init="table.init(api, summaries)">
                 <td class="text-center"><i class="fa" ng-class="api.enabled ? 'fa-check-circle' : 'fa-circle-thin'"></i></td>
                 <td class="text-center"><i class="fa" ng-class="api.proxy.enabled ? 'fa-check-circle' : 'fa-circle-thin'"></i></td>
-                <td><a ui-sref="main.applications.application({id: api._id})">{{api.name}}</a></td>
+                <td>
+                    <a ui-sref="main.applications.application({id: api._id})">{{api.name}}</a>
+                    <div class="api-heartbeat" heartbeat="{{api._id}}"><i class="fa fa-fw fa-heart"></i></div>
+                </td>
                 <td class="text-right">{{ table.summary.current.doc_count | humanize }}</td>
                 <td class="text-right">{{ table.summary.current.stats.avg | number:0 }}ms</td>
                 <td class="text-right">{{ api.lastAccess | timeago }}</td>

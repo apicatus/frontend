@@ -35,7 +35,7 @@ angular.module( 'apicatus.dashboard', [
         abstract: true,
         template: '<ui-view/>',
         views: {
-            "main": {
+            'main': {
                 controller: 'DashboardCtrl',
                 templateUrl: 'dashboard/dashboard.tpl.html'
             }
@@ -47,16 +47,6 @@ angular.module( 'apicatus.dashboard', [
         },
         data: { pageTitle: 'Dashboard' },
         authenticate: true
-    })
-    .state('main.dashboard.realtime', {
-        url: '/realtime/:id',
-        templateUrl: 'dashboard/realtime/realtime.tpl.html',
-        controller: 'DashboardRealTimeCtrl as realtime',
-        data: { pageTitle: 'RealTime Monitor' },
-        //authenticate: true,
-        onEnter: function(){
-            console.log("enter realtime");
-        }
     })
     .state('main.dashboard.timeline', {
         url: '/timeline',

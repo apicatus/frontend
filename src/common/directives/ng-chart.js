@@ -41,16 +41,18 @@ angular.module('ngChart', ['D3Service'])
                 chartEl.call(chart.width(width));
                 chartEl.call(chart.options(scope.options));
 
+                // Update Options
+                scope.$watch('options', function (newVal, oldVal) {
+                    chartEl.call(chart.options(newVal));
+                }, true);
+
+                // Data
                 if(scope.data && scope.data.length > 0 ) {
                     chartEl.datum(scope.data).call(chart);
                 }
                 // Update series data
                 scope.$watchCollection('data', function (newVal, oldVal) {
                     chartEl.datum(newVal).call(chart);
-                }, true);
-                // Update Options
-                scope.$watch('options', function (newVal, oldVal) {
-                    chartEl.call(chart.options(newVal));
                 }, true);
             };
 

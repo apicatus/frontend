@@ -12,6 +12,7 @@ angular.module('worldMap', ['D3Service', 'ProjectionService', 'TopoJsonService']
             title: '@',
             data: '=',
             addRoute: '=',
+            options: '=',
             hovered: '&hovered'
         },
         controller: function( $scope, $element, $attrs, D3Service, ProjectionService, TopoJsonService) {
@@ -27,12 +28,23 @@ angular.module('worldMap', ['D3Service', 'ProjectionService', 'TopoJsonService']
                 worldmap.height(height);
                 worldmap.width(width);
 
+                // Update Options
+                $scope.$watch('options', function (newVal, oldVal) {
+                    console.log("map options: ", newVal);
+                    if(newVal) {
+                        worldmap.options(newVal);
+                    }
+                }, true);
+
                 $scope.$watchCollection('data', function (newVal, oldVal) {
                     el.datum(newVal).call(worldmap);
                 }, true);
 
+                // Add Routes
                 $scope.$watch('addRoute', function (newVal, oldVal) {
-                    worldmap.addRoute(newVal.origin, newVal.destination);
+                    if(newVal) {
+                        worldmap.addRoute(newVal.origin, newVal.destination);
+                    }
                 }, false);
 
             });

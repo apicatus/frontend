@@ -271,6 +271,26 @@ angular.module('countryCode', [])
             } catch (error) {
                 console.log("ERROR: ", error, countryCode);
             }
+        },
+        isoConvert: function(alphaCode) {
+            if(alphaCode.length == 2) {
+                try {
+                return countryNames().filter(function(country) {
+                        return country[0] == alphaCode.toUpperCase();
+                    })[0][1];
+                } catch (error) {
+                    console.log("ERROR: ", error, countryCode);
+                }
+            } else {
+                try {
+                return countryNames().filter(function(country) {
+                        return country[1] == alphaCode.toUpperCase();
+                    })[0][0];
+                } catch (error) {
+                    console.log("ERROR: ", error, countryCode);
+                }
+            }
         }
+
     };
 }]);

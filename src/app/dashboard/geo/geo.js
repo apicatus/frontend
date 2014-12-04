@@ -11,8 +11,15 @@ angular.module( 'apicatus.dashboard.geo', [
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state('main.dashboard.geo', {
         url: '/geo/:id/?since&until',
-        templateUrl: 'dashboard/geo/geo.tpl.html',
-        controller: 'DashboardGeoCtrl as geo',
+        views: {
+            'widgets': {
+                templateUrl: 'dashboard/geo/geo.tpl.html',
+                controller: 'DashboardGeoCtrl as geo'
+            },
+            'periodSelector': {
+                templateUrl: 'dashboard/components/periodSelector.tpl.html'
+            }
+        },
         resolve: {
             geoStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
                 if($stateParams.id) {
@@ -79,13 +86,24 @@ angular.module( 'apicatus.dashboard.geo', [
         return undefined;
     };
 
+    geo.mapOptions = {
+        plotOptions: {
+            fill: '#EEEFF3'
+        },
+        colorAxis: {
+            minColor: '#C8EEFF',
+            maxColor: '#49c5b1'
+        }
+    };
     if(!geoStatistics.summary.buckets.length) {
         geo.hasData = false;
     } else {
         geo.statistics = geoStatistics.summary.buckets;
         // Put real country name
         geo.statistics.forEach(function(country){
-            country.name = countryCode.convert(country.key);
+            //country.name = countryCode.convert(country.key);
+            country.key = countryCode.isoConvert(country.key);
+            country.value = country.doc_count;
         });
         geo.map = geo.statistics;
         geo.maxCountries = geo.statistics.reduce(function(pv, cv) {

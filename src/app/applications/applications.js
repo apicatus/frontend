@@ -87,7 +87,7 @@ angular.module( 'apicatus.applications', [
 ///////////////////////////////////////////////////////////////////////////////
 // Applications controller                                                   //
 ///////////////////////////////////////////////////////////////////////////////
-.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $interval, $modal, fileReader, Restangular, apis, summaries ) {
+.controller( 'ApplicationsCtrl', function ApplicationsController( $scope, $location, $interval, $modal, fileReader, Restangular, mySocket, apis, summaries ) {
 
     apis.forEach(function(api){
         var index = $scope.user.digestors.indexOf(api._id);
@@ -230,6 +230,17 @@ angular.module( 'apicatus.applications', [
             }
         );
     };
+
+
+    // SocketIO notifications
+    mySocket.on('message', function(result){
+        //console.log('WebSocket: ', result.log.digestor);
+    });
+
+    $scope.$on('$destroy', function() {
+        console.log('leave realtime ');
+        mySocket.removeListener('message');
+    });
 })
 ///////////////////////////////////////////////////////////////////////////////
 // Single Card controller                                                    //
@@ -322,6 +333,31 @@ angular.module( 'apicatus.applications', [
         }
     };
 })
+///////////////////////////////////////////////////////////////////////////////
+// Heartbeat Directive                                                       //
+///////////////////////////////////////////////////////////////////////////////
+.directive( 'heartbeat', ['$timeout', '$q', 'mySocket', function($rootScope, $timeout, $q, mySocket) {
+    return {
+        restrict: 'A',
+        scope: {
+            heartbeat: '@'
+        },
+        controller: function($scope, $element, mySocket) {
+
+            mySocket.on('message', function(result){
+                //console.log('heartbeat: ', $scope.heartbeat, result.log.digestor, ($scope.heartbeat == result.log.digestor));
+                if($scope.heartbeat == result.log.digestor) {
+                    $element.toggleClass('visible');
+                }
+            });
+
+            $scope.$on('$destroy', function() {
+                console.log('leave realtime ');
+                mySocket.removeListener('message');
+            });
+        }
+    };
+}])
 ///////////////////////////////////////////////////////////////////////////////
 // Object to Array filter                                                    //
 ///////////////////////////////////////////////////////////////////////////////

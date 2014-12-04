@@ -35,6 +35,23 @@ applications {
         }
     }
 
+    .api-heartbeat {
+        background-color: transparent;
+        display: inline;
+        color: @brand-danger;
+        opacity: 0;
+        left: 0;
+        top: 0;
+        transition: all 0.25s ease-in-out;
+        outline: none;
+        margin: 5px;
+        padding: 2px 2px;
+        border-radius: @border-radius-base;
+        &.visible {
+            opacity: 1;
+        }
+    }
+
     /* TODO: MOVE TO APP LIST */
     .container {
         max-width: 100%;
@@ -93,18 +110,6 @@ applications {
             }
             .api-heartbeat {
                 position: absolute;
-                background-color: transparent;
-                color: #fff;
-                opacity: 0;
-                left: 0;
-                top: 0;
-                transition: all 0.25s ease-in-out;
-                outline: none;
-                margin: 5px;
-                padding: 2px 6px;
-                &:hover {
-                    background-color: rgba(0, 0, 0, 0.5);
-                }
             }
             .stock-chart {
                 border-top-left-radius: 0.3rem;

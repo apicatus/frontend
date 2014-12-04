@@ -44,11 +44,11 @@ charts.gauge = function module() {
     var svg,
         chart = null,
         percent = 0.15,
-        barWidth = 40,
+        barWidth = 20,
         numSections = 10,
         sectionPerc = 1 / numSections / 2,
         padRad = 0.025,
-        chartInset = 10,
+        chartInset = 0,
         totalPercent = 0.75,
         duration = 650;
 
@@ -61,7 +61,7 @@ charts.gauge = function module() {
     var options = {
         chart: {
             type: 'area',
-            margin: {top: 20, right: 20, bottom: 30, left: 35}
+            margin: {top: 0, right: 0, bottom: 0, left: 0}
         },
         plotOptions: {
             interpolate: 'basis',
@@ -195,7 +195,7 @@ charts.gauge = function module() {
 
                 })();
 
-                needle = new Needle(90, 15);
+                needle = new Needle(size.height / 3, 5);
 
                 needle.drawOn(chart, 0);
 

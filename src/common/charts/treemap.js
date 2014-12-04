@@ -5,16 +5,46 @@ charts.treemap = function module() {
         width = 500,
         height = 500,
         gap = 0,
+        color = null,
         ease = 'cubic-in-out';
     var svg, pathContainer = null, duration = 650;
     var treemap = null;
     var dispatch = d3.dispatch('customHover');
 
     var coloretes = ['#a00040', '#d73c4c', '#f66d39', '#ffaf5a', '#fee185', '#feffbb', '#e6f693', '#abdea3', '#63c4a5', '#2c87be'];
+
     var options = {
         chart: {
-            type: 'treemap',
-            margin: {top: 0, right: 0, bottom: 20, left: 0}
+            type: 'worldmap',
+            margin: {top: 0, right: 0, bottom: 0, left: 0},
+            tooltip: {
+                enabled: false
+            }
+        },
+        plotOptions: {
+            fillOpacity: 0.5,
+            series: {
+                animation: false,
+                units: null,
+                stroke: true,
+                labels: {
+                    formatter: function (tick) {
+                        return tick;
+                    }
+                }
+            }
+        },
+        colorAxis: {
+            minColor: '#616D7D',
+            maxColor: '#00acac',
+            stops: [
+                [100, '#2c87be'],
+                [200, '#2c87be'],
+                [300, '#63c4a5'],
+                [400, '#CF5AFF'],
+                [500, '#ffaf5a'],
+                [600, '#a00040']
+            ]
         }
     };
     function exports(_selection) {
@@ -25,10 +55,22 @@ charts.treemap = function module() {
             }
             function draw(data) {
                 var size = {
-                    'width': width - margin.left - margin.right,
-                    'height': height - margin.top - margin.bottom
+                    'width': width - options.chart.margin.left - options.chart.margin.right,
+                    'height': height - options.chart.margin.top - options.chart.margin.bottom
                 };
-                var color = d3.scale.category10();
+
+                if(options.colorAxis.stops) {
+                    color = d3.scale.threshold()
+                        .domain(options.colorAxis.stops.map(function(threshold){
+                            return threshold[0];
+                        }))
+                        .range(options.colorAxis.stops.map(function(threshold){
+                            return threshold[1];
+                        }));
+                } else {
+                    color = d3.scale.category10();
+                }
+
 
                 treemap = d3.layout.treemap()
                     .size([size.width, size.height])
@@ -102,7 +144,7 @@ charts.treemap = function module() {
         });
     }
     exports.options = function(opt) {
-        options = angular.extend(options, opt);
+        options = $.extend(true, {}, options, opt);
         return this;
     };
     exports.width = function(w) {

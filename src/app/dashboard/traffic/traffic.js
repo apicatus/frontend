@@ -9,8 +9,15 @@ angular.module( 'apicatus.dashboard.traffic', [
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state('main.dashboard.traffic', {
         url: '/traffic/:id/?since&until',
-        templateUrl: 'dashboard/traffic/traffic.tpl.html',
-        controller: 'DashboardTrafficCtrl as traffic',
+        views: {
+            'widgets': {
+                templateUrl: 'dashboard/traffic/traffic.tpl.html',
+                controller: 'DashboardTrafficCtrl as traffic'
+            },
+            'periodSelector': {
+                templateUrl: 'dashboard/components/periodSelector.tpl.html'
+            }
+        },
         resolve: {
             transferStatistics: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
                 if($stateParams.id) {

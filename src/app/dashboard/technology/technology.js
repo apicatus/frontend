@@ -10,8 +10,15 @@ angular.module( 'apicatus.dashboard.technology', [
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state('main.dashboard.technology', {
         url: '/technology/:id/?since&until',
-        templateUrl: 'dashboard/technology/technology.tpl.html',
-        controller: 'DashboardTechnologyCtrl as technology',
+        views: {
+            'widgets': {
+                templateUrl: 'dashboard/technology/technology.tpl.html',
+                controller: 'DashboardTechnologyCtrl as technology'
+            },
+            'periodSelector': {
+                templateUrl: 'dashboard/components/periodSelector.tpl.html'
+            }
+        },
         resolve: {
             agentStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
                 if($stateParams.id) {
