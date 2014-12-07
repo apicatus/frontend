@@ -72,7 +72,82 @@ angular.module( 'apicatus.dashboard.realtime', [
     }, 10 * 1000);
 
 
+    realtime.rtMap = {
+        regions: [
+            {
+                name: 'hits',
+                minColor: 'rgb(102, 132, 186)',
+                maxColor: 'rgb(36, 88, 181)',
+                data: [{
+                    key: 'ARG',
+                    value: 123
+                }, {
+                    key: 'RUS',
+                    value: 800
+                }, {
+                    key: 'PRY',
+                    value: 1000
+                }, {
+                    key: 'VEN',
+                    value: 12
+                }, {
+                    key: 'USA',
+                    value: 1500
+                }]
+            }
+        ],
+        routes: [{
+            name: 'traffic',
+            stroke: '#f00',
+            animate: false,
+            data: [[-58.5201, -34.5309], [-74, 40.71]]
+        }],
+        markers: [{
+            id: 'womman',
+            minColor: '#FFF',
+            maxColor: '#49c5b1',
+            fillOpacity: 0.65,
+            minSize: 0,
+            maxSize: 30,
+            animate: false,
+            data: [{
+                id: 'ARG',
+                longitude: -58.5201,
+                latitude: -34.5309,
+                value: 1500
+            }, {
+                id: 'Other',
+                longitude: -74,
+                latitude: 40.71,
+                value: 2500
+            }]
+        }, {
+            id: 'man',
+            minColor: 'rgb(102, 132, 186)',
+            maxColor: 'rgb(36, 88, 181)',
+            fillOpacity: 0.65,
+            minSize: 0,
+            maxSize: 30,
+            animate: false,
+            data: [{
+                id: 'Maldives',
+                longitude: 73.22,
+                latitude: 3.2,
+                value: 3500
+            }, {
+                id: 'Singapore',
+                longitude: 103.8,
+                latitude: 1.3,
+                value: 500
+            }]
+        }]
+    };
 
+    $interval(function(){
+        realtime.rtMap.markers[0].data[0].value = Math.random() * 15000;
+        realtime.rtMap.regions[0].data[0].value = Math.random() * 15000;
+        realtime.rtMap.routes = [];
+    }, 1000);
     // SocketIO notifications
     mySocket.on('message', function(result){
         realtime.transactions += 1;
@@ -89,16 +164,18 @@ angular.module( 'apicatus.dashboard.realtime', [
 
         //console.log('WebSocket: ', realtime.log);
         if(result.log.geo) {
-            console.log('WebSocket: ', countryCode.isoConvert(realtime.log.geo.country));
+            //console.log('WebSocket: ', countryCode.isoConvert(realtime.log.geo.country));
             realtime.route = {
                 origin: [result.log.geo.ll[1], result.log.geo.ll[0]], //features[Math.floor(Math.random() * features.length)].geometry.coordinates, //[-74, 40.71],
                 destination: [-74, 40.71]
             };
+            //realtime.rtMap.routes[0].data = [[result.log.geo.ll[1], result.log.geo.ll[0]], [-74, 40.71]];
         } else {
             realtime.route = {
                 origin: features[Math.floor(Math.random() * features.length)].geometry.coordinates, //[-74, 40.71],
                 destination: [-74, 40.71]
             };
+            //realtime.rtMap.routes[0].data = [features[Math.floor(Math.random() * features.length)].geometry.coordinates, [-74, 40.71]];
         }
     });
 
@@ -107,26 +184,4 @@ angular.module( 'apicatus.dashboard.realtime', [
         mySocket.removeListener('message');
     });
 
-
-    realtime.route = {
-        origin: [-58.5201, -34.5309],
-        destination: [-74, 40.71]
-    };
-
-    realtime.worldMap = [{
-        key: 'ARG',
-        value: 123
-    }, {
-        key: 'RUS',
-        value: 800
-    }, {
-        key: 'PRY',
-        value: 1000
-    }, {
-        key: 'VEN',
-        value: 12
-    }, {
-        key: 'USA',
-        value: 1500
-    }];
 });

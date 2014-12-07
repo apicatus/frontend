@@ -223,7 +223,6 @@ ng-chart {
     width: 100%;
     height: 320px;
     background-color: transparent;
-    cursor: crosshair;
     position: relative;
     .needle {
         line {
@@ -282,8 +281,97 @@ ng-chart {
         font-size: 10px;
         .transition(opacity 0.2 ease);
     }
+
+    .tooltip {
+        color: @brand-primary;
+        background-color: #242a30;
+        padding: 2px 5px;
+        border-radius: @border-radius-base;
+        line-height: 18px;
+        opacity: 1;
+        position: absolute;
+        pointer-events: none;
+        //.translate(-50%, -50%);
+        .transition(all 0.25s ease);
+        &:after {
+            top: 100%;
+            left: 50%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+            border-color: rgba(255, 255, 255, 0);
+            border-top-color: #242a30;
+            border-width: 4px;
+            margin-left: -4px;
+        }
+        span.text {
+            font-weight: 100;
+        }
+        span.value {
+            color: #fff;
+            font-weight: normal;
+        }
+    }
+    .hidden {
+        display: none;
+    }
     &[type="gauge"] {
         height: 80px;
+    }
+    &[type="worldmap"] {
+        .country {
+            fill: #EEEFF3;
+            stroke: #FFF;
+            stroke-width: 1px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            //vector-effect: non-scaling-stroke;
+            &:hover {
+                fill: #555555 !important;
+            }
+        }
+        .night {
+            stroke: steelblue;
+            fill: steelblue;
+            fill-opacity: .3;
+            pointer-events: none;
+        }
+        .route {
+            fill: none;
+            stroke: darken(@brand-primary, 15%);
+        }
+        .zoom-buttons {
+            -webkit-user-select: none;
+               -moz-user-select: none;
+                -ms-user-select: none;
+                 -o-user-select: none;
+                    user-select: none;
+            g {
+                fill: #A1A1A1;
+                cursor: pointer;
+                .transition(all 0.25s ease);
+                &:hover {
+                    fill: @brand-primary;
+                }
+                text {
+                    font-size: 1em;
+                    fill: #fff;
+                    font-weight: lighter;
+                }
+            }
+        }
+        .overlay {
+            fill: none;
+            pointer-events: all;
+        }
+        text, .label {
+            font-size: 0.80em;
+            fill: @gray;
+            font-weight: 100;
+        }
     }
 }
 /* ToolTip */

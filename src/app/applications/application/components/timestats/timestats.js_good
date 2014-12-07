@@ -135,13 +135,21 @@ angular.module( 'apicatus.application.timestats', [])
         series: [
             {
                 name: 'avg',
-                stroke: '#2980b9',
+                stroke: '#2c3e50',
                 data: []
             }
         ]
     };
     // Transactions per minute histogram
-    statistics.tpmHistogram = angular.copy(statistics.latencyHistogram);
+    statistics.tpmHistogram = {
+        series: [
+            {
+                name: 'avg',
+                stroke: '#49c5b1',
+                data: []
+            }
+        ]
+    };
     // Min Max Range
     statistics.latencyRangeHistogram = {
         series: [
@@ -185,7 +193,31 @@ angular.module( 'apicatus.application.timestats', [])
         ]
     };
 
-    statistics.percentBars = angular.copy(statistics.normalBars);
+    statistics.percentBars = {
+        series: [
+            {
+                name: 'Success',
+                stroke: '#27ae60',
+                fill: '#27ae60',
+                data: []
+            }, {
+                name: 'Redirection',
+                stroke: '#2980b9',
+                fill: '#2980b9',
+                data: []
+            }, {
+                name: 'Client Error',
+                stroke: '#f1c40f',
+                fill: '#f1c40f',
+                data: []
+            }, {
+                name: 'Server Error',
+                stroke: '#c0392b',
+                fill: '#c0392b',
+                data: []
+            }
+        ]
+    };
 
     // Response time vs Requests per XXX
     statistics.scatterplot = {
@@ -299,17 +331,34 @@ angular.module( 'apicatus.application.timestats', [])
             // Average response histogram
             statistics.latencyHistogram.series[0].data = statistics.timeStatsByDate.avg;
 
+
+
             // Transactions per minute histogram
             statistics.tpmHistogram.series[0].data = records.aggregations.history.buckets.map(function(history){
                 return history.doc_count || 0;
             });
 
-            // Min Max Range
-            statistics.latencyRangeHistogram.series[0].data = statistics.timeStatsByDate.min.map(function(min, index){
-                return [min, statistics.timeStatsByDate.max[index]];
-            });
-            statistics.latencyRangeHistogram.series[1].data = statistics.timeStatsByDate.avg;
+            if(true) {
+                return;
+            }
 
+            // Min Max Range
+            statistics.latencyRangeHistogram = {
+                series: [
+                    {
+                        name: 'range',
+                        stroke: '#2980b9',
+                        data: statistics.timeStatsByDate.min.map(function(min, index){
+                            return [min, statistics.timeStatsByDate.max[index]];
+                        })
+                    }, {
+                        name: 'avg',
+                        stroke: '#2980b9',
+                        data: statistics.timeStatsByDate.avg,
+                        linkedTo: ':previous'
+                    }
+                ]
+            };
 
             // Min Max Range
             statistics.normalBars = {
@@ -338,9 +387,31 @@ angular.module( 'apicatus.application.timestats', [])
                 ]
             };
 
-            statistics.percentBars.series.forEach(function(serie, index){
-                serie.data = statistics.responseClassesStack[index + 1].data;
-            });
+            statistics.percentBars = {
+                series: [
+                    {
+                        name: 'Success',
+                        stroke: '#27ae60',
+                        fill: '#27ae60',
+                        data: statistics.responseClassesStack[1].data
+                    }, {
+                        name: 'Redirection',
+                        stroke: '#2980b9',
+                        fill: '#2980b9',
+                        data: statistics.responseClassesStack[2].data
+                    }, {
+                        name: 'Client Error',
+                        stroke: '#f1c40f',
+                        fill: '#f1c40f',
+                        data: statistics.responseClassesStack[3].data
+                    }, {
+                        name: 'Server Error',
+                        stroke: '#c0392b',
+                        fill: '#c0392b',
+                        data: statistics.responseClassesStack[4].data
+                    }
+                ]
+            };
 
             // Response time vs Requests per XXX
             statistics.scatterplot = {

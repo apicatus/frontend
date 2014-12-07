@@ -36,7 +36,7 @@
 
 var charts = charts || {};
 
-charts.normalBarChart = function module() {
+charts.bar = function module() {
     var width = 500,
         height = 500,
         gap = 0,

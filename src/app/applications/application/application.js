@@ -7,9 +7,9 @@ angular.module( 'apicatus.application', [
     'apicatus.application.logs',
     'apicatus.application.timestats',
     'apicatus.application.datastats',
+    'apicatus.application.geo',
     'queryFactory',
     'ngAssertions',
-    'vectorMap',
     'normalBarChart',
     'ngChart'
 ])
@@ -352,11 +352,9 @@ angular.module( 'apicatus.application', [
         });
     };
 
-    // SocketIO notifications
-    mySocket.on('message', function(result){
-        console.log('WebSocket: ', result.log.digestor);
-    });
-
+    ///////////////////////////////////////////////////////////////////////////
+    // Destroy SocketIO listener                                             //
+    ///////////////////////////////////////////////////////////////////////////
     $scope.$on('$destroy', function() {
         console.log('leave realtime ');
         mySocket.removeListener('message');
@@ -390,37 +388,6 @@ angular.module( 'apicatus.application', [
         $scope.$broadcast('changePeriod', period);
     };
 
-}])
-.controller( 'MapCtrl', ['$timeout', 'Restangular', function MapController($timeout, Restangular) {
-
-    var map = this;
-    var since = new Date().setMinutes(new Date().getMinutes() - 60);
-    var until = new Date().getTime();
-
-    map.worldMap = [{
-        latLng: [40.71, -74],
-        name: "New York"
-    }, {
-        latLng: [39.9, 116.4],
-        name: "Beijing"
-    }, {
-        latLng: [31.23, 121.47],
-        name: "Shanghai"
-    }, {
-        latLng: [-33.86, 151.2],
-        name: "Sydney"
-    }];
-    map.load = function(method) {
-        Restangular.one('geo/method', method._id).get({since: since, until: until}).then(function(records) {
-            map.data = records.summary.buckets;
-        }, function(error) {
-            console.log("error getting analitics: ", error);
-        });
-    };
-    map.init = function(method) {
-        map.method = method;
-        map.load(map.method);
-    };
 }])
 .directive( 'loading', ['$rootScope', '$timeout', '$q', 'ngRequestNotify', function($rootScope, $timeout, $q, ngRequestNotify) {
     return {

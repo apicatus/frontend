@@ -1,0 +1,27 @@
+monitor {
+    ul.tasks {
+        padding: 0px;
+        > li {
+            list-style: none;
+            border: 1px solid #ccc;
+            border-radius: @border-radius-base;
+            margin-bottom: 10px;
+            border-left: 2px solid @brand-primary;
+            background-color: rgba(255, 255, 255, 0.75);
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.06);
+            .info {
+                padding: 10px;
+                cursor: pointer;
+                -webkit-user-select: none;
+                        user-select: none;
+                .method {
+                    margin-bottom: 0px;
+                }
+            }
+            .details {
+                border-top: 1px dashed #eee;
+                padding: 10px;
+            }
+        }
+    }
+}

@@ -4,7 +4,8 @@
             <div class="panel panel-default">
                 <div class="panel-body" style="padding:5px;">
                     <!-- vector-map series="geo.map"></vector-map -->
-                    <world-map data="geo.map" options="geo.mapOptions"></world-map>
+                    <!-- world-map data="geo.map" options="geo.mapOptions"></world-map -->
+                    <ng-chart type="worldmap" data="geo.map" options="geo.mapOptions"></ng-chart>
                 </div>
             </div>
         </div>
@@ -26,7 +27,7 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="region in geo.statistics">
-                                <td><img ng-src="https://cdn.rawgit.com/maggiben/iso-country-flags/master/svg/country-4x3/{{region.key}}.svg" class="flag"> {{region.name}}</td>
+                                <td><img ng-src="http://cdn.rawgit.com/maggiben/iso-country-flags/master/svg/country-4x3/{{region.flag}}.svg" class="flag"> {{region.name}}</td>
                                 <td class="text-right">{{region.doc_count}}</td>
                                 <td>
                                     <progressbar class="progress-flat" max="geo.maxCountries" value="region.doc_count" type="primary"></progressbar>

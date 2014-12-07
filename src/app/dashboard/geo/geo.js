@@ -16,8 +16,8 @@ angular.module( 'apicatus.dashboard.geo', [
                 templateUrl: 'dashboard/geo/geo.tpl.html',
                 controller: 'DashboardGeoCtrl as geo'
             },
-            'periodSelector': {
-                templateUrl: 'dashboard/components/periodSelector.tpl.html'
+            'toolbar': {
+                templateUrl: 'dashboard/components/toolbar.tpl.html'
             }
         },
         resolve: {
@@ -101,11 +101,20 @@ angular.module( 'apicatus.dashboard.geo', [
         geo.statistics = geoStatistics.summary.buckets;
         // Put real country name
         geo.statistics.forEach(function(country){
-            //country.name = countryCode.convert(country.key);
+            country.name = countryCode.convert(country.key);
+            country.flag = country.key;
             country.key = countryCode.isoConvert(country.key);
             country.value = country.doc_count;
         });
-        geo.map = geo.statistics;
+        console.log("geo.statistics: ", geo.statistics);
+        geo.map = {
+            regions: [{
+                name: 'hits',
+                minColor: '#0F0',
+                maxColor: '#F00',
+                data: geo.statistics
+            }]
+        };
         geo.maxCountries = geo.statistics.reduce(function(pv, cv) {
             return pv + cv.doc_count;
         }, 0);

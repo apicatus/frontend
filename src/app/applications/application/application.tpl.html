@@ -29,11 +29,11 @@
                         </button>
                     </div>
                 </div>
-                <div class="col-md-2 pull-right master-search">
-                    <input type="text" name="search" autocomplete="off" id="id_search" typeahead="endpoint.name for endpoint in api.endpoints | filter:$viewValue | limitTo:8" class="form-control" maxlength="200" placeholder="Search" ng-model="settings.application.query" name="query">
-                    <span class="icon input-group-btn">
+                <div class="col-md-2 pull-right">
+                    <input type="text" name="search" autocomplete="off" id="id_search" typeahead="endpoint.name for endpoint in api.endpoints | filter:$viewValue | limitTo:8" class="form-control" maxlength="200" placeholder="Search" ng-model="settings.application.query" name="query" ng-master-search>
+                    <!-- span class="icon input-group-btn">
                         <i class="fa fa-search"></i>
-                    </span>
+                    </span -->
                 </div>
             </div>
         </div>

@@ -21,7 +21,8 @@
                     </tab-heading>
                     <div class="row">
                         <div class="col-md-8">
-                            <vector-map series="technology.worldMap" style="width:100%;height:350px;display:block;"></vector-map>
+                            <ng-chart type="worldmap" data="technology.map" options="technology.mapOptions"></ng-chart>
+                            <!-- vector-map series="technology.worldMap" style="width:100%;height:350px;display:block;"></vector-map -->
                         </div>
                         <div class="col-md-4">
                             <donut-chart data="technology.deviceTypeSplit" style="width:100%;height:350px;display:block;"></donut-chart>

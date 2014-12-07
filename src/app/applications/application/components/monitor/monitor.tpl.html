@@ -1,3 +1,108 @@
-<ul>
-    <li>Task</li>
-</ul>
+<monitor>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group">
+                    <div class="btn-group">
+                        <button class="btn btn-default">
+                            <i class="fa fa-save"></i>
+                        </button>
+                        <button class="btn btn-default" ng-click="logs.deleteLogs()">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-2 pull-right">
+                    <input type="text" name="search" autocomplete="off" id="searchLog" class="form-control" maxlength="200" placeholder="Search" name="searchLog" ng-model="logs.findWhat" ng-change="logs.find()" ng-model-options="{debounce: {'default': 500, 'blur': 0}}" ng-master-search />
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul class="tasks">
+        <li ng-repeat="task in monitor.tasts">
+            <div class="info">
+                <div class="row">
+                    <div class="col-sm-9" ng-click="taskDetails = !taskDetails">
+                        <a><i class="fa fa-fw" ng-class="taskDetails ? 'fa-caret-down' : 'fa-caret-right'"></i>{{task.name}}</a>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="btn-toolbar pull-right" role="toolbar">
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-default">
+                                    <i class="fa fa-save"></i>
+                                </button>
+                                <button class="btn btn-sm btn-default">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row method">
+                    <div class="col-lg-12">
+                        <span class="label ng-binding label-success">Success</span>
+                    </div>
+                </div>
+            </div>
+            <div class="details" collapse="!taskDetails">
+                <tabset >
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-fw fa-gears"></i> Setup
+                        </tab-heading>
+                        <h1>Hello</h1>
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-fw fa-clock-o"></i> Schedule
+                        </tab-heading>
+                        <h1>Benjamin</h1>
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-fw fa-shield"></i> Assertions
+                        </tab-heading>
+                        <table class="table table-condensed primary-table">
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Property</th>
+                                    <th>Comparison</th>
+                                    <th>Target Value</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="assert in method.assertions">
+                                    <td>
+                                        <select class="form-control" ng-model="assert.source" ng-options="source.id as source.label group by source.group for source in assertionSources"></select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" ng-if="(assertionSources | filter:{id: assert.source})[0].needsProperty" ng-model="assert.property" name="assertion-source-path" placeholder="Enter property" autocomplete="off">
+                                        <span ng-if="!(assertionSources | filter:{id: assert.source})[0].needsProperty"> --- </span>
+                                    </td>
+                                    <td>
+                                        <select class="form-control" id="assertion-source-type" ng-model="assert.assertion" ng-options="assertion.id as assertion.label group by assertion.group for assertion in assertions | filterBySource:assert.source"></select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" ng-if="(assertions | filter:{id: assert.assertion})[0].needsValue" ng-model="assert.value" class="form-control" placeholder="Enter target value">
+                                        <span ng-if="!(assertions | filter:{id: assert.assertion})[0].needsValue"> --- </span>
+                                    </td>
+                                    <td class="text-right">
+                                        <button type="button" class="btn btn-sm btn-default" ng-click="removeAssertion(method, assert, $index)"><i class="fa fa-remove"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <button type="button" class="btn btn-sm btn-default" ng-click="addAssertion(method)"><i class="fa fa-plus"></i> Add assertion</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </tab>
+                </tabset>
+            </div>
+        </li>
+    </ul>
+</monitor>

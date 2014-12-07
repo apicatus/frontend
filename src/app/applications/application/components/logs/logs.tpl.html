@@ -11,11 +11,8 @@
                     </button>
                 </div>
             </div>
-            <div class="col-md-2 pull-right master-search">
-                <input type="text" name="search" autocomplete="off" id="searchLog" class="form-control" maxlength="200" placeholder="Search" name="searchLog" ng-model="logs.findWhat" ng-change="logs.find()" ng-model-options="{debounce: {'default': 500, 'blur': 0}}">
-                <span class="icon input-group-btn">
-                    <i class="fa fa-search"></i>
-                </span>
+            <div class="col-md-2 pull-right">
+                <input type="text" name="search" autocomplete="off" id="searchLog" class="form-control" maxlength="200" placeholder="Search" name="searchLog" ng-model="logs.findWhat" ng-change="logs.find()" ng-model-options="{debounce: {'default': 500, 'blur': 0}}" ng-master-search />
             </div>
         </div>
     </div>

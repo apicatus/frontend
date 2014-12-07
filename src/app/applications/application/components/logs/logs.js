@@ -83,7 +83,7 @@ angular.module( 'apicatus.application.logs', [])
             };
         }];
         var modalInstance = $modal.open({
-            templateUrl: 'view_response.html',
+            templateUrl: 'applications/application/components/modals/viewHttpResponse.tpl.html',//'view_response.html',
             controller: modalCtl,
             windowClass: 'ace-editor',
             resolve: {
@@ -120,4 +120,11 @@ angular.module( 'apicatus.application.logs', [])
         }
     };
 
+}])
+.controller( 'viewHttpResponseCtrl', ['$scope', '$modalInstance', 'response', function viewHttpResponseController($scope, $modalInstance, response) {
+    $scope.body = JSON.stringify(response, null, 4);
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
 }]);

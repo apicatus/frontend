@@ -43,6 +43,39 @@ angular.module( 'apicatus.application.datastats', [])
             ticks: 2
         }
     };
+    // Average
+    statistics.dataHistogram = {
+        series: [
+            {
+                name: 'avg',
+                stroke: '#27ae60',
+                data: []
+            }, {
+                name: 'max',
+                stroke: '#c0392b',
+                data: []
+            }, {
+                name: 'min',
+                stroke: '#f1c40f',
+                data: []
+            }
+        ]
+    };
+    // Min Max Range
+    statistics.dataRangeHistogram = {
+        series: [
+            {
+                name: 'range',
+                stroke: '#2980b9',
+                data: []
+            }, {
+                name: 'avg',
+                stroke: '#2980b9',
+                data: [],
+                linkedTo: ':previous'
+            }
+        ]
+    };
     statistics.load = function(method) {
         Restangular.one('transfer/method', method._id).get({since: statistics.since, until: statistics.until}).then(function(records){
             statistics.percentiles = records.aggregations.z_percentiles.values;
@@ -67,41 +100,14 @@ angular.module( 'apicatus.application.datastats', [])
                 chartOptions.plotOptions.series.pointStart = statistics.since;
             });
 
-            // Average
-            statistics.dataHistogram = {
-                series: [
-                    {
-                        name: 'avg',
-                        stroke: '#27ae60',
-                        data: statistics.dataStatsByDate.avg
-                    }, {
-                        name: 'max',
-                        stroke: '#c0392b',
-                        data: statistics.dataStatsByDate.max
-                    }, {
-                        name: 'min',
-                        stroke: '#f1c40f',
-                        data: statistics.dataStatsByDate.min
-                    }
-                ]
-            };
-            // Min Max Range
-            statistics.dataRangeHistogram = {
-                series: [
-                    {
-                        name: 'range',
-                        stroke: '#2980b9',
-                        data: statistics.dataStatsByDate.min.map(function(min, index){
-                            return [min, statistics.dataStatsByDate.max[index]];
-                        })
-                    }, {
-                        name: 'avg',
-                        stroke: '#2980b9',
-                        data: statistics.dataStatsByDate.avg,
-                        linkedTo: ':previous'
-                    }
-                ]
-            };
+            statistics.dataHistogram.series[0].data = statistics.dataStatsByDate.avg;
+            statistics.dataHistogram.series[1].data = statistics.dataStatsByDate.max;
+            statistics.dataHistogram.series[2].data = statistics.dataStatsByDate.min;
+
+            statistics.dataRangeHistogram.series[0].data = statistics.dataStatsByDate.min.map(function(min, index){
+                return [min, statistics.dataStatsByDate.max[index]];
+            });
+            statistics.dataRangeHistogram.series[1].data = statistics.dataStatsByDate.avg;
 
         }, function(error) {
             console.log("error getting analitics: ", error);

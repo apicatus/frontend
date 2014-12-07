@@ -52,6 +52,7 @@ charts.multiline = function module() {
         duration = 650,
         tooltip = null;
 
+    //var xScale = d3.time.scale();
     var stack = d3.layout.stack();
     var dispatch = d3.dispatch('customHover');
 
@@ -79,7 +80,7 @@ charts.multiline = function module() {
                 pointStart: new Date().getTime(),
                 units: null,
                 tracking: true,
-                makers: true,
+                markers: true,
                 stroke: true
             }
         },
@@ -128,10 +129,6 @@ charts.multiline = function module() {
             }
             var graph = this;
 
-            // Clean all
-            d3.select(graph).select('svg').remove();
-            svg = null;
-
             function draw(data) {
                 var size = {
                     'width': width - options.chart.margin.left - options.chart.margin.right,
@@ -171,6 +168,8 @@ charts.multiline = function module() {
                 var dateStart = options.plotOptions.series.pointStart;
                 var dateEnd = options.plotOptions.series.pointStart + options.plotOptions.series.pointInterval * (data[0].data.length - 1);
                 var daySpan = Math.round((dateEnd - dateStart) / (1000 * 60 * 60 * 24));
+
+                //console.log("dateStart: ", dateStart, " dateEnd: ", dateEnd, data[0].data.length);
 
                 var ticks, subs;
 
@@ -344,6 +343,9 @@ charts.multiline = function module() {
                     axesContainer = svg.append('g')
                         .attr('class', 'axes')
                         .attr('transform', 'translate(' + options.chart.margin.left + ',' + options.chart.margin.top + ')');
+
+                    drawAxes(axesContainer);
+
                     gridContainer = svg.append('g')
                         .attr('class', 'grids');
                     // Make Path Container
@@ -358,10 +360,6 @@ charts.multiline = function module() {
                     markersContainer = svg.append('g')
                         .attr('class', 'markers')
                         .attr('transform', 'translate(' + options.chart.margin.left + ',' + options.chart.margin.top + ')');
-                    // Draw Needle
-                    if(options.plotOptions.series.tracking) {
-                        drawNeedle(needleContainer);
-                    }
 
                     // Tooltip
                     d3.select('body').selectAll('chart-tooltip').remove();
@@ -374,7 +372,12 @@ charts.multiline = function module() {
                 }
 
                 drawGrid(gridContainer, xScale, yScale);
-                drawAxes(axesContainer);
+                updateAxes(axesContainer);
+
+                // Draw Needle
+                if(options.plotOptions.series.tracking) {
+                    drawNeedle(needleContainer);
+                }
 
                 // Cean Paths
                 pathContainer.selectAll('.metric').remove();
@@ -382,7 +385,7 @@ charts.multiline = function module() {
                 ///////////////////////////////////////////////////////////////
                 // Axes                                                      //
                 ///////////////////////////////////////////////////////////////
-                function drawAxes (axesContainer) {
+                function drawAxes(axesContainer) {
                     // Clean all
                     axesContainer.selectAll('.axis').remove();
                     // xAxis
@@ -400,6 +403,18 @@ charts.multiline = function module() {
                         .remove();
                 }
 
+                function updateAxes(axesContainer) {
+                    axesContainer.selectAll('.axis.x')
+                        .transition()
+                        .duration(duration)
+                        .ease(ease)
+                        .call(xAxis);
+                    axesContainer.selectAll('.axis.y')
+                        .transition()
+                        .duration(duration)
+                        .ease(ease)
+                        .call(yAxis);
+                }
                 ////////////////////////////////////////////////////////////
                 // Grid                                                   //
                 ////////////////////////////////////////////////////////////
@@ -439,6 +454,9 @@ charts.multiline = function module() {
                 ////////////////////////////////////////////////////////////
                 function drawNeedle (needleContainer) {
 
+                    // Clean all
+                    d3.selectAll(needleContainer.node().childNodes).remove();
+
                     var surface = needleContainer.append('rect')
                         .attr('x', 0)
                         .attr('y', 0)
@@ -464,7 +482,7 @@ charts.multiline = function module() {
                     var circles = addTrackerMarkers(needleContainer, data);
 
                     // Events
-                    surface.on('mousemove', needleMove).on("mouseout", needleLeave);
+                    surface.on('mousemove', needleMove).on('mouseout', needleLeave);
 
                     // Handlers
                     function needleMove(event) {
@@ -480,6 +498,7 @@ charts.multiline = function module() {
                             var i = bisect(metric.data, graph_x, 1);
                             var d0 = metric.data[i - 1];
                             var d1 = metric.data[i];
+
                             var d = graph_x - d0.date > d1.date - graph_x ? d1 : d0;
 
                             var yValue = 0;
@@ -496,12 +515,12 @@ charts.multiline = function module() {
                             }
                             hoverLine.attr('x1', xScale(d.date)).attr('x2', xScale(d.date));
                             if(circles[metric.id]) {
-                                circles[metric.id].attr("transform", "translate(" + xScale(d.date) + "," + yValue + ")");
+                                circles[metric.id].attr('transform', 'translate(' + xScale(d.date) + ',' + yValue + ')');
                             }
                         });
                     }
                     function needleLeave() {
-                        needleContainer.transition().duration(1500).style("opacity", 0);
+                        needleContainer.transition().duration(1500).style('opacity', 0);
                     }
                 }
 
@@ -523,52 +542,52 @@ charts.multiline = function module() {
                         var brand = metrics[i];
                         var color = brand.color || brand.stroke;
 
-                        circles[brand.id] = container.append("g")
-                            .attr("class", "circles")
-                            .attr("id", brand.id);
+                        circles[brand.id] = container.append('g')
+                            .attr('class', 'circles')
+                            .attr('id', brand.id);
 
-                        var label = circles[brand.id].append("g")
-                            .attr("class", "label");
+                        var label = circles[brand.id].append('g')
+                            .attr('class', 'label');
 
                         /*
                         // Label Background
                         label.append('rect')
-                            .attr("x", 8)
-                            .attr("y", -8)
-                            .attr("rx", 2)
-                            .attr("ry", 2)
-                            .attr("width", 120)
-                            .attr("height", 18)
-                            .style("fill", color);
+                            .attr('x', 8)
+                            .attr('y', -8)
+                            .attr('rx', 2)
+                            .attr('ry', 2)
+                            .attr('width', 120)
+                            .attr('height', 18)
+                            .style('fill', color);
                         // Label Text
                         label.append('text')
-                            .attr("class", "metric-tip")
-                            .attr("x", 12)
-                            .attr("y", 5)
-                            .attr("fill", "#fff");
+                            .attr('class', 'metric-tip')
+                            .attr('x', 12)
+                            .attr('y', 5)
+                            .attr('fill', '#fff');
                         */
 
                         // Circles
-                        circles[brand.id].append("circle")
-                            .attr("class", "circle")
-                            .attr("cx", 0)
-                            .attr("cy", 0)
-                            .attr("r", 4)
-                            .attr("fill", color);
+                        circles[brand.id].append('circle')
+                            .attr('class', 'circle')
+                            .attr('cx', 0)
+                            .attr('cy', 0)
+                            .attr('r', 4)
+                            .attr('fill', color);
 
-                        circles[brand.id].append("circle")
-                            .attr("class", "circle")
-                            .attr("cx", 0)
-                            .attr("cy", 0)
-                            .attr("r", 2)
-                            .attr("fill", "#fff");
+                        circles[brand.id].append('circle')
+                            .attr('class', 'circle')
+                            .attr('cx', 0)
+                            .attr('cy', 0)
+                            .attr('r', 2)
+                            .attr('fill', '#fff');
 
-                        circles[brand.id].append("circle")
-                            .attr("class", "circle")
-                            .attr("cx", 0)
-                            .attr("cy", 0)
-                            .attr("r", 1)
-                            .attr("fill", color);
+                        circles[brand.id].append('circle')
+                            .attr('class', 'circle')
+                            .attr('cx', 0)
+                            .attr('cy', 0)
+                            .attr('r', 1)
+                            .attr('fill', color);
                     }
                     return circles;
                 }
@@ -586,8 +605,9 @@ charts.multiline = function module() {
                             default:
                                 return data;
                         }
-                    })
-                    .enter()
+                    });
+
+                metric.enter()
                     .append('g')
                     .attr('class', 'metric');
 
@@ -658,8 +678,8 @@ charts.multiline = function module() {
                         drawAreaLine(metric);
                     }
                     // Add Markers
-                    if(options.plotOptions.series.makers) {
-                        drawMarkers(pathContainer);
+                    if(options.plotOptions.series.markers) {
+                        drawDots();
                     }
 
                 ///////////////////////////////////////////////////////////////
@@ -685,13 +705,17 @@ charts.multiline = function module() {
                 ///////////////////////////////////////////////////////////////
                 // Draw Markers                                              //
                 ///////////////////////////////////////////////////////////////
-                function drawMarkers(container) {
+                function drawDots() {
+
+                    markersContainer.selectAll('.dots').remove();
 
                     var markers = markersContainer.selectAll('.markers')
-                        .data(data)
-                        .enter()
+                        .data(data);
+                    markers.enter()
                         .append('g')
                         .attr('class', 'dots');
+
+                    markers.exit().remove();
 
                     var dots = markers.selectAll('.dots')
                         .data(function(d) {
@@ -700,15 +724,14 @@ charts.multiline = function module() {
                             } else {
                                 return [];
                             }
-                        })
-                        .enter();
+                        });
 
-                    var dot = dots.append('circle')
+                    dots.enter().append('circle')
                         .attr('class', 'dot')
-                        .attr("cx", function(d){
+                        .attr('cx', function(d){
                             return xScale(d.date);
                         })
-                        .attr("cy", function(d){
+                        .attr('cy', function(d){
                             switch(options.chart.type) {
                                 case 'line':
                                     return yScale(d.value);
@@ -718,21 +741,21 @@ charts.multiline = function module() {
                                     return yScale(d.y);
                             }
                         })
-                        /*.on("mouseover", function(d) {
+                        /*.on('mouseover', function(d) {
                             var width = tooltip.node().offsetWidth;
                             tooltip.transition()
                                 .duration(200)
-                                .style("opacity", 1);
-                            tooltip.html("Value: 1234")
-                                .style("left", (d3.event.pageX - (width / 2)) + "px")
-                                .style("top", (d3.event.pageY - 35) + "px");
+                                .style('opacity', 1);
+                            tooltip.html('Value: 1234')
+                                .style('left', (d3.event.pageX - (width / 2)) + 'px')
+                                .style('top', (d3.event.pageY - 35) + 'px');
                             })
-                        .on("mouseout", function(d) {
+                        .on('mouseout', function(d) {
                             tooltip.transition()
                                 .duration(500)
-                                .style("opacity", 0);
+                                .style('opacity', 0);
                         })*/
-                        .attr("r", 0)
+                        .attr('r', 0)
                         .style('stroke-width', 2)
                         .style('stroke', function(d){
                             return d.stroke || color(d.name);
@@ -741,15 +764,14 @@ charts.multiline = function module() {
                         .transition()
                         .duration(duration)
                         .ease(ease)
-                        .attr("r", 2);
-
+                        .attr('r', 2);
                 }
             }
 
             ///////////////////////////////////////////////////////////////
             // Execute draw                                              //
             ///////////////////////////////////////////////////////////////
-            draw(angular.copy(_data));
+            draw(_data);
         });
     }
     ///////////////////////////////////////////////////////////////
@@ -779,23 +801,23 @@ charts.multiline = function module() {
         var node = svg.node();
         var svgSize = node.getBoundingClientRect();
         var svgData = new XMLSerializer().serializeToString( node );
-        var canvas = document.createElement( "canvas" );
+        var canvas = document.createElement( 'canvas' );
 
         canvas.width = svgSize.width;
         canvas.height = svgSize.height;
 
-        var ctx = canvas.getContext( "2d" );
+        var ctx = canvas.getContext( '2d' );
 
-        var img = document.createElement( "img" );
-        img.setAttribute( "src", "data:image/svg+xml;base64," + btoa( svgData ) );
+        var img = document.createElement( 'img' );
+        img.setAttribute( 'src', 'data:image/svg+xml;base64,' + btoa( svgData ) );
 
         img.onload = function() {
             ctx.drawImage( img, 0, 0 );
 
-            var link = document.createElement("a");
+            var link = document.createElement('a');
             link.download = 'filename.png';
-            link.href = canvas.toDataURL( "image/png" );
-            link.target = "_self";
+            link.href = canvas.toDataURL( 'image/png' );
+            link.target = '_self';
 
             document.body.appendChild(link);
 

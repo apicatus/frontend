@@ -439,14 +439,18 @@ charts.scatterplot = function module() {
                         data.forEach(function(metric, index) {
 
                             var i = bisect(metric.data, graph_x, 1);
-                            var d0 = metric.data[i - 1];
-                            var d1 = metric.data[i];
+                            var d0 = metric.data[i - 1] || 0;
+                            var d1 = metric.data[i] || 0;
                             var d = graph_x - d0.x > d1.x - graph_x ? d1 : d0;
 
 
                             var dots = metric.data.filter(function(dot){
                                 return dot.x === d.x;
                             });
+
+                            if(!dots.length) {
+                                return;
+                            }
 
                             hoverLine.attr('x1', xScale(graph_x)).attr('x2', xScale(graph_x));
 

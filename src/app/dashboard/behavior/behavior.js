@@ -16,8 +16,8 @@ angular.module( 'apicatus.dashboard.behavior', [
                 templateUrl: 'dashboard/behavior/behavior.tpl.html',
                 controller: 'DashboardBehaviorCtrl as behavior'
             },
-            'periodSelector': {
-                templateUrl: 'dashboard/components/periodSelector.tpl.html'
+            'toolbar': {
+                templateUrl: 'dashboard/components/toolbar.tpl.html'
             }
         },
         resolve: {

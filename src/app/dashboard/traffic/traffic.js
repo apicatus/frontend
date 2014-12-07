@@ -14,8 +14,8 @@ angular.module( 'apicatus.dashboard.traffic', [
                 templateUrl: 'dashboard/traffic/traffic.tpl.html',
                 controller: 'DashboardTrafficCtrl as traffic'
             },
-            'periodSelector': {
-                templateUrl: 'dashboard/components/periodSelector.tpl.html'
+            'toolbar': {
+                templateUrl: 'dashboard/components/toolbar.tpl.html'
             }
         },
         resolve: {
@@ -130,6 +130,16 @@ angular.module( 'apicatus.dashboard.traffic', [
             title: {
                 text: 'API calls per minute'
             }
+        }
+    };
+
+    traffic.mapOptions = {
+        plotOptions: {
+            fill: '#EEEFF3'
+        },
+        colorAxis: {
+            minColor: '#EEEFF3',
+            maxColor: '#49c5b1'
         }
     };
 

@@ -64,7 +64,8 @@ angular.module( 'apicatus', [
     'ui.ace',
     'parseURL',
     'httpSettings',
-    'ngSocket'
+    'ngSocket',
+    'ngMasterSearch'
 ])
 // Global constans
 .constant('$moment', moment)
