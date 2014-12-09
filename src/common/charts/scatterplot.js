@@ -42,6 +42,7 @@ charts.scatterplot = function module() {
     var width = 500,
         height = 500,
         gap = 0,
+        duration = 650,
         ease = 'cubic-in-out';
     var svg,
         pathContainer = null,
@@ -50,13 +51,23 @@ charts.scatterplot = function module() {
         axesContainer = null,
         gridContainer = null,
         labelsContainer = null,
-        duration = 650,
         tooltip = null;
 
-    var stack = d3.layout.stack();
-    var dispatch = d3.dispatch('customHover');
+    ///////////////////////////////////////////////////////////////////////////
+    // DOM Element                                                           //
+    ///////////////////////////////////////////////////////////////////////////
+    var graph;
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Events                                                                //
+    ///////////////////////////////////////////////////////////////////////////
+    var dispatch = d3.dispatch('click', 'mouseover', 'mousemove', 'mouseout');
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Color Ranges                                                          //
+    ///////////////////////////////////////////////////////////////////////////
     var coloretes = ['#a00040', '#d73c4c', '#f66d39', '#ffaf5a', '#fee185', '#feffbb', '#e6f693', '#abdea3', '#63c4a5', '#2c87be'];
+
     ///////////////////////////////////////////////////////////////////////////
     // Default chart options                                                 //
     ///////////////////////////////////////////////////////////////////////////

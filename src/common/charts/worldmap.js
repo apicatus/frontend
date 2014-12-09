@@ -4,22 +4,27 @@ var charts = charts || {};
 
 charts.worldmap = function module() {
     'use strict';
+
     var width = 500,
         height = 500,
-        ease = 'cubic-in-out',
         duration = 650,
-        projection,
-        path,
-        canvas,
-        svg,
+        ease = 'cubic-in-out';
+    var svg,
+        canvas = null,
+        projection = null,
+        path = null,
         getFeaturesBox = null,
         featureBounds = null,
-        zoom = null,
-        geoLayer = {};
+        zoom = null;
 
     var color = null;
-    var dispatch = d3.dispatch('customHover');
     var tooltip = null;
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Events                                                                //
+    ///////////////////////////////////////////////////////////////////////////
+    var dispatch = d3.dispatch('click', 'mouseover', 'mousemove', 'mouseout');
+
     ///////////////////////////////////////////////////////////////////////////
     // Default chart options                                                 //
     ///////////////////////////////////////////////////////////////////////////
@@ -143,7 +148,8 @@ charts.worldmap = function module() {
                         })
                         .on('mouseout',  function(d,i) {
                             tooltip.classed('hidden', true);
-                        });
+                        })
+                        .on('click', dispatch.click);
                     }
             }
 
@@ -194,18 +200,41 @@ charts.worldmap = function module() {
             ///////////////////////////////////////////////////////////////////
             // Draw Regions with coded infromation (color)                   //
             ///////////////////////////////////////////////////////////////////
-            function updateChart(data) {
-                data.regions.forEach(function(region, index) {
-                    exports.updateRegions(canvas, region);
+            function drawLabels(regions) {
+                if(!regions) {
+                    return false;
+                }
+                regions.forEach(function(region, index) {
+                    var g = svg
+                        .append('g')
+                        .attr('class', 'labels')
+                        .attr('id', 'labels-' + region.id)
+                        .attr('transform', 'translate(10,' + -10 + ')');
+                    exports.drawLegend(g, region);
                 });
-                data.markers.forEach(function(marker, index) {
+
+            }
+
+            ///////////////////////////////////////////////////////////////////
+            // Draw Regions with coded infromation (color)                   //
+            ///////////////////////////////////////////////////////////////////
+            function updateChart(data) {
+                var result = null;
+                result = data.regions ? data.regions.forEach(function(region, index) {
+                    exports.updateRegions(canvas, region);
+                }) : null;
+                result = data.markers ? data.markers.forEach(function(marker, index) {
                     var g = canvas.select('#markers-' + marker.id);
                     exports.updateMarkers(g, marker);
-                });
-                data.routes.forEach(function(route, index) {
+                }) : null;
+                result = data.routes ? data.routes.forEach(function(route, index) {
                     var g = canvas.select('#routes-' + route.id);
                     exports.updateRoute(g, route);
-                });
+                }) : null;
+                result = data.regions ? data.regions.forEach(function(region, index) {
+                    var g = svg.select('#labels-' + region.id);
+                    exports.drawLegend(g, region);
+                }) : null;
             }
 
 
@@ -250,7 +279,7 @@ charts.worldmap = function module() {
 
                 svg = d3.select(this)
                     .append('svg')
-                    .attr('preserveAspectRatio', 'xMidYMid')
+                    .attr('preserveAspectRatio', 'xMidYMid meet')
                     .attr('viewBox', '0 0 ' + width + ' ' + height)
                     .attr('width', '100%')
                     .attr('height', '100%');
@@ -302,8 +331,9 @@ charts.worldmap = function module() {
                         if(!_data.regions) {
                             return false;
                         }
-                        exports.addLabel(_data.regions);
+                        drawLabels(_data.regions);
                     }
+
                     svg.call(zoom.event);
 
                 });
@@ -392,58 +422,104 @@ charts.worldmap = function module() {
                     });
             });
     };
-    exports.addLabel = function(collections) {
+    exports.drawLegend = function(element, region) {
+        var color = d3.scale.linear()
+            .interpolate(d3.interpolateRgb)
+            .domain([0, 10])
+            .range([region.minColor || options.colorAxis.minColor, region.maxColor || options.colorAxis.maxColor]);
 
-        collections.forEach(function(collection, index){
-            placeLabel(collection, index + 1);
-        });
+        var tick = {
+            width: 16,
+            height: 16
+        };
+        element.select('#legenda').remove();
+        // create a new group with the specific base color and add the lower value
+        element.append('g')
+                .attr('id', 'legenda');
+        // add the various blocks of the legenda
+        element.select('#legenda').selectAll('rect')
+            .data(d3.range(0, 10))
+            .enter()
+            .append('rect')
+                .attr('x', function (d, i) {
+                    return i * tick.width;
+                })
+                .attr('y', height - tick.height)
+                .attr('width', tick.width)
+                .attr('height', tick.height)
+                .style('fill', function(d, i){
+                    return color(i);
+                });
 
-        function placeLabel(collection, index) {
-            var label = svg.append('g').attr('class', 'label');
-            var gradient = svg.append('svg:defs')
-              .append('svg:linearGradient')
-                .attr('id', 'gradient')
-                .attr('x1', '0%')
-                .attr('y1', '0%')
-                .attr('x2', '100%')
-                .attr('y2', '0%')
-                .attr('spreadMethod', 'pad');
-
-            gradient.append('svg:stop')
-                .attr('offset', '0%')
-                .attr('stop-color', collection.minColor || options.colorAxis.minColor)
-                .attr('stop-opacity', 1);
-
-            gradient.append('svg:stop')
-                .attr('offset', '100%')
-                .attr('stop-color', collection.maxColor || options.colorAxis.maxColor)
-                .attr('stop-opacity', 1);
-
-            label.append('rect')
+        // add a text element
+        element.select('#legenda')
+            .append('text')
                 .attr('x', 0)
-                .attr('y', height - (12 * index))
-                .attr('width', 180)
-                .attr('height', 12)
-                .style('fill', 'url(#gradient)');
+                .attr('y', height - (tick.height + 5))
+                .text('Min: ' + (d3.min(region.data, function(d){
+                    return d.value;
+                }) || 0));
+        element.select('#legenda')
+            .append('text')
+                .attr('y', height - (tick.height + 5))
+                .style('text-anchor','left')
+                .text('Max: ' + (d3.max(region.data, function(d){
+                    return d.value;
+                }) || 0))
+                .attr('x', function(d){
+                    var box = {
+                        w: this.getBoundingClientRect().width,
+                        h: this.getBoundingClientRect().height
+                    };
+                    return (color.domain()[1] * tick.width) - box.w;
+                });
+    };
 
-            label.append('text')
-                .attr('x', 0)
-                .attr('y', height - (12 * index))
-                .attr('class','label')
-                .text(d3.min(collection.data, function(d){
-                    return d.value;
-                }));
-            label.append('text')
-                .attr('x', 160)
-                .attr('y', height - (12 * index))
-                .attr('class','label')
-                .text(d3.max(collection.data, function(d){
-                    return d.value;
-                }));
-        }
+    exports.updateLabels = function(container, collection) {
+
+        var gradient = svg.append('svg:defs')
+          .append('svg:linearGradient')
+            .attr('id', 'gradient')
+            .attr('x1', '0%')
+            .attr('y1', '0%')
+            .attr('x2', '100%')
+            .attr('y2', '0%')
+            .attr('spreadMethod', 'pad');
+
+        gradient.append('svg:stop')
+            .attr('offset', '0%')
+            .attr('stop-color', collection.minColor || options.colorAxis.minColor)
+            .attr('stop-opacity', 1);
+
+        gradient.append('svg:stop')
+            .attr('offset', '100%')
+            .attr('stop-color', collection.maxColor || options.colorAxis.maxColor)
+            .attr('stop-opacity', 1);
+
+        container.append('rect')
+            .attr('x', 0)
+            .attr('y', height - 12)
+            .attr('width', 180)
+            .attr('height', 12)
+            .style('fill', 'url(#gradient)');
+
+        container.append('text')
+            .attr('x', 0)
+            .attr('y', height - 12)
+            .attr('class','label')
+            .text(d3.min(collection.data, function(d){
+                return d.value;
+            }));
+        container.append('text')
+            .attr('x', 160)
+            .attr('y', height - 12)
+            .attr('class','label')
+            .style('text-anchor','left')
+            .text(d3.max(collection.data, function(d){
+                return d.value;
+            }));
     };
     exports.updateRegions = function(container, regions) {
-
         var color = d3.scale.linear()
             .interpolate(d3.interpolateRgb)
             .domain([d3.min(regions.data, function(data){
@@ -472,19 +548,21 @@ charts.worldmap = function module() {
             }
         });
     };
-    exports.updateRoute = function(container, routeX) {
-
-        var route = container.append('path')
+    exports.updateRoute = function(container, route) {
+        if(route.data.length < 1){
+            return;
+        }
+        var routePath = container.append('path')
             .datum({
                 type: 'LineString',
-                coordinates: [routeX.data[0], routeX.data[1]] //exports.addRoute([-58.5201, -34.5309], [-74, 40.71])
+                coordinates: [route.data[0], route.data[1]] //exports.addRoute([-58.5201, -34.5309], [-74, 40.71])
             })
             .attr('class', 'route')
             .attr('d', path);
 
-        var totalLength = route.node().getTotalLength();
+        var totalLength = routePath.node().getTotalLength();
 
-        route
+        routePath
             .style('stroke-dasharray', totalLength + ' ' + totalLength)
             .style('stroke-dashoffset', totalLength)
             .style('stroke-linecap', 'round')
@@ -499,13 +577,35 @@ charts.worldmap = function module() {
             .attr('stroke-dashoffset', 0)
             .each('end', function(){
                 var color = d3.select(this).style('stroke');
-                route
+                routePath
                     .transition()
                     .duration(1000)
                     .ease('linear')
                     .style('stroke-dashoffset', -totalLength)
                     .remove();
+                    hitTarget(canvas, route.data[1][0], route.data[1][1], {
+                        'fill': color
+                    });
             });
+        function hitTarget(container, longitude, latitude, css) {
+            var x = projection([longitude, latitude])[0];
+            var y = projection([longitude, latitude])[1];
+
+            var marker = container
+                .append('circle')
+                .attr('cx', x)
+                .attr('cy', y)
+                .attr('class','point')
+                .attr('r', 0)
+                .style(css)
+                .transition()
+                .duration(1000)
+                .attr('r', 8)
+                .style('fill-opacity', 0)
+                .each('end', function(){
+                    this.remove();
+                });
+        }
     };
     exports.updateMarkers = function(container, markers) {
 
@@ -652,163 +752,10 @@ charts.worldmap = function module() {
         height = parseInt(_x, 10);
         return this;
     };
+    exports.resize = function(width, height) {
+        svg.attr('viewBox', '0 0 ' + width + ' ' + height);
+    };
     d3.rebind(exports, dispatch, 'on');
     return exports;
 };
 
-
-/*
-
-            // fits the geometry layer inside the viewport
-            fitGeoInside = function () {
-                var bbox = getFeaturesBox(),
-                    scale = 0.95 / Math.max(bbox.width / width, bbox.height / height),
-                    trans = [-(bbox.x + bbox.width / 2) * scale + width / 2, -(bbox.y + bbox.height / 2) * scale + height / 2];
-
-                geoLayer.scale = scale;
-                geoLayer.translate = trans;
-
-                canvas
-                .transition()
-                .duration(750)
-                .attr('transform', [
-                    'translate(' + geoLayer.translate + ')',
-                    'scale(' + geoLayer.scale + ')'
-                ].join(' '));
-            };
-
-            // transform geoParent
-            setGeoTransform = function(scale, trans, animate) {
-                var container = canvas;
-                zoom.scale(scale).translate(trans);
-
-                tlast = trans;
-                slast = scale;
-
-                if(animate) {
-                    container = canvas.transition().duration(750);
-                }
-                container
-                    .attr('transform', [
-                        'translate(' + trans + ')',
-                        'scale(' + scale + ')'
-                    ].join(' '))
-                    .selectAll('.country')
-                    .style('stroke-width', 1 / scale);
-            };
-            // limits panning
-            // XXX: this could be better
-            limitBounds = function (scale, trans, animate) {
-
-                var bbox = getFeaturesBox();
-                var outer = width - width * scale;
-                var geoWidth = bbox.width * geoLayer.scale * scale,
-                    geoLeft = -((width * scale) / 2 - ((geoWidth) / 2)),
-                    geoRight = outer - geoLeft;
-
-                if (scale === slast) {
-                    //trans[0] = Math.min(0, Math.max(trans[0], width - width * scale));
-                    trans[1] = Math.min(0, Math.max(trans[1], height - height * scale));
-
-                    if (geoWidth > width) {
-                        if (trans[0] < tlast[0]) { // panning left
-                            trans[0] = Math.max(trans[0], geoRight);
-                        } else if (trans[0] > tlast[0]) { // panning right
-                            trans[0] = Math.min(trans[0], geoLeft);
-                        }
-                    } else {
-
-                        if (trans[0] < geoLeft) {
-                            trans[0] = geoLeft;
-                        } else if (trans[0] > geoRight) {
-                            trans[0] = geoRight;
-                        }
-                    }
-                }
-
-                setGeoTransform(scale, trans, animate);
-            };
-
-
-daylightVisible = false,
-        daylight = d3.geo.circle().angle(90).precision(0.5),
-        daylightPath = null,
-
-var π = Math.PI,
-radians = π / 180,
-degrees = 180 / π;
-
-var circle = d3.geo.circle().angle(90);
-
-                    // Draw Day/Night
-                    if(daylightVisible) {
-                        daylightPath = canvas.append('path')
-                            .attr('class', 'night')
-                            .attr('d', path);
-                        daylightPath.datum(circle.origin(antipode(solarPosition(new Date())))).attr('d', path);
-                    }
-
-// Sun calculations
-function antipode(position) {
-    return [position[0] + 180, -position[1]];
-}
-
-function solarPosition(time) {
-    var centuries = (time - Date.UTC(2000, 0, 1, 12)) / 864e5 / 36525, // since J2000
-        longitude = (d3.time.day.utc.floor(time) - time) / 864e5 * 360 - 180;
-    return [
-        longitude - equationOfTime(centuries) * degrees,
-        solarDeclination(centuries) * degrees
-    ];
-}
-
-// Equations based on NOAA’s Solar Calculator; all angles in radians.
-// http://www.esrl.noaa.gov/gmd/grad/solcalc/
-
-function equationOfTime(centuries) {
-    var e = eccentricityEarthOrbit(centuries),
-        m = solarGeometricMeanAnomaly(centuries),
-        l = solarGeometricMeanLongitude(centuries),
-        y = Math.tan(obliquityCorrection(centuries) / 2);
-    y *= y;
-    return y * Math.sin(2 * l) - 2 * e * Math.sin(m) + 4 * e * y * Math.sin(m) * Math.cos(2 * l) - 0.5 * y * y * Math.sin(4 * l) - 1.25 * e * e * Math.sin(2 * m);
-}
-
-function solarDeclination(centuries) {
-    return Math.asin(Math.sin(obliquityCorrection(centuries)) * Math.sin(solarApparentLongitude(centuries)));
-}
-
-function solarApparentLongitude(centuries) {
-    return solarTrueLongitude(centuries) - (0.00569 + 0.00478 * Math.sin((125.04 - 1934.136 * centuries) * radians)) * radians;
-}
-
-function solarTrueLongitude(centuries) {
-    return solarGeometricMeanLongitude(centuries) + solarEquationOfCenter(centuries);
-}
-
-function solarGeometricMeanAnomaly(centuries) {
-    return (357.52911 + centuries * (35999.05029 - 0.0001537 * centuries)) * radians;
-}
-
-function solarGeometricMeanLongitude(centuries) {
-    var l = (280.46646 + centuries * (36000.76983 + centuries * 0.0003032)) % 360;
-    return (l < 0 ? l + 360 : l) / 180 * π;
-}
-
-function solarEquationOfCenter(centuries) {
-    var m = solarGeometricMeanAnomaly(centuries);
-    return (Math.sin(m) * (1.914602 - centuries * (0.004817 + 0.000014 * centuries)) + Math.sin(m + m) * (0.019993 - 0.000101 * centuries) + Math.sin(m + m + m) * 0.000289) * radians;
-}
-
-function obliquityCorrection(centuries) {
-    return meanObliquityOfEcliptic(centuries) + 0.00256 * Math.cos((125.04 - 1934.136 * centuries) * radians) * radians;
-}
-
-function meanObliquityOfEcliptic(centuries) {
-    return (23 + (26 + (21.448 - centuries * (46.8150 + centuries * (0.00059 - centuries * 0.001813))) / 60) / 60) * radians;
-}
-
-function eccentricityEarthOrbit(centuries) {
-    return 0.016708634 - centuries * (0.000042037 + 0.0000001267 * centuries);
-}
-*/

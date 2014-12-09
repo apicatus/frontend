@@ -70,22 +70,13 @@
                     </tab-heading>
 
                     <div class="row">
-                        <div class="col-md-8">
-                            <ng-chart type="worldmap" data="traffic.worldMap" options="traffic.mapOptions"></ng-chart>
+                        <div class="col-sm-8">
+                            <ng-chart type="worldmap" data="traffic.map" options="traffic.mapOptions" click="traffic.countryClick(args)"></ng-chart>
                         </div>
-                        <div class="col-md-4">
-                            <donut-chart data="traffic.codeStats" style="width:100%;height:350px;display:block;"></donut-chart>
+                        <div class="col-sm-4">
+                            <ng-chart type="donut" data="traffic.donut"></ng-chart>
                         </div>
                     </div>
-
-                    <!-- div class="row splited">
-                        <div class="left">
-                            <vector-map series="worldMap" style="width:100%;height:350px;display:block;"></vector-map>
-                        </div>
-                        <div class="right">
-                            <donut-chart data="traffic.codeStats" style="width:100%;height:350px;display:block;"></donut-chart>
-                        </div>
-                    </div -->
                 </tab>
                 <tab>
                     <tab-heading>

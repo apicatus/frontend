@@ -2,11 +2,7 @@
 /*jshint newcap: false */
 
 angular.module( 'apicatus.dashboard.geo', [
-    'vectorMap',
-    'myGraph',
-    'stackedBarChart',
-    'bivariateChart',
-    'worldMap'
+    'ngChart'
 ])
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state('main.dashboard.geo', {
@@ -90,8 +86,12 @@ angular.module( 'apicatus.dashboard.geo', [
         plotOptions: {
             fill: '#EEEFF3'
         },
+        mapNavigation: {
+            enabled: false,
+            enableButtons: true
+        },
         colorAxis: {
-            minColor: '#C8EEFF',
+            minColor: '#EEEFF3',
             maxColor: '#49c5b1'
         }
     };
@@ -110,8 +110,8 @@ angular.module( 'apicatus.dashboard.geo', [
         geo.map = {
             regions: [{
                 name: 'hits',
-                minColor: '#0F0',
-                maxColor: '#F00',
+                minColor: '#49c5b1',
+                maxColor: '#F90101',
                 data: geo.statistics
             }]
         };

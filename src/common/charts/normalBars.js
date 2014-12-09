@@ -37,20 +37,28 @@
 var charts = charts || {};
 
 charts.bar = function module() {
+    'use strict';
+
     var width = 500,
         height = 500,
-        gap = 0,
+        duration = 650,
         ease = 'cubic-in-out';
     var svg,
+        stack = d3.layout.stack(),
         pathContainer = null,
         axesContainer = null,
-        gridContainer = null,
-        duration = 650;
+        gridContainer = null;
 
-    var stack = d3.layout.stack();
-    var dispatch = d3.dispatch('customHover');
+    ///////////////////////////////////////////////////////////////////////////
+    // DOM Element                                                           //
+    ///////////////////////////////////////////////////////////////////////////
+    var graph;
 
-    var coloretes = ['#a00040', '#d73c4c', '#f66d39', '#ffaf5a', '#fee185', '#feffbb', '#e6f693', '#abdea3', '#63c4a5', '#2c87be'];
+    ///////////////////////////////////////////////////////////////////////////
+    // Events                                                                //
+    ///////////////////////////////////////////////////////////////////////////
+    var dispatch = d3.dispatch('click', 'mouseover', 'mousemove', 'mouseout');
+
     ///////////////////////////////////////////////////////////////////////////
     // Default chart options                                                 //
     ///////////////////////////////////////////////////////////////////////////

@@ -45,7 +45,10 @@ angular.module('ngChart', ['D3Service', 'ProjectionService', 'TopoJsonService'])
             type: '@',
             data: '=',
             options: '=',
-            hovered: '&hovered'
+            click: '&click',
+            mouseover: '&mouseover',
+            mouseout: '&mouseout',
+            mousemove: '&mousemove'
         },
         link: function(scope, element, attrs) {
             var chartEl,
@@ -71,6 +74,9 @@ angular.module('ngChart', ['D3Service', 'ProjectionService', 'TopoJsonService'])
                 });
             });
 
+            ///////////////////////////////////////////////////////////////////
+            // Setup Chart
+            ///////////////////////////////////////////////////////////////////
             function setupChart(canvas) {
                 var width = canvas[0].offsetWidth;
                 var height = canvas[0].offsetHeight;
@@ -85,10 +91,38 @@ angular.module('ngChart', ['D3Service', 'ProjectionService', 'TopoJsonService'])
                     height: height
                 };
 
-                // Chart Setup
+                ///////////////////////////////////////////////////////////////
+                // Chart Setup                                               //
+                ///////////////////////////////////////////////////////////////
                 chartEl.call(chart.height(size.height));
                 chartEl.call(chart.width(size.width));
 
+                ///////////////////////////////////////////////////////////////
+                // Handle Events                                             //
+                ///////////////////////////////////////////////////////////////
+                chart.on('click', function(d, i){
+                    console.log('click !', d);
+                    scope.click({args: d});
+                });
+                chart.on('mouseover', function(d, i){
+                    console.log('mousemove !');
+                    scope.mouseover(d);
+                });
+                chart.on('mouseout', function(d, i){
+                    console.log('mousemove !');
+                    scope.mouseout(d);
+                });
+                chart.on('mousemove', function(d, i){
+                    console.log('mousemove !');
+                    scope.mousemove(d);
+                });
+
+                ///////////////////////////////////////////////////////////////////
+                // Bind Resize event                                             //
+                ///////////////////////////////////////////////////////////////////
+                angular.element($window).bind('resize', delayedResize);
+
+                // Mark Canvas Ready
                 canvasIsReady = true;
 
                 // Data migth be ready to be used, trigger a digest to
@@ -115,9 +149,9 @@ angular.module('ngChart', ['D3Service', 'ProjectionService', 'TopoJsonService'])
                         if ((newVal === oldVal) && rendered) {
                             return;
                         }
-                        console.log("change on data array");
                         chartEl.datum(scope.data).call(chart);
                         rendered = true;
+                        console.log("change collection!");
                     }, true);
 
                 } else {
@@ -126,13 +160,45 @@ angular.module('ngChart', ['D3Service', 'ProjectionService', 'TopoJsonService'])
                         if (newVal === oldVal && rendered) {
                             return;
                         }
-                        console.log("change on data object");
                         chartEl.datum(scope.data).call(chart);
                         rendered = true;
+                        console.log("change object!");
                     }, true);
 
                 }
             }
+
+            ///////////////////////////////////////////////////////////////////
+            // Debounce f() ripped from _.
+            ///////////////////////////////////////////////////////////////////
+            function debounce(func, wait, immediate) {
+                 var timeout;
+                 return function() {
+                    var context = this, args = arguments;
+                    $timeout.cancel(timeout);
+                    timeout = $timeout(function() {
+                        timeout = null;
+                        if (!immediate) {
+                            func.apply(context, args);
+                        }
+                    }, wait);
+                    if (immediate && !timeout) {
+                        func.apply(context, args);
+                    }
+                };
+            }
+
+            ///////////////////////////////////////////////////////////////////
+            // Redraw Rize
+            ///////////////////////////////////////////////////////////////////
+            var delayedResize = debounce(function() {
+                var width = element[0].offsetWidth;
+                var height = element[0].offsetHeight;
+                // resize resize
+                if(chart.resize) {
+                    chart.resize(width, height);
+                }
+            }, 300);
 
             ///////////////////////////////////////////////////////////////////
             // D3 Service is ready ?                                         //
@@ -151,15 +217,15 @@ angular.module('ngChart', ['D3Service', 'ProjectionService', 'TopoJsonService'])
                         characterData: true
                     });
                 } else {
-                    console.log("direct render !");
                     setupChart(element);
                 }
             });
-            angular.element($window).bind('resize', function(){
-                //setupChart(element);
-            });
+
+            ///////////////////////////////////////////////////////////////////
+            // Handle Directive $destroy                                     //
+            ///////////////////////////////////////////////////////////////////
             scope.$on('$destroy', function() {
-                //angular.element($window).unbind('resize', delayedResize);
+                angular.element($window).unbind('resize', delayedResize);
                 console.log("DESTROY CHART");
             });
         }

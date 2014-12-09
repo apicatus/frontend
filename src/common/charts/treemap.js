@@ -1,6 +1,8 @@
 var charts = charts || {};
 
 charts.treemap = function module() {
+    'use strict';
+
     var margin = {top: 0, right: 0, bottom: 0, left: 0},
         width = 500,
         height = 500,
@@ -9,7 +11,11 @@ charts.treemap = function module() {
         ease = 'cubic-in-out';
     var svg, pathContainer = null, duration = 650;
     var treemap = null;
-    var dispatch = d3.dispatch('customHover');
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Events                                                                //
+    ///////////////////////////////////////////////////////////////////////////
+    var dispatch = d3.dispatch('click', 'mouseover', 'mousemove', 'mouseout');
 
     var coloretes = ['#a00040', '#d73c4c', '#f66d39', '#ffaf5a', '#fee185', '#feffbb', '#e6f693', '#abdea3', '#63c4a5', '#2c87be'];
 
@@ -140,7 +146,7 @@ charts.treemap = function module() {
                     });
 
             }
-            draw(_data);
+            draw(angular.copy(_data));
         });
     }
     exports.options = function(opt) {

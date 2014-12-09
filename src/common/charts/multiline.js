@@ -41,22 +41,27 @@ charts.multiline = function module() {
 
     var width = 500,
         height = 500,
-        gap = 0,
+        duration = 650,
         ease = 'cubic-in-out';
     var svg,
+        stack = d3.layout.stack(),
         pathContainer = null,
         needleContainer = null,
         markersContainer = null,
         axesContainer = null,
         gridContainer = null,
-        duration = 650,
         tooltip = null;
 
-    //var xScale = d3.time.scale();
-    var stack = d3.layout.stack();
-    var dispatch = d3.dispatch('customHover');
+    ///////////////////////////////////////////////////////////////////////////
+    // DOM Element                                                           //
+    ///////////////////////////////////////////////////////////////////////////
+    var graph;
 
-    var coloretes = ['#a00040', '#d73c4c', '#f66d39', '#ffaf5a', '#fee185', '#feffbb', '#e6f693', '#abdea3', '#63c4a5', '#2c87be'];
+    ///////////////////////////////////////////////////////////////////////////
+    // Events                                                                //
+    ///////////////////////////////////////////////////////////////////////////
+    var dispatch = d3.dispatch('click', 'mouseover', 'mousemove', 'mouseout');
+
     ///////////////////////////////////////////////////////////////////////////
     // Default chart options                                                 //
     ///////////////////////////////////////////////////////////////////////////
@@ -116,18 +121,22 @@ charts.multiline = function module() {
             enabled: true
         }
     };
+
     function guidGenerator() {
         var S4 = function() {
             return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
         };
         return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
     }
+    ///////////////////////////////////////////////////////////////////////////
+    // Module                                                                //
+    ///////////////////////////////////////////////////////////////////////////
     function exports(_selection) {
         _selection.each(function(_data) {
             if(!_data || _data.length < 0) {
                 return;
             }
-            var graph = this;
+            graph = this;
 
             function draw(data) {
                 var size = {
@@ -335,7 +344,7 @@ charts.multiline = function module() {
                 if(!svg) {
                     svg = d3.select(graph)
                         .append('svg')
-                        .attr('preserveAspectRatio', 'xMidYMid')
+                        .attr('preserveAspectRatio', 'xMidYMid meet')
                         .attr('viewBox', '0 0 ' + width + ' ' + height)
                         .attr('width', '100%')
                         .attr('height', '100%');
@@ -482,10 +491,13 @@ charts.multiline = function module() {
                     var circles = addTrackerMarkers(needleContainer, data);
 
                     // Events
-                    surface.on('mousemove', needleMove).on('mouseout', needleLeave);
+                    surface
+                        .on('mousemove', needleMove)
+                        .on('mouseout', needleLeave);
 
                     // Handlers
                     function needleMove(event) {
+                        dispatch.mousemove(event);
                         /*jshint validthis:true */
                         var mouse_x = d3.mouse(this)[0];
                         var graph_x = xScale.invert(mouse_x);

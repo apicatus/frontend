@@ -46,10 +46,10 @@ charts.donut = function module() {
         textOffset = 14;
     var svg,
         donut = d3.layout.pie(),
+        arc = d3.svg.arc(),
         container = null,
-        innerArcs = null,
-        outterArcs = null,
-        phantomArcs = null,
+        arc_group = null,
+        paths = null,
         totalValue = null;
     ///////////////////////////////////////////////////////////////////////////
     // DOM Element                                                           //
@@ -103,14 +103,18 @@ charts.donut = function module() {
             }
             graph = this;
 
-            // D3 helper function to populate pie slice parameters from array data
+            //D3 helper function to populate pie slice parameters from array data
             donut = d3.layout.pie().value(function(d) {
                 return d.value;
             });
 
-            var arc = d3.svg.arc();
-            var arcPhantom = d3.svg.arc();
-            var arcOutter = d3.svg.arc();
+            arc = d3.svg.arc()
+                .startAngle(function(d) {
+                    return d.startAngle;
+                })
+                .endAngle(function(d) {
+                    return d.endAngle;
+                });
 
             function draw(data) {
                 var size = {
@@ -119,24 +123,11 @@ charts.donut = function module() {
                 };
 
                 var radius = Math.min(size.width, size.height) / 2;
-                ///////////////////////////////////////////////////////////////////////////
-                // Arc functions                                                         //
-                ///////////////////////////////////////////////////////////////////////////
                 arc
                     .innerRadius(radius * (options.plotOptions.pie.innerRadius / 100))
-                    .outerRadius(radius * (options.plotOptions.pie.outerRadius / 100) - 10);
-
-                arcOutter
-                    .innerRadius(radius * (options.plotOptions.pie.outerRadius / 100) - 10)
                     .outerRadius(radius * (options.plotOptions.pie.outerRadius / 100));
 
-                arcPhantom
-                    .innerRadius(0)
-                    .outerRadius((radius * (options.plotOptions.pie.outerRadius / 100)) + 20);
-
-                ///////////////////////////////////////////////////////////////////////////
-                // Create SVG element                                                   //
-                ///////////////////////////////////////////////////////////////////////////
+                // Create SVG element
                 if(!svg) {
                     svg = d3.select(graph)
                         .append('svg')
@@ -145,39 +136,35 @@ charts.donut = function module() {
                         .attr('width', '100%')
                         .attr('height', '100%');
 
-                    // Group for arcs/paths
-                    innerArcs = svg.append('g')
+                    //GROUP FOR ARCS/PATHS
+                    arc_group = svg.append('g')
                         .attr('class', 'arc')
                         .attr('transform', 'translate(' + (size.width / 2) + ',' + (size.height / 2) + ')');
 
-                    //Set up outter arc groups
-                    outterArcs = svg.append("g")
-                        .attr("class", "outter-arc")
-                        .style('pointer-events', 'none')
-                        .attr("transform", 'translate(' + (size.width / 2) + ',' + (size.height / 2) + ')');
-
-                    // Set up phantom arc groups
-                    phantomArcs = svg.append("g")
-                        .attr("class", "phantom-arc")
-                        .style('pointer-events', 'none')
-                        .attr("transform", 'translate(' + (size.width / 2) + ',' + (size.height / 2) + ')');
+                    //GROUP FOR LABELS
+                    var label_group = svg.append('svg:g')
+                        .attr('class', 'label_group')
+                        .attr('transform', 'translate(' + (size.width / 2) + ',' + (size.height / 2) + ')');
 
                     //GROUP FOR CENTER TEXT
                     var center_group = svg.append('svg:g')
                         .attr('class', 'center_group')
                         .attr('transform', 'translate(' + (size.width / 2) + ',' + (size.height / 2) + ')');
 
-                    //Placeholder gray circle
-                    innerArcs.append('svg:circle')
+                    //PLACEHOLDER GRAY CIRCLE
+                    paths = arc_group.append('svg:circle')
                         .attr('fill', '#EFEFEF')
-                        .attr('r', arc.outerRadius());
+                        .attr('r', radius);
 
-                    // White circle behind labels
+                    ///////////////////////////////////////////////////////////
+                    // CENTER TEXT ////////////////////////////////////////////
+                    ///////////////////////////////////////////////////////////
+
+                    //WHITE CIRCLE BEHIND LABELS
                     var whiteCircle = center_group.append('svg:circle')
                         .attr('fill', 'white')
-                        .attr('r', arc.innerRadius());
+                        .attr('r', options.plotOptions.pie.innerRadius);
 
-                    // HTML Label Container
                     var foreignObject = center_group.append('foreignObject')
                             .attr('width', options.plotOptions.pie.outerRadius)
                             .attr('height', options.plotOptions.pie.outerRadius)
@@ -193,12 +180,10 @@ charts.donut = function module() {
                             .html('<span class="text">Waiting...</span>');
                 }
 
-                ///////////////////////////////////////////////////////////
-                // to run each time data is generated                    //
-                ///////////////////////////////////////////////////////////
+                // to run each time data is generated
                 function update() {
-                    // Remove placeholder circle
-                    innerArcs.selectAll('circle').remove();
+                    //REMOVE PLACEHOLDER CIRCLE
+                    arc_group.selectAll('circle').remove();
                     // Get total sessions
                     var total = data.series[0].data.reduce(function(previousValue, currentValue) {
                         return previousValue + currentValue.value;
@@ -206,12 +191,13 @@ charts.donut = function module() {
                     // Set default text
                     totalValue.html('<span class="text">' + data.series[0].name + '</span><br /><span class="value">' + total + '</span><br /><span class="text">sessions</span>');
 
-                    // Draw arc paths
-                    var inner = innerArcs.selectAll('path').data(donut(data.series[0].data));
-                    inner.enter().append('path')
+                    //DRAW ARC PATHS
+                    paths = arc_group.selectAll('path').data(donut(data.series[0].data));
+                    paths.enter().append('svg:path')
+                        .attr('stroke', 'white')
                         .attr('class', 'slice')
-                        .style('fill-opacity', 0.25)
-                        .style('fill', function(d, i) {
+                        .attr('stroke-width', 0.5)
+                        .attr('fill', function(d, i) {
                             return d.data.fill || color(i);
                         })
                         .on('mouseover', function(d){
@@ -220,64 +206,18 @@ charts.donut = function module() {
                         .on('mouseout', function(d){
                             totalValue.html('<span class="text">' + data.series[0].name + '</span><br /><span class="value">' + total + '</span><br /><span class="text">sessions</span>');
                         })
-                        .on('click', dispatch.click);
-                    inner
+                        .on('click', dispatch.click)
                         .transition()
                         .duration(duration)
-                        .attrTween('d', function(d, i) {
-                            return pieTween(d, i, arc);
-                        });
-                    inner.exit()
+                        .attrTween('d', pieTween);
+                    paths
                         .transition()
                         .duration(duration)
-                        .attrTween('d', function(d, i){
-                            return removePieTween(d, i, arc);
-                        })
-                        .remove();
-
-                    ///////////////////////////////////////////////////////////
-                    // Draw outter arc paths                                 //
-                    ///////////////////////////////////////////////////////////
-                    var outter = outterArcs.selectAll('path').data(donut(data.series[0].data));
-                    outter.enter().append('path')
-                        .style('fill', function(d, i) {
-                            return d.data.fill || color(i);
-                        });
-                    outter
+                        .attrTween('d', pieTween);
+                    paths.exit()
                         .transition()
                         .duration(duration)
-                        .attrTween('d', function(d, i){
-                            return pieTween(d, i, arcOutter);
-                        });
-                    outter.exit()
-                        .transition()
-                        .duration(duration)
-                        .attrTween('d', function(d, i){
-                            return removePieTween(d, i, arcOutter);
-                        })
-                        .remove();
-
-                    ///////////////////////////////////////////////////////////
-                    // Draw phantom arc paths                                //
-                    ///////////////////////////////////////////////////////////
-                    var phantom = phantomArcs.selectAll('path').data(donut(data.series[0].data));
-                    phantom.enter().append('path')
-                        .style('fill', 'white')
-                        .style('fill-opacity', 0.1)
-                        .style('stroke', 'white')
-                        .style('stroke-width', 5);
-                    phantom
-                        .transition()
-                        .duration(duration)
-                        .attrTween('d', function(d, i){
-                            return pieTween(d, i, arcPhantom);
-                        });
-                    phantom.exit()
-                        .transition()
-                        .duration(duration)
-                        .attrTween('d', function(d, i){
-                            return removePieTween(d, i, arcPhantom);
-                        })
+                        .attrTween('d', removePieTween)
                         .remove();
                 }
 
@@ -287,9 +227,11 @@ charts.donut = function module() {
             }
 
             ///////////////////////////////////////////////////////////
-            // Interpolate the arcs in data space.                   //
+            // FUNCTIONS //////////////////////////////////////////////
             ///////////////////////////////////////////////////////////
-            function pieTween(d, i, func) {
+
+            // Interpolate the arcs in data space.
+            function pieTween(d, i) {
                 var s0;
                 var e0;
                 if (oldPieData[i]) {
@@ -314,10 +256,11 @@ charts.donut = function module() {
                 });
                 return function(t) {
                     var b = i(t);
-                    return func(b);
+                    return arc(b);
                 };
             }
-            function removePieTween(d, i, func) {
+
+            function removePieTween(d, i) {
                 s0 = 2 * Math.PI;
                 e0 = 2 * Math.PI;
                 i = d3.interpolate({
@@ -329,7 +272,7 @@ charts.donut = function module() {
                 });
                 return function(t) {
                     var b = i(t);
-                    return func(b);
+                    return arc(b);
                 };
             }
 

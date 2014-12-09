@@ -227,10 +227,25 @@ table {
 
 .widget {
     border-radius: @border-radius-base;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     color: #fff;
     padding: 15px;
     overflow: hidden;
+    &.lighten {
+        color: #444;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #dddddd;
+        background-image: linear-gradient(155deg, #fefefe 40%, #f8f8f8);
+        padding-bottom: 5px;
+        .stats-link {
+            a {
+                opacity: 1 !important;
+            }
+        }
+        .stats-progress {
+            height: 1px !important;
+        }
+    }
     &.widget-stats {
         position: relative;
         .stats-info {
@@ -247,8 +262,6 @@ table {
         }
         .stats-desc, .stats-title {
             text-transform: uppercase;
-            color: #fff;
-            color: rgba(255,255,255,.6);
         }
         .stats-icon {
             font-size: 42px;
@@ -257,28 +270,26 @@ table {
             text-align: center;
             line-height: 56px;
             margin-left: 15px;
-            color: #fff;
             position: absolute;
             right: 15px;
             top: 15px;
-            opacity: .2;
-            filter: alpha(opacity=20);
+            opacity: 0.65;
+            text-align: right;
         }
         .stats-link {
             a {
                 display: block;
                 margin: 15px -15px -15px;
                 padding: 7px 15px;
-                background: url(../img/transparent/black-0.4.png);
                 background: rgba(0,0,0,.4);
                 text-align: right;
-                color: #ddd;
+                color: #FFF;
                 font-weight: lighter;
                 text-decoration: none;
+                opacity: 0.65;
                 &:hover, &:focus {
-                    background: url(../img/transparent/black-0.6.png);
                     background: rgba(0,0,0,.6);
-                    color: #fff;
+                    opacity: 1;
                 }
                 i {
                     color: #fff;
@@ -288,17 +299,20 @@ table {
         .stats-icon.stats-icon-lg {
             font-size: 52px;
             top: 12px;
-            right: 21px;
+            right: 15px;
         }
         .stats-title {
             position: relative;
+            opacity: 0.65;
             line-height: 1.1;
             font-size: 12px;
             margin: 2px 0 7px;
         }
         .stats-desc {
             font-weight: 300;
+            opacity: 0.65;
             margin-bottom: 0;
+            font-size: 1vw;
         }
         .stats-number {
             font-size: 24px;
@@ -306,7 +320,6 @@ table {
             margin-bottom: 10px;
         }
         .stats-progress {
-            background: url(../img/transparent/black-0.2.png);
             background: rgba(0,0,0,.2);
             height: 2px;
             margin: 0 -15px 12px;

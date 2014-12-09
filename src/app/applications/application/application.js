@@ -10,7 +10,6 @@ angular.module( 'apicatus.application', [
     'apicatus.application.geo',
     'queryFactory',
     'ngAssertions',
-    'normalBarChart',
     'ngChart'
 ])
 .config(['$httpProvider', function ( $httpProvider ) {

@@ -1,14 +1,17 @@
 <technology>
     <div class="row">
         <div class="col-md-3 col-sm-6" ng-repeat="(key, value) in technology.platforms">
-            <div class="widget widget-stats" ng-class="value.class">
+            <div class="widget widget-stats bg-silver lighten" > <!-- ng-class="value.class" -->
                 <div class="stats-icon stats-icon-lg">
-                    <i class="fa fa-fw" ng-class="value.icon"></i>
+                    <i ng-class="value.icon" ng-style="{'color': value.color}"></i>
                 </div>
                 <div class="stats-title">{{key}} SESSIONS</div>
                 <div class="stats-number">{{value.value | number}}</div>
-                <progressbar class="stats-progress" max="technology.maxDeviceTypes" value="value.value"></progressbar>
-                <div class="stats-desc">Better than last week {{(value.value / technology.maxDeviceTypes) * 100 | number:0}}%</div>
+                <progressbar class="stats-progress" max="technology.maxDeviceTypes" value="value.value" progressbar-color="{{value.color}}"></progressbar>
+                <div class="stats-desc text-right">
+                    <!-- Better than last week {{(value.value / technology.maxDeviceTypes) * 100 | number:0}}% -->
+                    <inline-bar-chart data="[1,2,3,4,5,3,2,1,2,3,6,7,4,1,3,9,1,2,9,1,8,2,7,3]" options="{height: 15, width: '100%', fill: [value.color]}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
+                </div>
             </div>
         </div>
     </div>
@@ -17,22 +20,24 @@
             <tabset>
                 <tab>
                     <tab-heading>
-                        <i class="fa fa-globe"></i> GeoMap
+                        <i class="fa fa-globe"></i> Technology by region
                     </tab-heading>
                     <div class="row">
-                        <div class="col-md-8">
-                            <ng-chart type="worldmap" data="technology.map" options="technology.mapOptions"></ng-chart>
-                            <!-- vector-map series="technology.worldMap" style="width:100%;height:350px;display:block;"></vector-map -->
+                        <div class="col-sm-8">
+                            <ng-chart type="worldmap" data="technology.map" options="technology.mapOptions" click="technology.countryClick(args)"></ng-chart>
                         </div>
-                        <div class="col-md-4">
-                            <donut-chart data="technology.deviceTypeSplit" style="width:100%;height:350px;display:block;"></donut-chart>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-offset-8 col-md-4 text-center">
-                            <span class="label label-sm" ng-repeat="deviceType in technology.deviceTypeSplit" style="margin-right: 10px;" ng-style="{'background-color': deviceType.color}" ng-click="technology.setVisible(true)"><i class="fa fa-fw" ng-class="deviceType.icon"></i> {{deviceType.name}}</span>
+                        <div class="col-sm-4 donut">
+                            <ng-chart type="donut" data="technology.deviceTypeSplit" style="padding:25px;"></ng-chart>
+                            <div class="legend text-center">
+                                <span class="label label-sm bg-silver-lighter" ng-repeat="(device, value) in technology.platforms" ng-style="{'color': value.color}" ng-click="technology.setVisible(true)"><i ng-class="value.icon"></i> {{device}}</span>
+                            </div>
                         </div>
                     </div>
+                    <!-- div class="row">
+                        <div class="col-md-offset-8 col-md-4 text-right">
+                            <span class="label label-sm" ng-repeat="(device, value) in technology.platforms" style="margin-right: 10px;" ng-style="{'background-color': value.color}" ng-click="technology.setVisible(true)"><i class="fa fa-fw" ng-class="value.icon"></i> {{device}}</span>
+                        </div>
+                    </div -->
                 </tab>
                 <tab>
                     <tab-heading>

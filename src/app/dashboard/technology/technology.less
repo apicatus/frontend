@@ -5,4 +5,21 @@ technology {
         border-top: none;
         border-color: @nav-tabs-border-color;
     }
+    .donut {
+        position: relative;
+        .legend {
+            position: absolute;
+            bottom: 0px;
+            margin-bottom: 10px;
+            left: 50%;
+            .translate(-50%, 0);
+            .label {
+                font-weight: normal;
+                border-radius: 0px;
+                margin-right: 6px;
+                padding: .05em 0.5em 0.2em;
+                text-transform: capitalize;
+            }
+        }
+    }
 }

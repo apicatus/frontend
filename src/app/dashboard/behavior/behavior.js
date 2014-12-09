@@ -2,11 +2,7 @@
 /*jshint newcap: false */
 
 angular.module( 'apicatus.dashboard.behavior', [
-    'vectorMap',
-    'stackedBarChart',
-    'bivariateChart',
-    'worldMap',
-    'treeMap'
+    'ngChart'
 ])
 .config(function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state('main.dashboard.behavior', {
@@ -65,6 +61,9 @@ angular.module( 'apicatus.dashboard.behavior', [
         xAxis: {
             tickInterval: queryFactory().get().interval
         }
+    };
+    behavior.hover = function(args) {
+        console.log("args: ", args);
     };
 
     behavior.hasData = transferStatistics.aggregations.statuses.buckets.length;
