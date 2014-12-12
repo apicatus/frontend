@@ -41,9 +41,9 @@
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav closed" ng-model="menu">
             <li class="close-menu"><button menu-toggle="data" class="menu-close pull-right"><i class="icon-close"></i></button></li>
-            <li class="accordion">
+            <li class="accordion" ui-sref-active='active'>
                 <div class="section">
-                    <a ui-sref-active='active' ui-sref="main.applications.list"><i class="icon-network fa-fw"></i><span> {{ 'SIDEBAR.APIS' | translate }}</span></a>
+                    <a ui-sref="main.applications.list"><i class="icon-network fa-fw"></i><span> {{ 'SIDEBAR.APIS' | translate }}</span></a>
                 </div>
             </li>
             <li class="accordion">
@@ -52,11 +52,11 @@
                     <label for="section-dashboard"><span><i class="icon-dashboard fa-fw"></i> {{ 'SIDEBAR.DASHBOARD' | translate }}</span><b class="fa fa-angle-down pull-right"></b></label>
                     <div class="content">
                         <ul>
-                            <li ui-sref-active='active'><a ui-sref="main.dashboard.behavior({id: ''})"><i class="icon-event fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.BEHAVIOR' | translate }}</a></li>
-                            <li ui-sref-active='active'><a ui-sref="main.dashboard.traffic({id: ''})"><i class="icon-pulse fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.TRAFFIC' | translate }}</a></li>
-                            <li ui-sref-active='active'><a ui-sref="main.dashboard.geo({id: ''})"><i class="icon-globe fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.GEOMAP' | translate }}</a></li>
-                            <li ui-sref-active='active'><a ui-sref="main.dashboard.realtime({id: ''})"><i class="icon-stopwatch fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.REAL-TIME' | translate }}</a></li>
-                            <li ui-sref-active='active'><a ui-sref="main.dashboard.technology({id: ''})"><i class="icon-stack fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.TECHNOLOGY' | translate }}</a></li>
+                            <li ui-sref-active='active'><a href ui-sref="main.dashboard.behavior({id: ''})"><i class="icon-event fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.BEHAVIOR' | translate }}</a></li>
+                            <li ui-sref-active='active'><a href ui-sref="main.dashboard.traffic({id: ''})"><i class="icon-pulse fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.TRAFFIC' | translate }}</a></li>
+                            <li ui-sref-active='active'><a href ui-sref="main.dashboard.geo({id: ''})"><i class="icon-globe fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.GEOMAP' | translate }}</a></li>
+                            <li ui-sref-active='active'><a href ui-sref="main.dashboard.realtime({id: ''})"><i class="icon-stopwatch fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.REAL-TIME' | translate }}</a></li>
+                            <li ui-sref-active='active'><a href ui-sref="main.dashboard.technology({id: ''})"><i class="icon-stack fa-fw"></i> {{ 'SIDEBAR.DASHBOARD.TECHNOLOGY' | translate }}</a></li>
                         </ul>
                     </div>
                 </div>

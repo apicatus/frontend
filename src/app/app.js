@@ -38,6 +38,7 @@
 /*jshint newcap: false */
 
 angular.module( 'apicatus', [
+    // Internal modules
     'templates-app',
     'templates-common',
     'apicatus.main',
@@ -52,8 +53,7 @@ angular.module( 'apicatus', [
     'apicatus.help',
     'apicatus.about',
     'AuthService',
-    'timeago',
-    'humanize',
+    // External dependencies
     'restangular',
     'ui.bootstrap',
     'ui.router',
@@ -62,9 +62,15 @@ angular.module( 'apicatus', [
     'ngCookies',
     'pascalprecht.translate',
     'ui.ace',
+    // Filters
+    'timeago',
+    'humanize',
+    'reduceValuesTo',
+    // Services & Factories
     'parseURL',
     'httpSettings',
     'ngSocket',
+    // Directives
     'ngMasterSearch'
 ])
 // Global constans

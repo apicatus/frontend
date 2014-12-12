@@ -1,5 +1,5 @@
 <div class="col-lg-12 col-md-12">
-    <table class="table primary-table table-striped table-condensed table-hover">
+    <table class="table primary-table table-striped table-condensed table-hover api-list">
         <thead>
             <tr>
                 <th class="col-md-1 text-center">Enabled</th>
@@ -8,7 +8,7 @@
                 <th class="text-right">Api Calls</th>
                 <th class="text-right">Avg. response time</th>
                 <th class="text-right">Last Access</th>
-                <th class="text-right">Activity</th>
+                <th class="col-md-1 text-right">Activity</th>
                 <th></th>
             </tr>
         </thead>
@@ -24,7 +24,7 @@
                 <td class="text-right">{{ table.summary.current.stats.avg | number:0 }}ms</td>
                 <td class="text-right">{{ api.lastAccess | timeago }}</td>
                 <td class="text-right">
-                    <inline-bar-chart data="table.barChart.data" options="{height: '16px', fill: ['#49c5b1']}"></inline-bar-chart>
+                    <inline-bar-chart class="inline-bars">{{table.barChart.data | reduceValuesTo:7}}</inline-bar-chart>
                 </td>
                 <td>
                     <div class="btn-group pull-right" dropdown>

@@ -3,228 +3,19 @@ dashboard {
         margin-bottom: 20px;
     }
 }
-table {
-    img.flag {
-        max-width: 16px;
-        max-height: 16px;
-        vertical-align: baseline;
-    }
+
+.pagination {
+    margin: 5px 0px;
 }
 
-.round-icon {
-  display: block;
-  text-align: center;
-}
-.round-icon.sm {
-  width: 35px;
-  height: 35px;
-  font-size: 16px;
-  line-height: 35px;
-  border-radius: 35px;
-}
-
-.ui-timeline {
-    display: table;
-    position: relative;
-    table-layout: fixed;
-    width: 100%;
-    border-spacing: 0;
-    border-collapse: collapse;
-    &:before {
-        background-color: #d5d5d5;
-        bottom: 0px;
-        content: "";
-        left: 50%;
-        position: absolute;
-        top: 30px;
-        width: 1px;
-        z-index: 0;
-    }
-    .timeline-item {
-        display: table-row;
-        margin-bottom: 5px;
-        &:before {
-            content: "";
-            display: block;
-            width: 50%;
-        }
-        .timeline-caption {
-            width: 150px;
-            margin-left: -110px;
-        }
-        &.alt {
-            text-align: right;
-            &:before {
-                display: none;
-            }
-            &:after {
-                content: "";
-                display: block;
-                width: 50%;
-            }
-            .timeline-body {
-                .timeline-entry {
-                    margin: 0 35px 15px 0;
-                }
-                .timeline-time {
-                    right: -220px;
-                    left: auto;
-                    text-align: left;
-                }
-                .timeline-icon {
-                    right: -53px;
-                    left: auto;
-                }
-                .timeline-content {
-                    &:after {
-                        right: -16px;
-                        left: auto;
-                        border: 8px solid transparent;
-                        border-left: 8px solid lighten(@gray-lighter, 5%);
-                    }
-                    &:before {
-                        right: -17px;
-                        left: auto;
-                        border: 8px solid transparent;
-                        border-left: 8px solid @gray-lighter;
-                    }
-                    &.primary {
-                        border-color: @brand-primary;
-                        &:after, &:before {
-                            border-left-color: @brand-primary;
-                        }
-                    }
-                    &.orange {
-                        border-color: #f58636;
-                        &:after, &:before {
-                            border-left-color: #f58636;
-                        }
-                        .timeline-heading {
-                            background-color: #f58636;
-                        }
-                    }
-                    &.violet {
-                        border-color: #9a59b5;
-                        &:after, &:before {
-                            border-left-color: #9a59b5;
-                        }
-                        .timeline-heading {
-                            background-color: #9a59b5;
-                        }
-                    }
-                }
-            }
-        }
-        .timeline-body {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
-            .timeline-entry {
-                position: relative;
-                margin: 0 0 15px 36px;
-            }
-            .timeline-time {
-                position: absolute;
-                left: -220px;
-                top: 5px;
-                width: 150px;
-                line-height: 35px;
-                text-align: right;
-            }
-            .timeline-icon {
-                position: absolute;
-                left: -53px;
-                top: 5px;
-            }
-            .timeline-contentxxx {
-                position: relative;
-                padding: 15px;
-                border-radius: 2px;
-                background-color: lighten(@gray-lighter, 5%);
-                border: 1px solid @gray-lighter;
-                &:after {
-                    content: " ";
-                    line-height: 0;
-                    position: absolute;
-                    left: -16px;
-                    top: 15px;
-                    border: 8px solid transparent;
-                    border-right: 8px solid lighten(@gray-lighter, 5%);
-                }
-                &:before {
-                    content: " ";
-                    line-height: 0;
-                    position: absolute;
-                    left: -17px;
-                    top: 15px;
-                    border: 8px solid transparent;
-                    border-right: 8px solid @gray-lighter;
-                }
-            }
-            .timeline-content {
-                position: relative;
-                border-radius: 2px;
-                background-color: lighten(@gray-lighter, 5%);
-                border: 1px solid @brand-primary;
-                &:after {
-                    content: " ";
-                    line-height: 0;
-                    position: absolute;
-                    left: -16px;
-                    top: 15px;
-                    border: 8px solid transparent;
-                    border-right: 8px solid @brand-primary;
-                }
-                &:before {
-                    content: " ";
-                    line-height: 0;
-                    position: absolute;
-                    left: -17px;
-                    top: 15px;
-                    border: 8px solid transparent;
-                    border-right: 8px solid @brand-primary;
-                }
-                .timeline-heading {
-                    background-color: @brand-primary;
-                    .timeline-tile {
-                        color: #fff;
-                        margin: 0px;
-                        padding: 10px;
-                        line-height: 24px;
-                    }
-                }
-                .timeline-container {
-                    padding: 10px;
-                }
-                &.primary {
-                    border-color: @brand-primary;
-                    &:after, &:before {
-                        border-right-color: @brand-primary;
-                    }
-                }
-                &.orange {
-                    border-color: #f58636;
-                    &:after, &:before {
-                        border-right-color: #f58636;
-                    }
-                    .timeline-heading {
-                        background-color: #f58636;
-                    }
-                }
-                &.violet {
-                    border-color: #9a59b5;
-                    &:after, &:before {
-                        border-right-color: #9a59b5;
-                    }
-                    .timeline-heading {
-                        background-color: #9a59b5;
-                    }
-                }
-            }
-        }
+.widgets {
+    margin-left: -(@grid-gutter-width / 4);
+    margin-right: -(@grid-gutter-width / 4);
+    [class*="col-"] {
+        padding-left: (@grid-gutter-width / 4);
+        padding-right: (@grid-gutter-width / 4);
     }
 }
-
 .widget {
     border-radius: @border-radius-base;
     margin-bottom: 15px;
@@ -233,26 +24,47 @@ table {
     overflow: hidden;
     &.lighten {
         color: #444;
-        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.065);
         border: 1px solid #dddddd;
         background-image: linear-gradient(155deg, #fefefe 40%, #f8f8f8);
         padding-bottom: 5px;
+        padding-top: 5px;
         .stats-link {
             a {
+                padding: 10px 15px 15px !important;
+                background: rgba(0, 0, 0, 0.02) !important;
+                border-top: 1px solid #dddddd;
                 opacity: 1 !important;
             }
         }
+        .stats-chart {
+            display: block;
+            margin: 15px -15px -15px;
+            padding: 10px 15px 15px;
+            border-top: 1px solid #dddddd;
+            &.with-progress {
+                border: none !important;
+            }
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .stats-desc {
+            background-color: #fff;
+        }
         .stats-progress {
+            margin: -10px -15px 12px !important;
             height: 1px !important;
         }
+    }
+    &.darken {
+        color: #fff;
     }
     &.widget-stats {
         position: relative;
         .stats-info {
             h4 {
+                text-transform: uppercase;
                 font-size: 12px;
                 margin: 5px 0;
-                color: #fff;
             }
             p {
                 font-size: 24px;
@@ -281,12 +93,12 @@ table {
                 display: block;
                 margin: 15px -15px -15px;
                 padding: 7px 15px;
-                background: rgba(0,0,0,.4);
+                background: rgba(0, 0, 0, 0.4);
                 text-align: right;
-                color: #FFF;
                 font-weight: lighter;
                 text-decoration: none;
                 opacity: 0.65;
+                color: inherit;
                 &:hover, &:focus {
                     background: rgba(0,0,0,.6);
                     opacity: 1;
@@ -324,7 +136,6 @@ table {
             height: 2px;
             margin: 0 -15px 12px;
             .progress-bar {
-                background: #fff;
                 box-shadow: none;
             }
         }

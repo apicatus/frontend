@@ -17,18 +17,18 @@ angular.module( 'apicatus.dashboard.geo', [
             }
         },
         resolve: {
-            geoStatistics: ['apis', '$stateParams', 'Restangular', function (apis, $stateParams, Restangular) {
+            geoStatistics: ['apis', '$stateParams', 'Restangular', 'queryFactory', function (apis, $stateParams, Restangular, queryFactory) {
                 if($stateParams.id) {
-                    return Restangular.one('geo/digestor', $stateParams.id).get();
+                    return Restangular.one('geo/digestor', $stateParams.id).get(queryFactory().get());
                 } else {
-                    return Restangular.one('geo').get();
+                    return Restangular.one('geo').get(queryFactory().get());
                 }
             }],
-            languageStatistics: ['$stateParams', 'Restangular', function ($stateParams, Restangular) {
+            languageStatistics: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
                 if($stateParams.id) {
-                    return Restangular.one('lang/digestor', $stateParams.id).get();
+                    return Restangular.one('lang/digestor', $stateParams.id).get(queryFactory().get());
                 } else {
-                    return Restangular.one('lang').get();
+                    return Restangular.one('lang').get(queryFactory().get());
                 }
             }]
         },

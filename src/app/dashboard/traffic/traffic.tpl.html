@@ -1,59 +1,58 @@
 <traffic ng-if="traffic.hasData">
-    <div class="row">
+    <div class="row widgets">
         <div class="col-md-3 col-sm-6">
-            <div class="widget widget-stats bg-green">
+            <div class="widget widget-stats lighten">
                 <div class="stats-icon">
-                    <inline-bar-chart data="traffic.timeStatsByDate.avg" options="{height: 35, width: '100%', fill: ['#fff']}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
                 </div>
                 <div class="stats-info">
-                    <h4>AVG. API RESPONSE TIME</h4>
+                    <h4>AVERAGE API RESPONSE TIME</h4>
                     <p>{{traffic.timeStats.avg | number:0 }}ms</p>
                 </div>
-                <div class="stats-link">
-                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
+                <div class="stats-chart bg-red">
+                    <inline-bar-chart class="inline-chart">{{traffic.timeStatsByDate.avg | reduceValuesTo:24}}</inline-bar-chart>
                 </div>
 
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="widget widget-stats bg-blue">
+            <div class="widget widget-stats lighten">
                 <div class="stats-icon">
-                    <inline-bar-chart data="traffic.timeStatsByDate.max" options="{height: 35, width: '100%', fill: ['#fff']}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
+
                 </div>
                 <div class="stats-info">
                     <h4>MAX API RESPONSE TIME</h4>
                     <p>{{traffic.timeStats.max | number:0 }}ms</p>
                 </div>
-                <div class="stats-link">
-                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
+                <div class="stats-chart bg-green">
+                    <inline-bar-chart class="inline-chart">{{traffic.timeStatsByDate.max | reduceValuesTo:24}}</inline-bar-chart>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="widget widget-stats bg-aqua">
+            <div class="widget widget-stats lighten">
                 <div class="stats-icon">
-                    <inline-bar-chart data="traffic.dataStatsByDate.avg" options="{height: 35, width: '100%', fill: ['#fff']}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
+
                 </div>
                 <div class="stats-info">
-                    <h4>AVG. RECV. BYTES</h4>
-                    <p>{{traffic.dataStats.min | number:0 | humanize}}b</p>
+                    <h4>AVERAGE SENT BYTES</h4>
+                    <p>{{traffic.dataStats.avg | number:0 | humanize}}b</p>
                 </div>
-                <div class="stats-link">
-                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
+                <div class="stats-chart bg-blue">
+                    <inline-bar-chart class="inline-chart">{{traffic.dataStatsByDate.avg | reduceValuesTo:24}}</inline-bar-chart>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="widget widget-stats bg-black">
+            <div class="widget widget-stats lighten">
                 <div class="stats-icon">
-                    <inline-bar-chart data="traffic.codeStatsByDate['500']" options="{height: 35, width: '100%', fill: ['#fff']}" style="position: absolute;bottom: 0px;left: 0px;height: 35px;"></inline-bar-chart>
+
                 </div>
                 <div class="stats-info">
                     <h4>4XX And 5XX Errors</h4>
                     <p>{{traffic.totalErrors | humanize}}</p>
                 </div>
-                <div class="stats-link">
-                    <a href="javascript:;">View Detail <i class="fa fa-fw fa-area-chart"></i></a>
+                <div class="stats-chart bg-purple">
+                    <inline-bar-chart class="inline-chart">{{traffic.codeStatsByDate['400'] | reduceValuesTo:24}}</inline-bar-chart>
                 </div>
             </div>
         </div>

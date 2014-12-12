@@ -11,9 +11,6 @@ angular.module( 'apicatus.dashboard.realtime', [
             'widgets': {
                 templateUrl: 'dashboard/realtime/realtime.tpl.html',
                 controller: 'DashboardRealTimeCtrl as realtime'
-            },
-            'toolbar': {
-                templateUrl: 'dashboard/components/toolbar.tpl.html'
             }
         },
         data: { pageTitle: 'RealTime Monitor' },
@@ -51,10 +48,6 @@ angular.module( 'apicatus.dashboard.realtime', [
     realtime.tpm = [];
 
     $interval(function(){
-        realtime.time = new Date();
-    }, 1000);
-
-    $interval(function(){
         var sum = realtime.tpm.reduce(function(a, b) {
             return a + b;
         }, 0);
@@ -67,8 +60,6 @@ angular.module( 'apicatus.dashboard.realtime', [
         }, 0) / 6 ) || 0;
 
     }, 10 * 1000);
-
-
     /*
     realtime.rtMap = {
         regions: [

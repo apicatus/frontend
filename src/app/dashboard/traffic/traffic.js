@@ -345,5 +345,4 @@ angular.module( 'apicatus.dashboard.traffic', [
             });
         }
     });
-
 });

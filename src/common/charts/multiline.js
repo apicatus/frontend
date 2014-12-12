@@ -146,17 +146,6 @@ charts.multiline = function module() {
                 var color = d3.scale.category10();
                 color.domain(d3.keys(data).filter(function(key) { return key !== 'date'; }));
 
-                if(options.plotOptions.area.stacking == 'percent') {
-                    var arrSum = data.map(function(serie) {
-                        return serie.data.map(function(value, index){
-                            return data.reduce(function(previous, current){
-                                return previous + current.data[index] || 0;
-                            }, 0);
-
-                        });
-                    });
-                }
-
                 // Put Dates
                 data.forEach(function(item, i) {
                     // Assign default id
@@ -173,6 +162,25 @@ charts.multiline = function module() {
                         alert('invisible !');
                     };
                 });
+
+                ///////////////////////////////////////////////////////////////////////////
+                // Calculate the max sum for percentage stacked charts                   //
+                ///////////////////////////////////////////////////////////////////////////
+                var arrSum = [];
+                if(options.plotOptions.area.stacking == 'percent') {
+                    arrSum = data.map(function(serie) {
+                        return {
+                            id: serie.id,
+                            sum: serie.data.map(function(value, index){
+                                return data.reduce(function(previous, current){
+                                    return previous + current.data[index].value || 0;
+                                }, 0);
+                            })
+                        };
+                    });
+                }
+                console.log("SUM: ", arrSum);
+
 
                 var dateStart = options.plotOptions.series.pointStart;
                 var dateEnd = options.plotOptions.series.pointStart + options.plotOptions.series.pointInterval * (data[0].data.length - 1);
@@ -242,8 +250,13 @@ charts.multiline = function module() {
                 ///////////////////////////////////////////////////////////////
                 var stack = d3.layout.stack()
                     .offset('zero')
-                    .values(function(d) {
-                        return d.data;
+                    .values(function(d, index) {
+                        return d.data.map(function(data, i){
+                            if(options.plotOptions.area.stacking == 'percent') {
+                                data.value = (data.value / arrSum[index].sum[i]) * 100 || 0;
+                            }
+                            return data;
+                        });
                     })
                     .x(function(d) {
                         return d.date;
@@ -478,11 +491,23 @@ charts.multiline = function module() {
 
                     var hoverLine = needleContainer
                             .append('line')
+                            .attr('class', 'highlight-line')
                             .attr('x1', 0)
                             .attr('x2', 0)
                             .attr('y1', 0)
                             .attr('y2', size.height)
+                            .style('stroke-dasharray', 1.1)
                             .style('stroke', '#444');
+                    // Label Background
+                    var tooltip = needleContainer.append('rect')
+                            .attr("x", 8)
+                            .attr("y", -(options.chart.margin.top))
+                            .attr("rx", 2)
+                            .attr("ry", 2)
+                            .attr("width", 120)
+                            .attr("height", 18)
+                            .style("fill", '#eee');
+
                     var hoverDate = needleContainer.append('text')
                         .attr('class', 'hover-text')
                         .attr('y', height - 10);
@@ -526,6 +551,7 @@ charts.multiline = function module() {
                                     break;
                             }
                             hoverLine.attr('x1', xScale(d.date)).attr('x2', xScale(d.date));
+                            tooltip.attr('x', xScale(d.date));
                             if(circles[metric.id]) {
                                 circles[metric.id].attr('transform', 'translate(' + xScale(d.date) + ',' + yValue + ')');
                             }

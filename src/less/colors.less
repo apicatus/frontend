@@ -1,27 +1,6 @@
 /* BACKGROUND COLORS */
-.bk-blue {
-    background-color: #0266C8;
-}
 .bk-red {
-    background-color: #F90101;
-}
-.bk-yellow {
-    background-color: #F2B50F;
-}
-.bk-yellow-dark {
-    background-color: #e49307;
-}
-.bk-green {
-    background-color: #00933B;
-}
-.bk-cyan {
-    background-color: #11a9cc;
-}
-.bk-facebook {
-    background-color: #3b5998;
-}
-.bk-twitter {
-    background-color: #00acee;
+    background-color: #F90101; // used in navbar.tpl.html
 }
 /* FOREGROUND COLORS */
 .fg-blue {
@@ -100,6 +79,11 @@
 
 .bg-red {
     background: #ff5b57;
+    svg {
+        rect, polygon {
+            fill: #ff5b57;
+        }
+    }
 }
 
 .bg-red-darker {
@@ -112,6 +96,11 @@
 
 .bg-orange {
     background: #f59c1a;
+    svg {
+        rect, polygon {
+            fill: #f59c1a;
+        }
+    }
 }
 
 .bg-orange-darker {
@@ -136,6 +125,11 @@
 
 .bg-green {
     background: #00acac;
+    svg {
+        rect, polygon {
+            fill: #00acac;
+        }
+    }
 }
 
 .bg-green-darker {
@@ -147,7 +141,13 @@
 }
 
 .bg-blue {
-    background: #348fe2;}
+    background: #348fe2;
+    svg {
+        rect, polygon {
+            fill: #348fe2;
+        }
+    }
+}
 
 .bg-blue-darker {
     background: #2a72b5;
@@ -159,6 +159,11 @@
 
 .bg-aqua {
     background: #49b6d6;
+    svg {
+        rect, polygon {
+            fill: #49b6d6;
+        }
+    }
 }
 
 .bg-aqua-darker {
@@ -171,6 +176,11 @@
 
 .bg-purple {
     background: #727cb6;
+    svg {
+        rect, polygon {
+            fill: #727cb6;
+        }
+    }
 }
 
 .bg-purple-darker {
@@ -184,3 +194,58 @@
 .no-bg {
     background: none;
 }
+
+/* Device Colors */
+.device-color-phone {
+    &.device-bg, .progress-bar {
+        background-color: #419837;
+    }
+    &.device-fg {
+        color: #419837;
+    }
+    svg {
+        rect, polygon {
+            fill: #419837;
+        }
+    }
+}
+.device-color-tablet {
+    &.device-bg, .progress-bar {
+        background-color: #49b6d6;
+    }
+    &.device-fg {
+        color: #49b6d6;
+    }
+    svg {
+        rect, polygon {
+            fill: #49b6d6;
+        }
+    }
+}
+.device-color-laptop {
+    &.device-bg, .progress-bar {
+        background-color: #ff5b57;
+    }
+    &.device-fg {
+        color: #ff5b57;
+    }
+    svg {
+        rect, polygon {
+            fill: #ff5b57;
+        }
+    }
+}
+.device-color-monitor {
+    &.device-bg, .progress-bar {
+        background-color: #7B1AF5;
+    }
+    &.device-fg {
+        color: #7B1AF5;
+    }
+    svg {
+        rect, polygon {
+            fill: #7B1AF5;
+        }
+    }
+}
+

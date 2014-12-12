@@ -112,6 +112,7 @@ applications {
                 position: absolute;
             }
             .stock-chart {
+                height: 120px;
                 border-top-left-radius: 0.3rem;
                 border-top-right-radius: 0.3rem;
                 background-image: linear-gradient(155deg, darken(@brand-warning, 10%) 40%, @brand-warning);
@@ -128,11 +129,21 @@ applications {
                     background-image: linear-gradient(155deg, darken(@brand-primary, 10%) 40%, @brand-primary);
                 }
             }
-            .stock-chart {
-                height: 120px;
-                #chart {
-                    height: 10.7em;
-                    background: url(http://i.imgbox.com/abmuNQx2) center bottom no-repeat;
+            .inline-bars ~ .peity {
+                height: 80%;
+                width: 100%;
+                rect {
+                    fill: #49c5b1;
+                }
+            }
+            .inline-area ~ .peity {
+                height: 100%;
+                width: 100%;
+                polygon {
+                    fill: rgba(255,255,255,0.25);
+                }
+                polyline {
+                    stroke: rgba(255,255,255,0.5);
                 }
             }
             .current-price {
@@ -403,6 +414,15 @@ applications {
     .menu-category {
         display: inline-block;
         width:  100%;
+    }
+
+    .api-list {
+        .inline-bars ~ .peity {
+            height: 16px;
+            rect {
+                fill: #49c5b1;
+            }
+        }
     }
 
 }

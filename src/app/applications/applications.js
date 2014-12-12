@@ -273,6 +273,9 @@ angular.module( 'apicatus.applications', [
                 current: ($filter('filter')(summaries.current.digestors.buckets, {key: api._id}))[0],
                 previous: ($filter('filter')(summaries.previous.digestors.buckets, {key: api._id}))[0]
             };
+            if(!card.summary.current) {
+                return;
+            }
             card.summary.current.data = card.summary.current.dataset.buckets.map(function(bucket){
                 return {
                     timestamp: bucket.key,
@@ -280,9 +283,15 @@ angular.module( 'apicatus.applications', [
                     count: bucket.doc_count
                 };
             });
+
             card.barChart.data = card.summary.current.data.map(function(data){
                 return data.stats.avg || 0;
             });
+            card.barChart.calls = card.summary.current.data.map(function(data){
+                return data.count || 0;
+            });
+
+
         } catch (error) {
             console.log(error);
         }
@@ -343,16 +352,14 @@ angular.module( 'apicatus.applications', [
             heartbeat: '@'
         },
         controller: function($scope, $element, mySocket) {
-
             mySocket.on('message', function(result){
-                //console.log('heartbeat: ', $scope.heartbeat, result.log.digestor, ($scope.heartbeat == result.log.digestor));
-                if($scope.heartbeat == result.log.digestor) {
+                if(result.log && $scope.heartbeat == result.log.digestor) {
                     $element.toggleClass('visible');
                 }
             });
 
             $scope.$on('$destroy', function() {
-                console.log('leave realtime ');
+                console.log('$destroy heartbeat');
                 mySocket.removeListener('message');
             });
         }

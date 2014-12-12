@@ -2,10 +2,7 @@
     <div class="stock card" ng-class="{flip: flipped, public: api.public}">
         <div class="front">
             <div class="stock-chart" ng-class="api.enabled ? 'enabled' : 'disabled'" owner="{{api.imOwner}}">
-                <!-- bar-chart title="{{title}}" data="applications.data"></bar-chart -->
-                <!-- inline-bar-chart data="BarChart.data" options="{height: '100%', width: '100%', fill: ['rgba(255,255,255,0.25)'], stroke: ['rgba(255,255,255,0.5)']}"></inline-bar-chart -->
-                <inline-line-chart data="card.barChart.data" options="{height: '100%', width: '100%', fill: ['rgba(255,255,255,0.25)'], stroke: ['rgba(255,255,255,0.5)']}"></inline-line-chart>
-                <!-- line-chart title="{{title}}" data="[1,20,30,4,5,66,44,33,22,1,2,4,55]" key="time"></line-chart -->
+                <inline-line-chart class="inline-area">{{card.barChart.data}}</inline-line-chart>
                 <button class="btn api-setup pull-right" ng-click="flipped=!flipped" ng-show="api.imOwner"><i class="fa fa-cogs"></i></button>
                 <div class="api-heartbeat" heartbeat="{{api._id}}"><i class="fa fa-fw fa-heart"></i></div>
             </div>
@@ -26,7 +23,7 @@
                     <strong>{{card.summary.current.doc_count - card.summary.previous.doc_count | humanize}}</strong><span>Weekly change</span>
                 </div>
                 <div class="year-chart col-xs-6">
-                    <inline-bar-chart data="card.barChart.data" options="{height: '80%', width: '100%', fill: ['#49c5b1']}"></inline-bar-chart>
+                    <inline-bar-chart class="inline-bars">{{card.barChart.calls | reduceValuesTo:7}}</inline-line-chart>
                 </div>
             </div>
             <div class="summary container">

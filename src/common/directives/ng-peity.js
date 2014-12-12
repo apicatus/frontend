@@ -35,10 +35,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 var angularPeity = angular.module( 'ng-peity', [] )
-.factory('buildChartDirective', ['$window', '$timeout', function($window, $timeout){
-    
-    return function(chartType) {    
-        return {
+.factory('buildChartDirective', ['$interpolate', '$window', '$timeout', function($interpolate, $window, $timeout){
+
+    return function(chartType) {
+        /*return {
             restrict: 'E',
             scope: {
                 data: "=",
@@ -46,7 +46,9 @@ var angularPeity = angular.module( 'ng-peity', [] )
             },
             link: function ( scope, element, attrs ) {
 
-                var $span, options, chart;
+                var options,
+                    chart,
+                    data;
 
                 // Create container
                 options = scope.options || {};
@@ -89,13 +91,66 @@ var angularPeity = angular.module( 'ng-peity', [] )
                 scope.$watchCollection('data', function (newVal, oldVal) {
                     chart.text(newVal.join(",")).change();
                 });
-                
+
                 // Update options
                 scope.$watch('options', function (newVal, oldVal) {
                     var peity = chart.data().peity;
                     peity.opts = $.extend(peity.opts, newVal);
                     peity.draw();
                 });
+            }
+        };*/
+        return {
+            restrict: 'E',
+            element: true,
+            compile: function compile(element, attibutes, transclude) {
+                var interpolateFn = $interpolate(element.html(), true);
+                // no interpolation found -> ignore
+                if (!interpolateFn) {
+                    return;
+                }
+                element.empty();
+                return function(scope, element, attibutes) {
+                    var chart = $(element).peity(chartType);
+                    // Debounce f() ripped from _.
+                    function debounce(func, wait, immediate) {
+                        var timeout;
+                        return function() {
+                            var context = this, args = arguments;
+                            $timeout.cancel(timeout);
+                            timeout = $timeout(function() {
+                                timeout = null;
+                                if (!immediate) {
+                                    func.apply(context, args);
+                                }
+                            }, wait);
+                            if (immediate && !timeout) {
+                                func.apply(context, args);
+                            }
+                        };
+                    }
+
+                    // Redraw
+                    var delayedResize = debounce(function() {
+                        var peity = chart.data().peity;
+                        peity.draw();
+                    }, 300);
+
+                    angular.element($window).bind('resize', delayedResize);
+
+                    // On $destory unbind() window resize handler
+                    scope.$on('$destroy', function() {
+                        angular.element($window).unbind('resize', delayedResize);
+                    });
+
+                    scope.$watch(interpolateFn, function (value) {
+                        var data;
+                        if(value && value.length > 0) {
+                            data = JSON.parse(value || null);
+                            element.text(data.join(',')).change();
+                        }
+                    });
+                };
             }
         };
     };
@@ -108,4 +163,54 @@ var angularPeity = angular.module( 'ng-peity', [] )
 }])
 .directive( 'inlineLineChart', ['buildChartDirective', function (buildChartDirective) {
     return buildChartDirective( "line" );
+}])
+.directive('sl', ['$interpolate', '$timeout', '$window', function($interpolate, $timeout, $window){
+    return {
+        restrict: 'E',
+        element: true,
+        compile: function compile(element, attibutes, transclude) {
+            var interpolateFn = $interpolate(element.html(), true);
+            element.empty();
+            return function(scope, element, attibutes) {
+                var chart = $(element).peity('bar');
+                // Debounce f() ripped from _.
+                function debounce(func, wait, immediate) {
+                    var timeout;
+                    return function() {
+                        var context = this, args = arguments;
+                        $timeout.cancel(timeout);
+                        timeout = $timeout(function() {
+                            timeout = null;
+                            if (!immediate) {
+                                func.apply(context, args);
+                            }
+                        }, wait);
+                        if (immediate && !timeout) {
+                            func.apply(context, args);
+                        }
+                    };
+                }
+
+                // Redraw
+                var delayedResize = debounce(function() {
+                    var peity = chart.data().peity;
+                    peity.draw();
+                }, 300);
+
+                angular.element($window).bind('resize', delayedResize);
+
+                // On $destory unbind() window resize handler
+                scope.$on('$destroy', function() {
+                    angular.element($window).unbind('resize', delayedResize);
+                });
+
+                scope.$watch(interpolateFn, function (value) {
+                    var data = JSON.parse(value || null);
+                    if(data && data.length > 0) {
+                        element.text(data.join(',')).change();
+                    }
+                });
+            };
+        }
+    };
 }]);

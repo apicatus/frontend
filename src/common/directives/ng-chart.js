@@ -102,18 +102,22 @@ angular.module('ngChart', ['D3Service', 'ProjectionService', 'TopoJsonService'])
                 ///////////////////////////////////////////////////////////////
                 chart.on('click', function(d, i){
                     console.log('click !', d);
+                    scope.$digest();
                     scope.click({args: d});
                 });
                 chart.on('mouseover', function(d, i){
                     console.log('mousemove !');
+                    scope.$digest();
                     scope.mouseover(d);
                 });
                 chart.on('mouseout', function(d, i){
                     console.log('mousemove !');
+                    scope.$digest();
                     scope.mouseout(d);
                 });
                 chart.on('mousemove', function(d, i){
                     console.log('mousemove !');
+                    scope.$digest();
                     scope.mousemove(d);
                 });
 
