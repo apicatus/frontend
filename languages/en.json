@@ -14,6 +14,7 @@
     "BACK": "Back",
     "CANCEL": "Cancel",
     "SUBMIT": "Submit",
+    "SEND": "Send",
     "ACCEPT": "Accept",
     "APPLY": "Apply",
     "CONTINUE": "Continue",
@@ -27,6 +28,13 @@
     "ERROR": "Error",
     "ERROR_ON_PAGE": "An error has occured when loading data.",
     "PROBLEM_PERSISTS": "If the problem persists please contact your Account Executive.",
+
+    "USER.SIGN.IN": "Sign in",
+    "USER.SIGN.OUT": "Sign out",
+    "USER.FORGOT": "Forgot Password?",
+    "USER.RECOVER.PASSWORD": "Password Recovery",
+    "USER.RESET.PASSWORD": "Password Reset",
+    "USER.LOGIN": "Login",
 
     "USERMENU.PROFILE": "Profile",
     "USERMENU.INBOX": "Inbox",

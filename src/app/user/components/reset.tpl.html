@@ -1,0 +1,60 @@
+<div class="row login-form">
+    <div class="col-md-12">
+        <alert ng-repeat="alert in reset.alerts" type="{{reset.alert.type}}" close="reset.closeAlert($index)">{{alert.msg}}</alert>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="icon-key"></i> {{ 'USER.RESET.PASSWORD' | translate }}
+                </h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" name="resetForm" ng-submit="reset.submit()">
+                    <div class="form-group has-feedback" ng-class="{'has-error': resetForm.newPassword.$invalid && resetForm.newPassword.$dirty}">
+                        <div class="col-sm-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="New password" required ng-minlength="5" ng-model="reset.password.new">
+                            </div>
+                            <label class="control-label" for="newPassword" ng-show="resetForm.newPassword.$dirty && resetForm.newPassword.$invalid">
+                                <div ng-messages="resetForm.newPassword.$error"  ng-messages-include="messages.html"></div>
+                            </label>
+                            <!-- span class="form-control-feedback"><inline-donut-chart class="form-control-feedback inline-donut">{{reset.strength}}</inline-donut-chart></span -->
+                        </div>
+                    </div>
+                    <div class="form-group has-feedback" ng-class="{'has-error': !!resetForm.confirmPassword.$error.validator && resetForm.confirmPassword.$dirty, 'has-success': !resetForm.confirmPassword.$error.validator && resetForm.confirmPassword.$dirty}">
+                        <div class="col-sm-12">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm password" required ng-disabled="resetForm.newPassword.$invalid" ng-model="reset.password.old" compare-to="reset.password.new" ui-validate=" '$value==reset.password.new' " ui-validate-watch=" 'reset.password.new' "/>
+                            </div>
+                            <span class="form-control-feedback fa fa-check" ng-show="!resetForm.confirmPassword.$error.validator && resetForm.confirmPassword.$dirty"></span>
+                            <span class="form-control-feedback fa fa-warning" ng-show="!!resetForm.confirmPassword.$error.validator && resetForm.confirmPassword.$dirty"></span>
+                            <label class="control-label" for="confirmPassword" ng-show="!!resetForm.confirmPassword.$error.validator && resetForm.confirmPassword.$dirty">
+                                <div ng-messages="resetForm.confirmPassword.$error"  ng-messages-include="messages.html"></div>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- pre>$error: {{resetForm.confirmPassword | json}}</pre -->
+                    <div ></div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn btn-primary pull-right" ng-disabled="reset.processing || !resetForm.$valid"><i ng-show="reset.processing" class="fa fa-fw fa-spinner fa-spin"></i>{{ 'SEND' | translate }}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer"><span class="label label-primary version-label">BETA 1.1</span></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="messages.html">
+    <div class="messages">
+        <div ng-message="required">Required</div>
+        <div ng-message="minlength">Too short</div>
+        <div ng-message="validator">Passwords do not match</div>
+    </div>
+</script>

@@ -54,6 +54,9 @@ angular.module( 'apicatus.settings', [])
         profile: {
             active: false
         },
+        security: {
+            active: false
+        },
         apis: {
             active: false
         },

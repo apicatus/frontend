@@ -31,7 +31,7 @@
             <li role="menuitem" ng-repeat="project in projects" class="project" ng-class="{active: project.isActive}"><a href=""><i class="fa fa-fw" ng-class="project.isActive ? 'fa-dot-circle-o':'fa-circle-o'"></i> {{project.name}}</a></li>
             <li role="menuitem"><a ui-sref="main.settings({tab: 'profile'})"><i class="icon-user fa-fw"></i> {{ 'USERMENU.PROFILE' | translate }}</a></li>
             <li role="menuitem"><a ui-sref="main.settings({tab: 'inbox'})"><i class="icon-inbox fa-fw"></i> {{ 'USERMENU.INBOX' | translate }} <span class="badge bk-red pull-right">7</span></a></li>
-            <li role="menuitem"><a ui-sref="main.logout"><i class="fa fa-power-off fa-fw"></i> {{ 'USERMENU.LOG-OUT' | translate }}</a></li>
+            <li role="menuitem"><a ui-sref="main.user.logout"><i class="fa fa-power-off fa-fw"></i> {{ 'USERMENU.LOG-OUT' | translate }}</a></li>
             <li role="menuitem" class="secondary"><a ui-sref="main.settings"><i class="icon-params fa-fw"></i> {{ 'USERMENU.SETTINGS' | translate }}</a></li>
         </ul>
     </li>

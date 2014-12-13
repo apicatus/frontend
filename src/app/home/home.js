@@ -22,12 +22,12 @@ angular.module( 'apicatus.home', [])
 .config(function config( $stateProvider ) {
     $stateProvider.state( 'main.home', {
         url: '/home',
-            views: {
-                "main": {
-                    controller: 'HomeCtrl',
-                    templateUrl: 'home/home.tpl.html'
-                }
-            },
+        views: {
+            "main": {
+                controller: 'HomeCtrl',
+                templateUrl: 'home/home.tpl.html'
+            }
+        },
         data: { pageTitle: 'Home' },
         authenticate: false
     });

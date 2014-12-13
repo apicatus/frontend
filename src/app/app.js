@@ -43,8 +43,8 @@ angular.module( 'apicatus', [
     'templates-common',
     'apicatus.main',
     'apicatus.home',
-    'apicatus.login',
-    'apicatus.logout',
+    'apicatus.user',
+    /*'apicatus.logout',*/
     'apicatus.applications',
     'apicatus.application',
     'apicatus.dashboard',
@@ -62,6 +62,7 @@ angular.module( 'apicatus', [
     'ngCookies',
     'pascalprecht.translate',
     'ui.ace',
+    'ngAnimate',
     // Filters
     'timeago',
     'humanize',
@@ -99,13 +100,13 @@ angular.module( 'apicatus', [
         console.log("error: ", response);
         switch(response.status) {
             case 401:
-                $state.transitionTo("main.login");
+                $state.transitionTo("main.user.login");
                 break;
             case 404:
                 //$state.transitionTo("main.error.404", {data: "response.data"});
                 break;
             case 498:
-                $state.transitionTo("main.login");
+                $state.transitionTo("main.user.login");
                 break;
             case 500:
                 $state.transitionTo("main.error.500", {data: "response.data"});
@@ -120,7 +121,7 @@ angular.module( 'apicatus', [
             AuthService.saveState(toState);
             // User isn’t authenticated
             //$state.transitionTo("main.login");
-            $state.transitionTo("main.login");
+            $state.transitionTo("main.user.login");
             event.preventDefault();
         }
     });

@@ -1,0 +1,42 @@
+<div class="row login-form">
+    <div class="col-md-12">
+        <alert ng-repeat="alert in login.alerts" type="{{login.alert.type}}" close="login.closeAlert($index)">{{alert.msg}}</alert>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="icon-key"></i> {{ 'USER.LOGIN' | translate }}</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" ng-submit="login.submit()">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                                <input type="text" ng-model="login.username" class="form-control" placeholder="Email" autofocus>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-unlock"></i></span>
+                                <input type="password" ng-model="login.password" class="form-control" placeholder="Password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-primary" ng-disabled="login.processing"><i ng-show="login.processing" class="fa fa-fw fa-spinner fa-spin"></i>{{ 'USER.SIGN.IN' | translate }}</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="http://apicat.us/auth/github" class="btn btn-default pull-right"><i class="fa fa-fw fa-github"></i>Login with GitHub</a>
+                        </div>
+                    </div>
+                    <a ui-sref="main.user.forgot">{{ 'USER.FORGOT' | translate }}</a>
+                </form>
+            </div>
+            <div class="panel-footer"><span class="label label-primary version-label">BETA 1.1</span></div>
+        </div>
+    </div>
+</div>
