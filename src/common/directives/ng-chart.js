@@ -67,7 +67,6 @@ angular.module('ngChart', ['D3Service', 'ProjectionService', 'TopoJsonService'])
                     if (mutation.type === 'attributes') {
                         var isActive = mutation.target.classList.contains('active');
                         if(isActive) {
-                            console.log("observe ng-chart !");
                             setupChart(element);
                         }
                     }
@@ -102,23 +101,23 @@ angular.module('ngChart', ['D3Service', 'ProjectionService', 'TopoJsonService'])
                 ///////////////////////////////////////////////////////////////
                 chart.on('click', function(d, i){
                     console.log('click !', d);
-                    scope.$digest();
                     scope.click({args: d});
+                    scope.$evalAsync();
                 });
                 chart.on('mouseover', function(d, i){
                     console.log('mousemove !');
-                    scope.$digest();
                     scope.mouseover(d);
+                    scope.$evalAsync();
                 });
                 chart.on('mouseout', function(d, i){
                     console.log('mousemove !');
-                    scope.$digest();
                     scope.mouseout(d);
+                    scope.$evalAsync();
                 });
                 chart.on('mousemove', function(d, i){
                     console.log('mousemove !');
-                    scope.$digest();
                     scope.mousemove(d);
+                    scope.$evalAsync();
                 });
 
                 ///////////////////////////////////////////////////////////////////

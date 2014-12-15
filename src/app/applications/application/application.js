@@ -182,6 +182,20 @@ angular.module( 'apicatus.application', [
 
     $scope.api = api;
 
+    // Sort params
+    $scope.sort = {
+        property: 'name',
+        reverse: false
+    };
+
+    // Change column sorting
+    $scope.sortBy = function(property) {
+        $scope.sort = {
+            property: property,
+            reverse: !$scope.sort.reverse
+        };
+    };
+
     $scope.save = function(api) {
         $scope.api.put();
     };

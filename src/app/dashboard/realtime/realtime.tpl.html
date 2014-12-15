@@ -39,8 +39,7 @@
                                 <div class="stats-caption">Avg. latency</div>
                             </div>
                             <div class="stats-main-right text-right">
-                                <div class="stats-value stats-value-positive">{{(realtime.latency / realtime.tpmAvg) | number:0}}ms</div>
-                                <div class="stats-period">per transaction</div>
+                                <inline-bar-chart class="side-chart">{{realtime.latencies | reduceValuesTo:8}}</inline-bar-chart>
                             </div>
                         </div>
 
@@ -57,16 +56,16 @@
 
                         <div class="stats">
                             <div class="stats-main-left">
-                                <div class="stats-amount">{{realtime.data.out | humanize}}</div>
-                                <div class="stats-caption">Bytes sent</div>
+                                <div class="stats-amount">{{realtime.users.length | humanize}}</div>
+                                <div class="stats-caption">Unique Users</div>
                             </div>
                             <div class="stats-main-right text-right">
-                                <inline-bar-chart data="realtime.latencies" options="{height: '40px', width: '80px', fill: ['#49c5b1']}"></inline-bar-chart>
+                                <inline-bar-chart class="side-chart">{{realtime.latencies | reduceValuesTo:12}}</inline-bar-chart>
                             </div>
                         </div>
 
                         <div class="stats">
-                            <inline-line-chart data="realtime.tpm" options="{height: '40px', width: '100%', fill: ['rgba(52, 143, 226, 0.25)'], stroke: ['#348fe2']}"></inline-line-chart>
+                            <inline-line-chart class="inline-chart">{{realtime.tpm}}</inline-line-chart>
                         </div>
 
                     </div>

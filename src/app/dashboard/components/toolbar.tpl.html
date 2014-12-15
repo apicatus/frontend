@@ -6,7 +6,7 @@
                 <div class="btn-group" dropdown>
                     <button type="button" class="btn btn-default dropdown-toggle"><i class="fa icon-network"></i> {{selectedApi ? selectedApi.name : 'DASHBOARD.TOOLBAR.FULL-SUMMARY' | translate}} <span class="fa fa-angle-down"></span></button>
                     <ul class="dropdown-menu" role="menu">
-                        <li ng-repeat="api in apis"><a href="" ng-click="selectApi(api)"><i class="fa fa-fw" ng-class="selectedApi._id == api._id ? 'fa-check-circle' : 'fa-circle-thin'"></i> {{api.name}}</a></li>
+                        <li ng-repeat="api in apis"><a href="" ng-click="selectApi(api)"><i class="fa fa-fw" ng-class="selectedApi._id == api._id ? 'fa-check-circle' : 'fa-circle-thin'" ng-style="{'color': api.color}"></i> {{api.name}}</a></li>
                         <li class="divider"></li>
                         <li><a href="" ng-click="selectApi()"><i class="fa fa-cubes"></i> {{ 'DASHBOARD.TOOLBAR.FULL-SUMMARY' | translate }}</a></li>
                     </ul>

@@ -32,6 +32,21 @@ realtime {
             }
         }
     }
+    .inline-chart ~ .peity {
+        height: 40px;
+        width: 100%;
+        rect, polygon {
+            fill: rgba(52, 143, 226, 0.25);
+            stroke: #348fe2;
+        }
+    }
+    .side-chart ~ .peity {
+        height: 30px;
+        width: 80px;
+        rect, polygon {
+            fill: #49c5b1;
+        }
+    }
     ng-chart {
         &[type="worldmap"] {
             width: 100%;

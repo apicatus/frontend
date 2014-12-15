@@ -38,68 +38,6 @@ var angularPeity = angular.module( 'ng-peity', [] )
 .factory('buildChartDirective', ['$interpolate', '$window', '$timeout', function($interpolate, $window, $timeout){
 
     return function(chartType) {
-        /*return {
-            restrict: 'E',
-            scope: {
-                data: "=",
-                options: "="
-            },
-            link: function ( scope, element, attrs ) {
-
-                var options,
-                    chart,
-                    data;
-
-                // Create container
-                options = scope.options || {};
-                $span = element.append('<span></span>');
-                $span.text(scope.data.join());
-                chart = $span.peity( chartType, options );
-
-                // Debounce f() ripped from _.
-                function debounce(func, wait, immediate) {
-                     var timeout;
-                     return function() {
-                        var context = this, args = arguments;
-                        $timeout.cancel(timeout);
-                        timeout = $timeout(function() {
-                            timeout = null;
-                            if (!immediate) {
-                                func.apply(context, args);
-                            }
-                        }, wait);
-                        if (immediate && !timeout) {
-                            func.apply(context, args);
-                        }
-                    };
-                }
-
-                // Redraw
-                var delayedResize = debounce(function() {
-                    var peity = chart.data().peity;
-                    peity.draw();
-                }, 300);
-
-                angular.element($window).bind('resize', delayedResize);
-
-                // On $destory unbind() window resize handler
-                scope.$on('$destroy', function() {
-                    angular.element($window).unbind('resize', delayedResize);
-                });
-
-                // Update chart values
-                scope.$watchCollection('data', function (newVal, oldVal) {
-                    chart.text(newVal.join(",")).change();
-                });
-
-                // Update options
-                scope.$watch('options', function (newVal, oldVal) {
-                    var peity = chart.data().peity;
-                    peity.opts = $.extend(peity.opts, newVal);
-                    peity.draw();
-                });
-            }
-        };*/
         return {
             restrict: 'E',
             element: true,
@@ -145,7 +83,6 @@ var angularPeity = angular.module( 'ng-peity', [] )
 
                     scope.$watch(interpolateFn, function (value) {
                         var data;
-                        console.log("values: ", value);
                         if(value && value.length > 0) {
                             data = JSON.parse(value || null);
                             element.text(data.join(',')).change();

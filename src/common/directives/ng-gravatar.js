@@ -47,12 +47,22 @@ angular.module( 'ngGravatar', ['ngMd5'] )
                 'email': scope.ngGravatar,
                 'default': 'https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120'
             };
-            if(scope.ngGravatar) {
-                url = 'http://www.gravatar.com/avatar/' + md5.createHash(config.email) + '?d=' + encodeURIComponent(config['default']);
-            } else {
-                url = config['default'];
+            function getGravatarUrl() {
+                if(scope.ngGravatar) {
+                    return 'http://www.gravatar.com/avatar/' + md5.createHash(config.email) + '?d=' + encodeURIComponent(config['default']);
+                } else {
+                    return config['default'];
+                }
             }
-            element.attr('src', url);
+
+            scope.$watch('ngGravatar', function (newVal, oldVal) {
+                if (!newVal || newVal === oldVal) {
+                    return;
+                }
+                config.email = scope.ngGravatar;
+                element.attr('src', getGravatarUrl());
+            });
+            element.attr('src', getGravatarUrl());
         }
     };
 }]);

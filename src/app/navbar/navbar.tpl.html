@@ -10,7 +10,6 @@
         <a ui-sref="main.home"><strong>APICATUS</strong></a> <i class="icon-arrow"></i> <span>{{pageTitle}}</span>
     </h3 -->
     <h3 class="navbar-product" href="#/main/home">
-
         <a ui-sref="main.home">
             <i class="inline-logo"></i>
             <!-- img class="logo" src="assets/images/logo.svg" / -->
@@ -19,15 +18,11 @@
         </a>
         <span class="current">{{pageTitle}}</span>
     </h3>
-    <!-- h3 class="navbar-product" href="#/main/home">
-        <i class="inline-logo"></i><strong>APICATUS</strong> <i class="icon-arrow"></i> <span>{{pageTitle}}</span>
-    </h3 -->
 </div>
 <ul class="collapse navbar-collapse navbar-ex1-collapse nav navbar-nav navbar-right navbar-user">
     <li ng-show="user" class="dropdown user-dropdown">
         <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown" ng-model="user">{{user.username}} <i class="arrow fa fa-angle-right fa-rotate-90"></i> <img ng-gravatar="user.email" /> <span class="inbox-alert badge bk-red">2</span></a>
         <ul class="dropdown-menu">
-            <!-- li role="presentation" class="dropdown-header">Projects</li -->
             <li role="menuitem" ng-repeat="project in projects" class="project" ng-class="{active: project.isActive}"><a href=""><i class="fa fa-fw" ng-class="project.isActive ? 'fa-dot-circle-o':'fa-circle-o'"></i> {{project.name}}</a></li>
             <li role="menuitem"><a ui-sref="main.settings({tab: 'profile'})"><i class="icon-user fa-fw"></i> {{ 'USERMENU.PROFILE' | translate }}</a></li>
             <li role="menuitem"><a ui-sref="main.settings({tab: 'inbox'})"><i class="icon-inbox fa-fw"></i> {{ 'USERMENU.INBOX' | translate }} <span class="badge bk-red pull-right">7</span></a></li>

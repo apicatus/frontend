@@ -100,12 +100,14 @@ angular.module( 'apicatus', [
         console.log("error: ", response);
         switch(response.status) {
             case 401:
+                $rootScope.$emit('userLoggedOut', new Date());
                 $state.transitionTo("main.user.login");
                 break;
             case 404:
                 //$state.transitionTo("main.error.404", {data: "response.data"});
                 break;
             case 498:
+                $rootScope.$emit('userLoggedOut', new Date());
                 $state.transitionTo("main.user.login");
                 break;
             case 500:
@@ -120,7 +122,6 @@ angular.module( 'apicatus', [
             console.log("user isn't authenticated");
             AuthService.saveState(toState);
             // User isn’t authenticated
-            //$state.transitionTo("main.login");
             $state.transitionTo("main.user.login");
             event.preventDefault();
         }
@@ -202,7 +203,6 @@ angular.module( 'apicatus', [
     });
     $scope.$on('userLoggedOut', function(event, user){
         $scope.user = null;
-
         mySocket.emit('userLoggedOut', {data: 'myMessage'});
         mySocket.disconnect();
     });

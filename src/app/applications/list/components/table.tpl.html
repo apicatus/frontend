@@ -8,7 +8,7 @@
                 <th class="text-right">Api Calls</th>
                 <th class="text-right">Avg. response time</th>
                 <th class="text-right">Last Access</th>
-                <th class="col-md-1 text-right">Activity</th>
+                <th class="col-xs-1 text-right">Activity</th>
                 <th></th>
             </tr>
         </thead>
@@ -28,12 +28,16 @@
                 </td>
                 <td>
                     <div class="btn-group pull-right" dropdown>
-                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span>
+                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!api.imOwner" data-toggle="dropdown">Action <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Modify</a></li>
+                            <li>
+                                <a href ng-click="editApi(api)"><i class="fa fa-fw fa-pencil"></i>{{ 'EDIT' | translate }}</a>
+                            </li>
                             <li class="divider"></li>
-                            <li><a href="#">Delete</a></li>
+                            <li>
+                                <a href><i class="fa fa-fw fa-trash-o"></i>{{ 'DELETE' | translate }}</a>
+                            </li>
                         </ul>
                     </div>
                 </td>

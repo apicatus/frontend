@@ -137,7 +137,7 @@ angular.module( 'apicatus.applications', [
             $scope.api = {
                 name: '',
                 subdomain: '',
-                synopsis: "API Description"
+                synopsis: 'API Description'
             };
             $scope.submit = function () {
                 $modalInstance.close($scope.api);
@@ -156,10 +156,55 @@ angular.module( 'apicatus.applications', [
         modalInstance.result.then(
             function (api) {
                 Restangular.all('digestors').post(api).then(function(result) {
+                    result.imOwner = true;
                     $scope.apis.push(result);
                 }, function(error) {
-
+                    alert(error.data.message);
                 });
+            },
+            function () {
+                console.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
+    // Edit API Modal
+    $scope.editApi = function (api) {
+        // Please note that $modalInstance represents a modal window (instance) dependency.
+        // It is not the same as the $modal service used above.
+        var ModalController = ['$scope', '$modalInstance', 'apiModel', function ($scope, $modalInstance, apiModel) {
+            $scope.apiModel = apiModel;
+            $scope.submit = function () {
+                $modalInstance.close($scope.apiModel);
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        }];
+
+        var modalInstance = $modal.open({
+            templateUrl: 'applications/list/components/modals/edit.tpl.html',
+            controller: ModalController,
+            windowClass: '',
+            resolve: {
+                apiModel: [function () {
+                    return api;
+                }]
+            }
+        });
+
+        modalInstance.result.then(
+            function (api) {
+                api.put().then(function(result) {
+                    console.log("api updated", result);
+                });
+                /*
+                Restangular.all('digestors').post(api).then(function(result) {
+                    result.imOwner = true;
+                    $scope.apis.push(result);
+                }, function(error) {
+                    alert(error.data.message);
+                });
+                */
             },
             function () {
                 console.info('Modal dismissed at: ' + new Date());
@@ -338,14 +383,14 @@ angular.module( 'apicatus.applications', [
                 return data.stats.avg || 0;
             });
         } catch (error) {
-            console.log(error);
+            //console.log(error);
         }
     };
 })
 ///////////////////////////////////////////////////////////////////////////////
 // Heartbeat Directive                                                       //
 ///////////////////////////////////////////////////////////////////////////////
-.directive( 'heartbeat', ['$timeout', '$q', 'mySocket', function($rootScope, $timeout, $q, mySocket) {
+.directive( 'heartbeat', ['$timeout', '$q', 'mySocket', function($timeout, $q, mySocket) {
     return {
         restrict: 'A',
         scope: {
@@ -365,6 +410,7 @@ angular.module( 'apicatus.applications', [
         }
     };
 }])
+
 ///////////////////////////////////////////////////////////////////////////////
 // Object to Array filter                                                    //
 ///////////////////////////////////////////////////////////////////////////////

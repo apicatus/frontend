@@ -357,7 +357,7 @@ charts.multiline = function module() {
                 if(!svg) {
                     svg = d3.select(graph)
                         .append('svg')
-                        .attr('preserveAspectRatio', 'xMidYMid meet')
+                        .attr('preserveAspectRatio', 'xMaxYMin meet')
                         .attr('viewBox', '0 0 ' + width + ' ' + height)
                         .attr('width', '100%')
                         .attr('height', '100%');
@@ -496,17 +496,7 @@ charts.multiline = function module() {
                             .attr('x2', 0)
                             .attr('y1', 0)
                             .attr('y2', size.height)
-                            .style('stroke-dasharray', 1.1)
                             .style('stroke', '#444');
-                    // Label Background
-                    var tooltip = needleContainer.append('rect')
-                            .attr("x", 8)
-                            .attr("y", -(options.chart.margin.top))
-                            .attr("rx", 2)
-                            .attr("ry", 2)
-                            .attr("width", 120)
-                            .attr("height", 18)
-                            .style("fill", '#eee');
 
                     var hoverDate = needleContainer.append('text')
                         .attr('class', 'hover-text')
@@ -551,7 +541,6 @@ charts.multiline = function module() {
                                     break;
                             }
                             hoverLine.attr('x1', xScale(d.date)).attr('x2', xScale(d.date));
-                            tooltip.attr('x', xScale(d.date));
                             if(circles[metric.id]) {
                                 circles[metric.id].attr('transform', 'translate(' + xScale(d.date) + ',' + yValue + ')');
                             }

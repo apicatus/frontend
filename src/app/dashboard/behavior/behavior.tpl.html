@@ -56,6 +56,33 @@
 
     <div class="row">
         <div class="col-md-12">
+            <tabset>
+                <tab>
+                    <tab-heading>
+                        <i class="fa fa-globe"></i> Unique Users
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ng-chart type="multiline" data="behavior.uniqueHistogram.series" options="behavior.timeChartOptions" hovered="behavior.hover(args)"></ng-chart>
+                        </div>
+                    </div>
+                </tab>
+                <tab active="true">
+                    <tab-heading>
+                        <i class="fa fa-globe"></i> Top Use
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ng-chart type="packing" data="behavior.methodStats"></ng-chart>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+
+    <!-- div class="row">
+        <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-globe"></i> Unique Users</h3>
@@ -65,7 +92,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div -->
 
     <!-- div class="splited">
         <div class="max">

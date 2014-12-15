@@ -2,6 +2,9 @@
     <div class="jumbotron">
         <h1><img src="assets/images/logo.png"/></h1>
         <p class="lead">APICATUS</p>
+        <p ng-if="!user">
+            <a href ui-sref="main.user.login" class="btn-jumbo" role="button">Sign up today</a>
+        </p>
     </div>
     <div class="row">
         <div class="col-xs-4 marketing">

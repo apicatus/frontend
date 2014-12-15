@@ -29,6 +29,37 @@ table {
             }*/
         }
     }
+    th.sortable {
+        cursor: pointer;
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+           -moz-user-select: none;  /* Firefox all */
+            -ms-user-select: none;  /* IE 10+ */
+                user-select: none;
+        &.selected {
+            &.asc {
+                &:after {
+                    content: "\f106";
+                }
+            }
+            &.des {
+                &:after {
+                    content: "\f107";
+                }
+            }
+            &:after {
+                float: right;
+                font: normal normal normal 14px/1 FontAwesome;
+                line-height: 1;
+                text-rendering: auto;
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+        &:hover {
+            color: @brand-primary;
+            background-color: @table-bg-hover;
+        }
+    }
     &.primary-table {
         > thead, > tbody, > tfoot {
             > tr {

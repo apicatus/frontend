@@ -9,6 +9,9 @@
     "ENABLED": "Enabled",
     "ENABLE": "Enable",
     "DISABLED": "Disabled",
+    "DELETE": "Delete",
+    "EDIT": "Edit",
+    "COLOR": "Color",
     "UNKNOWN": "Unknown",
     "OK": "Ok",
     "BACK": "Back",
@@ -20,6 +23,7 @@
     "CONTINUE": "Continue",
     "ADD": "Add",
     "REMOVE": "Remove",
+    "BROWSE": "Browse",
     "SORT": "Sort",
     "NAME": "Name",
     "DATE": "Date",
@@ -35,6 +39,14 @@
     "USER.RECOVER.PASSWORD": "Password Recovery",
     "USER.RESET.PASSWORD": "Password Reset",
     "USER.LOGIN": "Login",
+
+    "SETTINGS.TAB.ACCOUNT": "Account",
+    "SETTINGS.TAB.SECURITY": "Security",
+    "SETTINGS.TAB.SETTINGS": "Settings",
+    "SETTINGS.TAB.APIS": "APIs",
+    "SETTINGS.TAB.INBOX": "Inbox",
+    "SETTINGS.LANGUAGE": "Language",
+    "SETTINGS.NOTIFICATIONS": "Enable Notifications",
 
     "USERMENU.PROFILE": "Profile",
     "USERMENU.INBOX": "Inbox",
@@ -60,8 +72,16 @@
     "APPLICATIONS.NEWAPI.SYNOPSIS": "Description",
     "APPLICATIONS.NEWAPI.MODEL": "Model",
     "APPLICATIONS.NEWAPI.VERSION": "Version",
+    "APPLICATIONS.NEWAPI.DROP": "Drop your files here or",
+
+    "APPLICATIONS.EDITAPI.TITLE": "Edit API",
+    "APPLICATIONS.EDITAPI.SUBDOMAIN": "3rd-level subdomain",
+    "APPLICATIONS.EDITAPI.PROXY": "Global Proxy",
+    "APPLICATIONS.EDITAPI.PROXYURL": "Proxy URL",
+
 
     "APPLICATIONS.CARD.PROXY": "Global Proxy",
+    "APPLICATIONS.CARD.PROXYURL": "Proxy URL",
     "APPLICATIONS.CARD.LOGGING": "Traffic loggin",
 
     "APPLICATION.NEWENDPOINT.TITLE": "New Endpoint",

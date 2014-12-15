@@ -8,12 +8,12 @@
                 <h3 class="panel-title"><i class="icon-key"></i> {{ 'USER.LOGIN' | translate }}</h3>
             </div>
             <div class="panel-body">
-                <form class="form-horizontal" role="form" ng-submit="login.submit()">
+                <form class="form-horizontal" name="loginForm" role="form" ng-submit="login.submit()">
                     <div class="form-group">
                         <div class="col-sm-12">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                                <input type="text" ng-model="login.username" class="form-control" placeholder="Email" autofocus>
+                                <input type="text" ng-model="login.username" class="form-control" placeholder="Email" required autofocus>
                             </div>
                         </div>
                     </div>
@@ -21,13 +21,13 @@
                         <div class="col-sm-12">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-unlock"></i></span>
-                                <input type="password" ng-model="login.password" class="form-control" placeholder="Password">
+                                <input type="password" ng-model="login.password" class="form-control" required placeholder="Password">
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-6">
-                            <button type="submit" class="btn btn-primary" ng-disabled="login.processing"><i ng-show="login.processing" class="fa fa-fw fa-spinner fa-spin"></i>{{ 'USER.SIGN.IN' | translate }}</button>
+                            <button type="submit" class="btn btn-primary" ng-disabled="login.processing || !loginForm.$valid"><i ng-show="login.processing" class="fa fa-fw fa-spinner fa-spin"></i>{{ 'USER.SIGN.IN' | translate }}</button>
                         </div>
                         <div class="col-sm-6">
                             <a href="http://apicat.us/auth/github" class="btn btn-default pull-right"><i class="fa fa-fw fa-github"></i>Login with GitHub</a>

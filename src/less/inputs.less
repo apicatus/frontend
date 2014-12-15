@@ -54,3 +54,19 @@
 .form-control-feedback {
     z-index: 100;
 }
+
+.input-group-addon {
+    &.color-picker {
+        padding: 0px;
+    }
+    input[type="color"] {
+        -webkit-appearance: none;
+        opacity: 0;
+        &::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        &::-webkit-color-swatch {
+            border: none;
+        }
+    }
+}

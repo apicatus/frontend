@@ -40,6 +40,7 @@ angular.module( 'apicatus.dashboard.realtime', [
     realtime.tpmAvg = 0;
     realtime.latencies = [];
     realtime.log = null;
+    realtime.users = [];
     realtime.data = {
         'in': 0,
         'out': 0
@@ -57,7 +58,7 @@ angular.module( 'apicatus.dashboard.realtime', [
         // take last 6 buckets
         realtime.tpmAvg = (realtime.tpm.slice(realtime.tpm.length - 6, realtime.tpm.length).reduce(function(a, b) {
             return a + b;
-        }, 0) / 6 ) || 0;
+        }, 0) / 1) || 0;
 
     }, 10 * 1000);
     /*
@@ -168,6 +169,12 @@ angular.module( 'apicatus.dashboard.realtime', [
             return a + b;
         }, 0) / realtime.tpmAvg || '∞';
 
+        // Unique Users
+        if(result.log.ip) {
+            if(realtime.users.indexOf(result.log.ip) <= -1) {
+                realtime.users.push(result.log.ip);
+            }
+        }
         //console.log('WebSocket: ', realtime.log);
         if(result.log.geo) {
             //console.log('WebSocket: ', countryCode.isoConvert(realtime.log.geo.country));

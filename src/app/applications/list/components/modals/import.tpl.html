@@ -8,8 +8,8 @@
             <label for="file">{{ 'APPLICATIONS.NEWAPI.MODEL' | translate }}</label>
             <section file-drop="apiModel.file" id="drop_zone" class="drop-zone" on-drop="readFile()">
                 <p class="drop-legend">
-                    <span>Drop your files here or <button class="btn btn-primary" style="position:relative"><i ng-show="apiModel.processing" class="fa fa-spinner fa-spin"></i>
-                            Browse<input type="file" file-input="apiModel.file" name="file" class="file" accept=".md" on-change="readFile()" ng-required="true" />
+                    <span>{{ 'APPLICATIONS.NEWAPI.DROP' | translate }} <button class="btn btn-primary" style="position:relative"><i ng-show="apiModel.processing" class="fa fa-spinner fa-spin"></i>
+                            {{ 'BROWSE' | translate }}<input type="file" file-input="apiModel.file" name="file" class="file" accept=".md" on-change="readFile()" ng-required="true" />
                         </button></span>
                     <br/>
                 </p>

@@ -131,8 +131,8 @@ charts.worldmap = function module() {
                         country
                         .on('mousemove', function(data, i){
 
-                            var mouse_x = d3.mouse(this)[0];
-                            var mouse_y = d3.mouse(this)[1];
+                            var mouse_x = d3.mouse(svg.node())[0];
+                            var mouse_y = d3.mouse(svg.node())[1];
 
                             tooltip
                                 .classed('hidden', false)

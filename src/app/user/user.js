@@ -62,7 +62,7 @@ angular.module( 'apicatus.user', [
     .state( 'main.user.logout', {
         url: '/logout',
         controller: 'LogoutCtrl as logout',
-        templateUrl: 'logout/logout.tpl.html',
+        templateUrl: 'user/components/logout.tpl.html',
         resolve: {
             signout: ['Restangular', function (Restangular) {
                 return Restangular.one('user/signout').get();

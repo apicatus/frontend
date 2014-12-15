@@ -30,6 +30,13 @@ angular.module( 'apicatus.dashboard.behavior', [
                 } else {
                     return Restangular.one('unique').get(queryFactory().get());
                 }
+            }],
+            methodstatsbydate: ['$stateParams', 'Restangular', 'queryFactory', function ($stateParams, Restangular, queryFactory) {
+                if($stateParams.id) {
+                    return Restangular.one('methodstatsbydate/digestor', $stateParams.id).get(queryFactory().get());
+                } else {
+                    return Restangular.one('methodstatsbydate').get(queryFactory().get());
+                }
             }]
         },
         data: { pageTitle: 'Behavior' },
@@ -38,8 +45,26 @@ angular.module( 'apicatus.dashboard.behavior', [
         }
     });
 })
-.controller( 'DashboardBehaviorCtrl', function DashboardBehaviorController( $scope, queryFactory, Restangular, apis, transferStatistics, unique) {
+.factory('getMethodColor', [function(){
+    var colors = {
+        /* Methods Colors */
+        'GET': '#0064CD',
+        'POST': '#46A546',
+        'PUT': '#FF7D00',
+        'DELETE': '#BD2C00',
+        'OPTIONS': '#9C1ACA',
+        'HEAD': '#3BD9EC',
+        'CONNECT': '#A9304F',
+        'PATCH': '#E7CA29',
+        'TRACE': '#F577CD'
+    };
+    return function(methodName){
+        return colors[methodName];
+    };
+}])
+.controller( 'DashboardBehaviorCtrl', function DashboardBehaviorController( $scope, queryFactory, Restangular, apis, transferStatistics, methodstatsbydate, unique, getMethodColor) {
     var behavior = this;
+    behavior.apis = apis;
 
     ///////////////////////////////////////////////////////////////////////////
     // Chart config                                                          //
@@ -88,8 +113,6 @@ angular.module( 'apicatus.dashboard.behavior', [
         ]
     };
 
-    console.log("uniqueHistogram: ", behavior.uniqueHistogram);
-
     // Aggregate traffic status codes
     behavior.codeStatsChilds = transferStatistics.aggregations.statuses.buckets.reduce(function(previousValue, currentValue, index, array){
         var current = parseInt(array[index].key, 10);
@@ -109,5 +132,45 @@ angular.module( 'apicatus.dashboard.behavior', [
         name: "tree",
         children: behavior.codeStatsChilds
     };
+
+    if($scope.selectedApi) {
+        behavior.methodStats = $scope.selectedApi.endpoints.map(function(endpoint){
+            return {
+                name: endpoint.name || 'endpoint',
+                children: endpoint.methods.map(function(method){
+                    return {
+                        id: method._id,
+                        name: method.URI,
+                        color: getMethodColor(method.method),
+                        stats: methodstatsbydate.aggregations.methods.buckets.filter(function(bucket){
+                            return bucket.key === method._id;
+                        })[0]
+                    };
+                })
+            };
+        });
+    } else {
+        behavior.methodStats = behavior.apis.map(function(api){
+            return {
+                name: api.name,
+                color: api.color,
+                children: api.endpoints.map(function(endpoint){
+                    return {
+                        name: endpoint.name || 'endpoint',
+                        children: endpoint.methods.map(function(method){
+                            return {
+                                id: method._id,
+                                name: method.URI,
+                                color: getMethodColor(method.method),
+                                stats: methodstatsbydate.aggregations.methods.buckets.filter(function(bucket){
+                                    return bucket.key === method._id;
+                                })[0]
+                            };
+                        })
+                    };
+                })
+            };
+        });
+    }
 
 });

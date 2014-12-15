@@ -18,7 +18,7 @@
                     <div class="change"><strong>{{card.percent(card.summary.current.stats.avg, card.summary.previous.stats.avg) | number:0}}</strong><span class="sub">%</span> change</div>
                 </div>
             </div>
-            <div class="yearly-changes container" ng-show="api.enabled">
+            <div class="yearly-changes container">
                 <div class="year-all col-xs-6 col-sm-6">
                     <strong>{{card.summary.current.doc_count - card.summary.previous.doc_count | humanize}}</strong><span>Weekly change</span>
                 </div>
@@ -53,17 +53,17 @@
                                 <div class="form-group">
                                     <label for="subdomain">{{ 'APPLICATIONS.NEWAPI.DOMAIN' | translate }}</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="subdomain" name="subdomain" placeholder="{{ 'APPLICATIONS.NEWAPI.SUBDOMAIN' | translate }}" ng-model="api.subdomain" ng-keydown="resetWithCancel($event)", required>
+                                        <input type="text" class="form-control" id="subdomain" name="subdomain" placeholder="{{ 'APPLICATIONS.NEWAPI.SUBDOMAIN' | translate }}" ng-model="api.subdomain" ng-keydown="resetWithCancel($event)", required disabled>
                                         <div class="input-group-addon">.apicat.us</div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="proxy">Global Proxy</label>
+                                    <label for="proxy">{{ 'APPLICATIONS.EDITAPI.PROXY' | translate }}</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <input type="checkbox" ng-model="api.proxy.enabled">
                                         </span>
-                                        <input type="text" class="form-control" id="proxy" name="proxy" placeholder="Proxy URL" ng-model="api.proxy.URI">
+                                        <input type="text" class="form-control" id="proxy" name="proxy" placeholder="{{ 'APPLICATIONS.EDITAPI.PROXYURL' | translate }}" ng-model="api.proxy.URI">
                                     </div>
                                 </div>
                                 <div class="checkbox">

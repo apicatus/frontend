@@ -102,7 +102,7 @@ ng-chart {
     text, .label {
         font-size: 0.80em;
         fill: @gray;
-        font-weight: 100;
+        font-weight: bold;
     }
     .btn-download {
         display: none;
@@ -189,6 +189,25 @@ ng-chart {
     }
     &[type="gauge"] {
         height: 80px;
+    }
+    &[type="packing"] {
+        circle {
+            fill: rgb(31, 119, 180);
+            fill-opacity: .25;
+            stroke: rgb(31, 119, 180);
+            stroke-width: 1px;
+        }
+        .leaf circle {
+            fill: #ff7f0e;
+            fill-opacity: 0.65;
+        }
+        .node {
+            text {
+                fill: '#fff';
+                font-weight: 100;
+                font-size: 18px;
+            }
+        }
     }
     &[type="worldmap"] {
         .country {

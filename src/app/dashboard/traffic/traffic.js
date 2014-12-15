@@ -55,6 +55,7 @@ angular.module( 'apicatus.dashboard.traffic', [
     traffic.apis = apis;
     traffic.hasData = true;
 
+
     //_.findWhere(publicServicePulitzers, {newsroom: "The New York Times"});
     var getCodesFromBuckets = function(buckets) {
         var codeStats = [
@@ -99,6 +100,33 @@ angular.module( 'apicatus.dashboard.traffic', [
         },
         xAxis: {
             tickInterval: queryFactory().get().interval
+        }
+    };
+
+    traffic.timeChartPercentageOptions = {
+        chart: {
+            type: 'area'
+        },
+        plotOptions: {
+            fillOpacity: 0.75,
+            area: {
+                stacking: 'percent'
+            },
+            series: {
+                pointInterval: queryFactory().get().interval,
+                pointStart: queryFactory().get().since,
+                markers: true,
+                tracking: true,
+                stroke: true
+            }
+        },
+        yAxis: {
+            ticks: 2,
+            labels: {
+                formatter: function (tick) {
+                    return tick + '%';
+                }
+            }
         }
     };
 
@@ -147,6 +175,7 @@ angular.module( 'apicatus.dashboard.traffic', [
     };
 
     traffic.timeStats = transferStatistics.aggregations.t_statistics;
+    traffic.timePercentiles = transferStatistics.aggregations.t_percentiles.values;
     traffic.dataStats = transferStatistics.aggregations.z_statistics;
     traffic.codeStats = transferStatistics.aggregations.statuses.buckets.map(function(code){
         return {
@@ -271,19 +300,44 @@ angular.module( 'apicatus.dashboard.traffic', [
     traffic.scatterplot = {
         series: [
             {
-                name: 'response',
-                data: transferStatistics.aggregations.history.buckets.map(function(history){
-                    return [history.doc_count / ((queryFactory().get().interval / 1000) / 60), history.time_statistics.avg || 0];
+                name: '25 percentile',
+                fill: 'rgb(4, 160, 0)',
+                data: transferStatistics.aggregations.history.buckets
+                .filter(function(history){
+                    return history.doc_count > 0;
+                })
+                .map(function(history){
+                    //return [history.doc_count / ((transferStatistics.period.interval.value / 1000) / 60), history.time_statistics.min || 0];
+                    return [history.doc_count / ((transferStatistics.period.interval.value / 1000) / 60), history.time_percentiles.values['25.0'] || 0];
                 })
             }, {
-                name: 'max',
-                fill: '#2c87be',
-                data: transferStatistics.aggregations.history.buckets.map(function(history){
-                    return [history.doc_count / ((queryFactory().get().interval / 1000) / 60), history.time_statistics.max || 0];
+                name: '95 percentile',
+                fill: '#ff5b57', //red
+                data: transferStatistics.aggregations.history.buckets
+                .filter(function(history){
+                    //console.log("is: ", history.time_statistics.max, traffic.timePercentiles['95.0'], history.time_statistics.max < traffic.timePercentiles['95.0']);
+                    return history.doc_count > 0;
+                })
+                .map(function(history){
+                    return [history.doc_count / ((transferStatistics.period.interval.value / 1000) / 60), history.time_percentiles.values['95.0'] || 0];
+                })
+            }, {
+                name: 'Average',
+                fill: '#2c87be', //blue
+                data: transferStatistics.aggregations.history.buckets
+                .filter(function(history){
+                    return history.doc_count > 0;
+                })
+                .map(function(history){
+                    //return [history.doc_count / ((transferStatistics.period.interval.value / 1000) / 60), history.time_percentiles.values['50.0'] || 0];
+                    return [history.doc_count / ((transferStatistics.period.interval.value / 1000) / 60), history.time_statistics.avg || 0]; // ((queryFactory().get().interval / 1000) / 60)
                 })
             }
         ]
     };
+
+    console.log("apis: ", apis);
+    console.log("traffic.scatterplot: ", traffic.scatterplot.series);
 
     traffic.donut = {
         series: [{

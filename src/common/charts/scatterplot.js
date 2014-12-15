@@ -286,7 +286,7 @@ charts.scatterplot = function module() {
                 if(!svg) {
                     svg = d3.select(graph)
                         .append('svg')
-                        .attr('preserveAspectRatio', 'xMidYMid')
+                        .attr('preserveAspectRatio', 'xMaxYMin')
                         .attr('viewBox', '0 0 ' + width + ' ' + height)
                         .attr('width', '100%')
                         .attr('height', '100%');
@@ -360,9 +360,30 @@ charts.scatterplot = function module() {
                         .attr('class', 'label')
                         .attr('x', size.width)
                         .attr('y', size.height - 10)
+                        .style('text-anchor', 'end')
+                        .style('fill', '#fff')
+                        .style('stroke', '#fff')
+                        .style('stroke-width', 4)
+                        .text(options.xAxis.title.text);
+
+                    labelsContainer.append('text')
+                        .attr('class', 'label')
+                        .attr('x', size.width)
+                        .attr('y', size.height - 10)
                         .attr('text-anchor', 'middle')
                         .style('text-anchor', 'end')
                         .text(options.xAxis.title.text);
+
+                    labelsContainer.append('text')
+                        .attr('class', 'label')
+                        .attr('transform', 'rotate(-90)')
+                        .attr('y', 6)
+                        .attr('dy', '.71em')
+                        .style('text-anchor', 'end')
+                        .style('fill', '#fff')
+                        .style('stroke', '#fff')
+                        .style('stroke-width', 4)
+                        .text(options.yAxis.title.text);
 
                     labelsContainer.append('text')
                         .attr('class', 'label')

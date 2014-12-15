@@ -3,6 +3,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats lighten">
                 <div class="stats-icon">
+                    <i class="icon-stopwatch"></i>
                 </div>
                 <div class="stats-info">
                     <h4>AVERAGE API RESPONSE TIME</h4>
@@ -17,11 +18,11 @@
         <div class="col-md-3 col-sm-6">
             <div class="widget widget-stats lighten">
                 <div class="stats-icon">
-
+                    <i class="icon-stopwatch"></i>
                 </div>
                 <div class="stats-info">
-                    <h4>MAX API RESPONSE TIME</h4>
-                    <p>{{traffic.timeStats.max | number:0 }}ms</p>
+                    <h4>95TH PERC. API RESPONSE TIME</h4>
+                    <p>{{traffic.timePercentiles['95.0'] | number:0 }}ms</p>
                 </div>
                 <div class="stats-chart bg-green">
                     <inline-bar-chart class="inline-chart">{{traffic.timeStatsByDate.max | reduceValuesTo:24}}</inline-bar-chart>
@@ -86,6 +87,11 @@
                             <ng-chart type="scatterplot" data="traffic.scatterplot.series" options="traffic.scatterplotOptions"></ng-chart>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="label label-default" ng-repeat="series in traffic.scatterplot.series" style="margin-right: 10px;" ng-style="{'background-color': series.fill}">{{series.name}}</span>
+                        </div>
+                    </div>
                 </tab>
                 <tab>
                     <tab-heading>
@@ -103,7 +109,7 @@
                     </tab-heading>
                     <div class="row">
                         <div class="col-md-12">
-                            <ng-chart type="multiline" data="traffic.errorHistogram.series" options="traffic.timeChartOptions"></ng-chart>
+                            <ng-chart type="multiline" data="traffic.errorHistogram.series" options="traffic.timeChartPercentageOptions"></ng-chart>
                         </div>
                     </div>
                     <div class="row">

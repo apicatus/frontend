@@ -1,5 +1,4 @@
 <application>
-    <!-- pre ng-init="settings.pepe = settings.pepe || {name: 'pepe', date: getDate()}">{{settings.pepe | json}}</pre -->
     <div class="row">
         <div class="col-md-12">
             <div class="btn-toolbar" role="toolbar">
@@ -16,9 +15,12 @@
                     <div class="btn-group" dropdown>
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sort-alpha-asc"></i> Sort <span class="fa fa-angle-down"></span></button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="" ><i class="fa fa-fw" ng-class="settings.application.orderBy == 'name' ? 'fa-check-circle' : 'fa-circle-thin'"></i> Name</a></li>
-                            <li><a href="" ><i class="fa fa-fw" ng-class="settings.application.orderBy == 'messageCount' ? 'fa-check-circle' : 'fa-circle-thin'"></i> Activity</a></li>
-                            <li><a href="" ><i class="fa fa-fw" ng-class="settings.application.orderBy == 'lastAccess' ? 'fa-check-circle' : 'fa-circle-thin'"></i> Date</a></li>
+                            <li>
+                                <a href ng-click="sortBy('name')"><i class="fa fa-fw" ng-class="sort.property == 'name' ? 'fa-check-circle' : 'fa-circle-thin'"></i> {{ 'NAME' | translate }}</a>
+                            </li>
+                            <li>
+                                <a href ng-click="sortBy('method')"><i class="fa fa-fw" ng-class="sort.property == 'method' ? 'fa-check-circle' : 'fa-circle-thin'"></i> {{ 'METHOD' | translate }}</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
