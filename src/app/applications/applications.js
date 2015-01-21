@@ -129,6 +129,29 @@ angular.module( 'apicatus.applications', [
         });
     };
 
+    $scope.addHeader = function(api, header, scope) {
+        console.log("addHeader", header);
+        if(!api.request.headers) {
+            api.request.headers = [];
+        }
+        var indexes = api.request.headers.map(function(obj, index) {
+            if(obj.name == header.name) {
+                return index;
+            }
+        }).filter(isFinite)[0];
+        console.log("index", indexes);
+        if(angular.equals({}, header) || _.findIndex(api.request.headers, {name: header.name}) >= 0) {
+            return false;
+        }
+        api.request.headers.push(angular.copy(header));
+        $scope.api.put();
+    };
+
+    $scope.removeHeader = function(api, header, $index) {
+        api.request.headers.splice($index, 1);
+        $scope.api.put();
+    };
+
     // Create new API Modal
     $scope.newApi = function () {
         // Please note that $modalInstance represents a modal window (instance) dependency.

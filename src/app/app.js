@@ -76,6 +76,9 @@ angular.module( 'apicatus', [
 ])
 // Global constans
 .constant('$moment', moment)
+// Google Analytics
+.constant('$ga', ga)
+
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider, $locationProvider, $translateProvider, $documentProvider, RestangularProvider, localStorageServiceProvider ) {
     $urlRouterProvider.otherwise( '/main/applications/list' );
     //$locationProvider.html5Mode(true);
@@ -95,7 +98,7 @@ angular.module( 'apicatus', [
     localStorageServiceProvider.setPrefix('apicatus');
 })
 
-.run(function run($rootScope, $state, AuthService, Restangular) {
+.run(function run($rootScope, $state, $location, $ga, AuthService, Restangular) {
     Restangular.setErrorInterceptor(function (response) {
         console.log("error: ", response);
         switch(response.status) {
@@ -117,6 +120,7 @@ angular.module( 'apicatus', [
         }
         return response;
     });
+    // Authentication
     $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams) {
         if (toState.authenticate && !AuthService.isAuthenticated()) {
             console.log("user isn't authenticated");
@@ -125,6 +129,19 @@ angular.module( 'apicatus', [
             $state.transitionTo("main.user.login");
             event.preventDefault();
         }
+    });
+
+    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+        // Page title
+        if ( angular.isDefined( toState.data.pageTitle ) ) {
+            $rootScope.pageTitle = toState.data.pageTitle;
+        }
+        // Google Analytics
+        $ga('send', {
+            hitType: 'pageview',
+            page: $location.path(),
+            title: toState.data.pageTitle
+        });
     });
 })
 .factory('mySocket', function (ngSocketFactory) {
@@ -217,10 +234,4 @@ angular.module( 'apicatus', [
         localStorageService.add('settings', newVal);
     }, true);
 
-    // Page title
-    $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-        if ( angular.isDefined( toState.data.pageTitle ) ) {
-            $scope.pageTitle = toState.data.pageTitle;
-        }
-    });
 });

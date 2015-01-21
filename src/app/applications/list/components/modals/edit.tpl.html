@@ -5,28 +5,178 @@
     </div>
     <div class="modal-body">
         <div class="form-group">
-            <label for="subdomain">{{ 'APPLICATIONS.EDITAPI.SUBDOMAIN' | translate }}</label>
-            <div class="input-group">
-                <input type="text" class="form-control" id="subdomain" name="subdomain" placeholder="{{ 'APPLICATIONS.EDITAPI.SUBDOMAIN' | translate }}" ng-model="apiModel.subdomain" ng-keydown="resetWithCancel($event)", required disabled>
-                <div class="input-group-addon">.apicat.us</div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="proxy">{{ 'APPLICATIONS.EDITAPI.PROXY' | translate }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <input type="checkbox" ng-model="apiModel.proxy.enabled">
-                </span>
-                <input type="text" class="form-control" id="proxy" name="proxy" placeholder="{{ 'APPLICATIONS.EDITAPI.PROXYURL' | translate }}" ng-model="apiModel.proxy.URI">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="color">{{ 'COLOR' | translate }}</label>
-            <div class="input-group">
-                <div class="input-group-addon color-picker" ng-style="{'background-color': apiModel.color}">
-                    <input type="color" id="color" ng-model="apiModel.color">
+            <label for="name">{{ 'APPLICATIONS.NEWAPI.NAME' | translate }}</label>
+            <div class="row">
+                <div class="col-xs-8">
+                    <input type="text" id="name" class="form-control" placeholder="{{ 'APPLICATIONS.NEWAPI.NAME' | translate }}" required ng-required="true" ng-model="apiModel.name" />
+                    <span class="help-block" ng-show="form.headerName.$error.required">Required</span>
                 </div>
-                <input type="text" class="form-control" id="color" name="color" ng-model="apiModel.color">
+                <div class="col-xs-4">
+                    <input type="text" name="publicPath" class="form-control" placeholder="{{ 'APPLICATIONS.NEWAPI.VERSION' | translate }}" ng-model="apiModel.publicPath">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="synopsis"><a href ng-click="showSynopsis = !showSynopsis"><i class="fa fa-fw fa-plus"></i>{{ 'APPLICATIONS.NEWAPI.SYNOPSIS' | translate }}</a></label>
+            <div collapse="!showSynopsis">
+                <textarea id="synopsis" name="synopsis" class="form-control" rows="2" placeholder="{{ 'APPLICATIONS.NEWAPI.SYNOPSIS' | translate }}" ng-model="apiModel.synopsis"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="headers"><a href ng-click="showHeaders = !showHeaders"><i class="fa fa-fw fa-plus"></i>{{ 'APPLICATIONS.NEWAPI.HEADERS' | translate }}</a></label>
+            <div collapse="!showHeaders">
+                <div class="row" ng-model="header">
+                    <div class="col-xs-4">
+                        <input type="text" class="form-control" placeholder="Key" ng-model="apiModel.header.name" name="headerName">
+                        <span class="help-block" ng-show="form.headerName.$error.required">Required</span>
+                    </div>
+                    <div class="col-xs-7">
+                        <input type="text" class="form-control" placeholder="Value" ng-model="apiModel.header.value">
+                    </div>
+                    <div class="col-xs-1">
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-default" ng-click="addHeader(apiModel, $scope)"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-repeat="header in apiModel.response.headers">
+                    <div class="col-xs-4">
+                        <input type="text" class="form-control" placeholder="Key" ng-model="header.name">
+                    </div>
+                    <div class="col-xs-7">
+                        <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
+                    </div>
+                    <div class="col-xs-1">
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-danger" ng-click="removeHeader(apiModel, header, $index)"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="proxy"><a href ng-click="showProxy = !showProxy"><i class="fa fa-fw fa-plus"></i>{{ 'APPLICATIONS.EDITAPI.PROXY' | translate }}</a></label>
+            <div collapse="!showProxy">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <input type="checkbox" ng-model="apiModel.proxy.enabled">
+                    </span>
+                    <input type="text" class="form-control" id="proxy" name="proxy" placeholder="{{ 'APPLICATIONS.EDITAPI.PROXYURL' | translate }}" ng-model="apiModel.proxy.URI">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="synopsis"><a href ng-click="showSubdomain = !showSubdomain"><i class="fa fa-fw fa-plus"></i>{{ 'APPLICATIONS.NEWAPI.SUBDOMAIN' | translate }}</a></label>
+            <div collapse="!showSubdomain">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="subdomain" name="subdomain" placeholder="{{ 'APPLICATIONS.EDITAPI.SUBDOMAIN' | translate }}" ng-model="apiModel.subdomain" ng-keydown="resetWithCancel($event)", required disabled>
+                    <div class="input-group-addon">.apicat.us</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="color"><a href ng-click="showColor = !showColor"><i class="fa fa-fw fa-plus"></i>{{ 'COLOR' | translate }}</a></label>
+            <div collapse="!showColor">
+                <div class="input-group">
+                    <div class="input-group-addon color-picker" ng-style="{'background-color': apiModel.color}">
+                        <input type="color" id="color" ng-model="apiModel.color">
+                    </div>
+                    <input type="text" class="form-control" id="color" name="color" ng-model="apiModel.color">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword1" class="control-label"><a href class="" ng-click="isCollapsed = !isCollapsed"><i class="fa fa-fw fa-plus"></i>Authentication</a></label>
+            <div collapse="!isCollapsed">
+                <tabset>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-fw fa-shield"></i> {{ 'APPLICATIONS.NEWAPI.AUTH.BASIC' | translate }}
+                        </tab-heading>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">User Name</label>
+                                    <input name="username" id="username" class="form-control" type="text" placeholder="username">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Password</label>
+                                    <input name="password" id="password" class="form-control" type="password" placeholder="password">
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-fw fa-shield"></i>{{ 'APPLICATIONS.NEWAPI.AUTH.OAUTH1' | translate }}
+                        </tab-heading>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">Consumer Key</label>
+                                    <input name="consumer_key" id="consumer_key" class="form-control" type="text" ng-model="apiModel.authorizations[0].oauth[0].apiKey">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Consumer Secret</label>
+                                    <input name="consumer_secret" id="consumer_secret" class="form-control" type="text" ng-model="apiModel.authorizations[0].oauth[0].apiSecret">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Access Token</label>
+                                    <input name="access_token" id="access_token" class="form-control" type="text">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Token Secret</label>
+                                    <input name="token_secret" id="token_secret" class="form-control" type="text">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Signature Methods</label>
+                                    <select name="signature_type" class="form-control">
+                                        <option value="HMAC-SHA1">HMAC-SHA1</option>
+                                        <option value="PLAINTEXT">PLAINTEXT</option>
+                                        <option value="RSA-SHA1">RSA-SHA1</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Signature Type</label>
+                                    <select name="signature_type" class="form-control">
+                                        <option value="query">Querystring</option>
+                                        <option value="auth_header">Auth header</option>
+                                        <option value="body">Body</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-fw fa-shield"></i> {{ 'APPLICATIONS.NEWAPI.AUTH.OAUTH2' | translate }}
+                        </tab-heading>
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <i class="fa fa-fw fa-shield"></i> Key
+                        </tab-heading>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">Api Key</label>
+                                    <input name="api_key" id="key" class="form-control" type="text" ng-model="apiModel.authorizations[0].key[0].apiKey">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Key Param</label>
+                                    <input name="api_key" id="keyParam" class="form-control" type="text" ng-model="apiModel.authorizations[0].key[0].param">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Param Location</label>
+                                    <select name="keyLocation" class="form-control" ng-model="apiModel.authorizations[0].key[0].location">
+                                        <option value="header">Header</option>
+                                        <option value="query">Query</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                </tabset>
             </div>
         </div>
         <div class="checkbox">
@@ -46,7 +196,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" ng-disabled="form.$invalid">{{ 'SUBMIT' | translate }}</button>
+        <button type="submit" class="btn btn-primary" ng-disabled="form.$invalid">{{ 'SAVE' | translate }}</button>
         <button type="button" class="btn btn-danger" ng-click="cancel()">{{ 'CANCEL' | translate }}</button>
     </div>
 </form>

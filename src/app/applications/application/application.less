@@ -104,6 +104,7 @@ application {
             cursor: default;
             a {
                 color: lighten(@gray-darker, 10%);
+                display: block;
                 &:hover, &:active, &:focus {
                     color: @gray-darker;
                     cursor: pointer;
@@ -111,6 +112,15 @@ application {
                     span.method {
                         color: #fff;
                     }
+                }
+            }
+            span.name {
+                padding: 10px;
+                color: lighten(@gray-darker, 50%);
+                text-shadow: 1px 1px lighten(@gray-darker, 100%);
+                .toggler {
+                    color: lighten(@gray-darker, 10%);
+                    text-shadow: none;
                 }
             }
             span.method {

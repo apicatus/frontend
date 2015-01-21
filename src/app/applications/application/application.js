@@ -1,3 +1,39 @@
+///////////////////////////////////////////////////////////////////////////////
+// @file         : application.js                                            //
+// @summary      : Frontend Application controller                           //
+// @version      : 0.1                                                       //
+// @project      : apicat.us                                                 //
+// @description  : Frontend Application controller                           //
+// @author       : Benjamin Maggi                                            //
+// @email        : benjaminmaggi@gmail.com                                   //
+// @date         : 2013                                                      //
+// ------------------------------------------------------------------------- //
+//                                                                           //
+// Copyright 2013~2014 Benjamin Maggi <benjaminmaggi@gmail.com>              //
+//                                                                           //
+//                                                                           //
+// License:                                                                  //
+// Permission is hereby granted, free of charge, to any person obtaining a   //
+// copy of this software and associated documentation files                  //
+// (the "Software"), to deal in the Software without restriction, including  //
+// without limitation the rights to use, copy, modify, merge, publish,       //
+// distribute, sublicense, and/or sell copies of the Software, and to permit //
+// persons to whom the Software is furnished to do so, subject to the        //
+// following conditions:                                                     //
+//                                                                           //
+// The above copyright notice and this permission notice shall be included   //
+// in all copies or substantial portions of the Software.                    //
+//                                                                           //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS   //
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF                //
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.    //
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY      //
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,      //
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE         //
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                    //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
 /*jslint evil: true */
 /*jshint newcap: false */
 
@@ -174,7 +210,8 @@ angular.module( 'apicatus.application', [
 }])
 .controller( 'ApplicationCtrl', function ApplicationController( $scope, $timeout, $stateParams, $modal, $filter, Restangular, queryFactory, parseURL, ngAssertions, mySocket, httpSettings, api) {
 
-    //$controller('apicatus.application.demo', {$scope: $scope});
+    // some regular type of header names
+    //return ["Accept", "Accept-Charset", "Accept-Encoding", "Accept-Language", "Accept-Datetime", "Authorization", "Cache-Control", "Connection", "Cookie", "Content-Length", "Content-MD5", "Content-Type", "Date", "Expect", "From", "Host", "If-Match", "If-Modified-Since", "If-None-Match", "If-Range", "If-Unmodified-Since", "Max-Forwards", "Pragma", "Proxy-Authorization", "Range", "Referer", "Runscope-Request-Port", "Runscope-Collection-Id", "Runscope-Bucket-Auth", "TE", "Upgrade", "User-Agent", "Via", "Warning"];
 
     $scope.httpSettings = httpSettings.settings();
     $scope.assertionSources = ngAssertions.getSources();
@@ -261,8 +298,38 @@ angular.module( 'apicatus.application', [
                 console.info('Modal dismissed at: ' + new Date());
         });
     };
-    $scope.updateEndpoint = function(endpoint, $index) {
-        $scope.api.put();
+    $scope.editEndpoint = function(endpoint, $index) {
+        // Please note that $modalInstance represents a modal window (instance) dependency.
+        // It is not the same as the $modal service used above.
+        var modalCtl = function ($scope, $modalInstance, endpoint) {
+            $scope.endpoint = endpoint;
+            $scope.submit = function () {
+                $modalInstance.close($scope.endpoint);
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+        var modalInstance = $modal.open({
+            templateUrl: 'new_endpoint_modal.html',
+            controller: modalCtl,
+            windowClass: '',
+            resolve: {
+                endpoint: function () {
+                    return endpoint;
+                }
+            }
+        });
+        modalInstance.result.then(
+            function (endpoint) {
+                $scope.api.put().then(function(result) {
+                }, function(error) {
+                    console.log('error: ', error);
+                });
+            },
+            function () {
+                console.info('Modal dismissed at: ' + new Date());
+        });
     };
     $scope.deleteEndpoint = function(endpoints, $index) {
         endpoints.splice($index, 1);
@@ -322,33 +389,36 @@ angular.module( 'apicatus.application', [
     };
     $scope.deleteMethod = function(methods, $index) {
         methods.splice($index, 1);
-        $scope.api.put();
+        return $scope.api.put();
     };
-    $scope.header = {};
+    ////////////////////////////////////////////////////////////////////////////
+    // Response Headers [Add, Remove]                                         //
+    ////////////////////////////////////////////////////////////////////////////
     $scope.addHeader = function(method, header, scope) {
         console.log("addHeader", header);
-        console.log("addHeader");
         if(!method.response.headers) {
             method.response.headers = [];
         }
-        var indexes = method.response.headers.map(function(obj, index) {
-            if(obj.name == header.name) {
+        /*var indexes = method.response.headers.map(function(obj, index) {
+            if(obj && obj.name == header.name) {
                 return index;
             }
         }).filter(isFinite)[0];
         console.log("index", indexes);
         if(angular.equals({}, header) || _.findIndex(method.response.headers, {name: header.name}) >= 0) {
             return false;
-        }
-        method.response.headers.push(angular.copy(header));
-        $scope.header = {};
-        //$scope.api.put();
+        }*/
+        method.response.headers.push({
+            name: null,
+            value: null
+        });
     };
-
     $scope.removeHeader = function(method, header, $index) {
-        method.response.headers.splice($index, 1);
+        return method.response.headers.splice($index, 1);
     };
-    // API Demo
+    ////////////////////////////////////////////////////////////////////////////
+    // API Demo                                                               //
+    ////////////////////////////////////////////////////////////////////////////
     $scope.createDemo = function(method) {
         // Create simple demo to test the endpoint
         var serviceUrl = parseURL.parse(Restangular.configuration.baseUrl);
@@ -428,6 +498,31 @@ angular.module( 'apicatus.application', [
                     .find('.panel-loader')
                     .remove();
             });
+        }
+    };
+}])
+.directive('uniqueHeader', [function() {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        scope: {
+            headers: '='
+        },
+        link: function(scope, element, attributes, ngModel) {
+            scope.$watch('headers', function(pass) {
+                ngModel.$validate();
+            });
+            ngModel.$validators.uniqueHeader = function(modelValue, viewValue) {
+                var value = modelValue || viewValue;
+                if(!value || value.length < 1) {
+                    return true;
+                }
+                var headers = scope.headers.filter(function(header){
+                    return header.name == value;
+                });
+                console.log("value: ", value, " headers: ", headers.length);
+                return (headers.length < 1);
+            };
         }
     };
 }])

@@ -36,10 +36,10 @@
             </div>
         </div>
         <!-- CUSTOM HEADERS -->
-        <div class="form-group">
-            <label for="inputPassword1" class="col-lg-2 control-label">headers</label>
-            <div class="col-lg-10">
-                <div class="row" ng-model="header">
+        <div class="form-group has-feedback">
+            <label class="col-lg-2 control-label"><a href ng-click="showHeaders = !showHeaders"><i class="fa fa-fw fa-plus"></i>Header(s)</a></label>
+            <div class="col-lg-10" collapse="!showHeaders">
+                <!-- div class="row" ng-model="header">
                     <div class="col-xs-4">
                         <input type="text" class="form-control" placeholder="Key" ng-model="header.name" name="headerName">
                         <span class="help-block" ng-show="form.headerName.$error.required">Required</span>
@@ -52,13 +52,13 @@
                             <button type="button" class="btn btn-default" ng-click="addHeader(method, header, $scope)"><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
-                </div>
+                </div -->
                 <div class="row" ng-repeat="header in method.response.headers">
                     <div class="col-xs-4">
-                        <input type="text" class="form-control" placeholder="Key" ng-model="header.name">
+                        <input type="text" class="form-control" name="headerKey" placeholder="Key" ng-model="header.name">
                     </div>
                     <div class="col-xs-7">
-                        <input type="text" class="form-control" placeholder="Value" ng-model="header.value">
+                        <input type="text" class="form-control" name="headerValue" placeholder="Value" ng-model="header.value">
                     </div>
                     <div class="col-xs-1">
                         <div class="btn-group pull-right">
@@ -66,23 +66,20 @@
                         </div>
                     </div>
                 </div>
+                <button type="button" class="btn btn-sm btn-default" ng-click="addHeader(method, header, $scope)"><i class="fa fa-fw fa-plus"></i>Add Header</button>
             </div>
         </div>
-        <!-- Headers -->
+        <!-- Status Code Response -->
         <div class="form-group">
-            <label for="statusCode" class="col-lg-2 control-label">Status Code</label>
-            <div class="col-lg-10">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <select class="form-control" id="statusCode" ng-model="method.response.statusCode" ng-options="status.id as status.label group by status.group for status in httpSettings.statuses"></select>
-                    </div>
-                </div>
+            <label for="statusCode" class="col-lg-2 control-label"><a href ng-click="showStatusCode = !showStatusCode"><i class="fa fa-fw fa-plus"></i>Status Code</a></label>
+            <div class="col-lg-10" collapse="!showStatusCode">
+                <select class="form-control" name="statusCode" ng-model="method.response.statusCode" ng-options="status.id as status.label group by status.group for status in httpSettings.statuses"></select>
             </div>
         </div>
         <!-- Response -->
         <div class="form-group">
-            <label for="inputPassword1" class="col-lg-2 control-label">Response Body</label>
-            <div class="col-lg-10">
+            <label class="col-lg-2 control-label"><a href ng-click="showResponse = !showResponse"><i class="fa fa-fw fa-plus"></i>Response Body</a></label>
+            <div class="col-lg-10" collapse="!showResponse">
                 <tabset>
                     <tab>
                         <tab-heading>

@@ -1,10 +1,11 @@
 <accordion close-others="false">
     <accordion-group ng-class="{true: method.method}[true]" id="{{method._id}}" ng-repeat="method in endpoint.methods | limitTo:8 | orderBy:sort.property:sort.reverse" is-open="status.open">
         <accordion-heading class="clearfix" style="padding-top: 7.5px;">
-            <a href="">
+            <a href="" class="method-header">
                 <span class="method" ng-class="{true: method.method}[true]">{{method.method}}</span>
                 <span class="route">{{method.URI}}</span>
-                <span class="pull-right trigger-collapse"><i class="fa fa-angle-down" ng-class="{'open': status.open}"></i></span>
+                <span class="name pull-right">{{method.name}}<i class="toggler fa fa-fw fa-angle-down" ng-class="{'open': status.open}"></i></span>
+                <!-- span class="pull-right trigger-collapse"><i class="fa fa-angle-down" ng-class="{'open': status.open}"></i></span -->
             </a>
         </accordion-heading>
         <div class="row" ng-controller="AccordionCtrl as accordion">

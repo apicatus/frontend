@@ -55,7 +55,7 @@
                             <input type="text" class="resource-name" ng-model="endpoint.name" ng-disabled="edit" ng-init="edit=true" required>
                             <div class="btn-group btn-group-sm pull-right">
                                 <button type="button" class="btn btn-default" ng-click="createMethod(endpoint, $index)"><i class="fa fa-file-o"></i></button>
-                                <button type="button" class="btn btn-default"><i class="fa fa-plus-square-o"></i></button>
+                                <button type="button" class="btn btn-default" ng-click="editEndpoint(endpoint, $index)"><i class="fa fa-edit"></i></button>
                                 <button type="button" class="btn btn-default fg-red" ng-click="deleteEndpoint(api.endpoints, $index)"><i class="fa fa-trash-o"></i></button>
                             </div>
                         </h1>
@@ -73,7 +73,7 @@
                     <i class="fa fa-dot-circle-o fa-stack-1x fg-cyan"></i>
                     <i class="fa fa-circle-o fa-stack-1x"></i>
                 </span>
-                [ API: <strong>{{api.name}}</strong>, Base URL: <strong>http://{{api.subdomain}}.apicat.us/{{api.version}}/</strong>, Version: <strong>{{api.version}}</strong> ]
+                [ API: <strong>{{api.name}}</strong>, Base URL: <strong>http://{{api.subdomain}}.apicat.us ]
             </div>
         </div>
     </div>
